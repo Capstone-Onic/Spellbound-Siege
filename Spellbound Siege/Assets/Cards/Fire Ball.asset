@@ -13,5 +13,9 @@ MonoBehaviour:
   m_Name: Fire Ball
   m_EditorClassIdentifier: 
   cardName: Fire Ball
-  cost: 0
+  cardType: 00000000
+  cost: 1
+  dmgMin: 1
+  dmgMax: 2
+  damageType: 00000000
   unitPrefab: {fileID: 0}

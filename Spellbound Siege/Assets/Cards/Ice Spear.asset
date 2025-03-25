@@ -13,5 +13,9 @@ MonoBehaviour:
   m_Name: Ice Spear
   m_EditorClassIdentifier: 
   cardName: Ice Spear
-  cost: 0
+  cardType: 02000000
+  cost: 1
+  dmgMin: 2
+  dmgMax: 2
+  damageType: 02000000
   unitPrefab: {fileID: 0}

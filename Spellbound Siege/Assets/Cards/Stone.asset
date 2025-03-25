@@ -13,5 +13,9 @@ MonoBehaviour:
   m_Name: Stone
   m_EditorClassIdentifier: 
   cardName: Stone
-  cost: 0
+  cardType: 03000000
+  cost: 1
+  dmgMin: 1
+  dmgMax: 1
+  damageType: 03000000
   unitPrefab: {fileID: 0}

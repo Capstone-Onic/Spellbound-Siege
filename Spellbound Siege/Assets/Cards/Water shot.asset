@@ -13,5 +13,9 @@ MonoBehaviour:
   m_Name: Water shot
   m_EditorClassIdentifier: 
   cardName: Water shot
-  cost: 0
+  cardType: 01000000
+  cost: 1
+  dmgMin: 1
+  dmgMax: 2
+  damageType: 01000000
   unitPrefab: {fileID: 0}
