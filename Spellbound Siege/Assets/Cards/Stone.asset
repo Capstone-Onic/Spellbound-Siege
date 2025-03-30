@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: Stone
   cardType: 03000000
   cost: 1
-  dmgMin: 1
-  dmgMax: 1
+  damageMin: 1
+  damageMax: 2
   damageType: 03000000
   unitPrefab: {fileID: 0}

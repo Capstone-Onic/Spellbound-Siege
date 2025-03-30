@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: Ice Spear
   cardType: 02000000
   cost: 1
-  dmgMin: 2
-  dmgMax: 2
+  damageMin: 1
+  damageMax: 2
   damageType: 02000000
   unitPrefab: {fileID: 0}

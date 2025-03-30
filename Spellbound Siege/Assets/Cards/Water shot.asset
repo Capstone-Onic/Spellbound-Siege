@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: Water shot
   cardType: 01000000
   cost: 1
-  dmgMin: 1
-  dmgMax: 2
+  damageMin: 1
+  damageMax: 2
   damageType: 01000000
   unitPrefab: {fileID: 0}

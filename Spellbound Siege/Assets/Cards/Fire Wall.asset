@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: Fire Wall
   cardType: 00000000
   cost: 2
-  dmgMin: 3
-  dmgMax: 3
+  damageMin: 2
+  damageMax: 3
   damageType: 00000000
   unitPrefab: {fileID: 0}
