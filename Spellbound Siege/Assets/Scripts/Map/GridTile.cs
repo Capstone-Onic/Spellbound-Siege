@@ -2,13 +2,11 @@ using UnityEngine;
 
 public class GridTile : MonoBehaviour
 {
-    public GameObject unitShadowPrefab;  // 그림자 프리팹 (Inspector에서 설정)
-    private GameObject currentUnit;      // 배치된 유닛
-    private GameObject currentShadow;    // 현재 그림자
-    private bool isOccupied = false;     // 타일이 점유되었는지 여부
-    private bool isPlacing = false;      // 유닛 배치 중인지 확인
-    private Vector3 initialClickPosition;  // 처음 클릭한 위치
-    private static readonly float cancelThreshold = 5.0f;  // 이동 취소 기준 거리
+    public GameObject unitShadowPrefab;
+    private GameObject currentUnit;
+    private GameObject currentShadow;
+    private bool isOccupied = false;
+    private bool isPlacing = false;
 
     private void OnMouseDown()
     {
@@ -22,15 +20,29 @@ public class GridTile : MonoBehaviour
     {
         if (isPlacing && currentShadow != null)
         {
-            // 마우스가 클릭된 후 움직였는지 확인
-            if (Vector3.Distance(initialClickPosition, Input.mousePosition) > cancelThreshold)
+            if (Input.GetMouseButton(0))
             {
-                CancelPlacement();  // 이동하면 설치 취소
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hit))
+                {
+                    GridTile currentTile = hit.collider.GetComponent<GridTile>();
+                    if (currentTile != null && currentTile != this)
+                    {
+                        CancelPlacement();
+                    }
+                }
             }
-            else if (Input.GetMouseButtonUp(0))  // 클릭을 떼면 설치 확정
+
+            if (Input.GetMouseButtonUp(0))
             {
                 PlaceUnit();
             }
+        }
+
+        // 유닛이 삭제된 경우 상태 초기화
+        if (isOccupied && currentUnit == null)
+        {
+            isOccupied = false;
         }
     }
 
@@ -41,7 +53,6 @@ public class GridTile : MonoBehaviour
             Vector3 shadowPosition = transform.position + new Vector3(0, 0.2f, 0);
             currentShadow = Instantiate(unitShadowPrefab, shadowPosition, Quaternion.identity);
             isPlacing = true;
-            initialClickPosition = Input.mousePosition;  // 클릭 위치 저장
         }
     }
 
@@ -49,7 +60,7 @@ public class GridTile : MonoBehaviour
     {
         if (currentShadow != null)
         {
-            Destroy(currentShadow);  // 그림자를 제거
+            Destroy(currentShadow);
         }
 
         currentUnit = Instantiate(UnitManager.instance.selectedUnit, transform.position + Vector3.up * 0.5f, Quaternion.identity);
@@ -61,7 +72,7 @@ public class GridTile : MonoBehaviour
     {
         if (currentShadow != null)
         {
-            Destroy(currentShadow);  // 그림자 제거
+            Destroy(currentShadow);
         }
 
         isPlacing = false;
