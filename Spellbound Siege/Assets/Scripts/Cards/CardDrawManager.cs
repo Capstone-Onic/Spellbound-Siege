@@ -74,38 +74,60 @@ public class CardDrawManager : MonoBehaviour
     // 카드 UI를 생성하고 덱에서 손 위치로 이동하는 코루틴
     private IEnumerator CreateCardUI(Card card)
     {
+        // 1. 파괴된 카드 정리
+        handCards.RemoveAll(cardObj => cardObj == null);
+
         if (deckTransform == null || handPanel == null) yield break;
 
-        int finalCardCount = handCards.Count + 1; // 새 카드 포함 수
-        List<Vector2> targetPositions = CalculateCardPositions(finalCardCount); // 정렬 위치 계산
-
-        GameObject cardObject = Instantiate(cardPrefab, handPanel); // 카드 오브젝트 생성
+        // 2. 새 카드 생성
+        GameObject cardObject = Instantiate(cardPrefab, handPanel);
         RectTransform rectTransform = cardObject.GetComponent<RectTransform>();
         CardDisplay cardDisplay = cardObject.GetComponent<CardDisplay>();
-        cardDisplay.SetCard(card); // 카드 데이터 적용
+        cardDisplay.SetCard(card);
 
-        // 카드 시작 위치: 덱 위치
+        // 3. 덱 위치에서 시작
         Vector2 startPosition = deckTransform.anchoredPosition;
         rectTransform.anchoredPosition = startPosition;
 
-        // 카드 목표 위치: 마지막 인덱스 위치
-        Vector2 targetPosition = targetPositions[finalCardCount - 1];
-        handCards.Add(cardObject); // 손패에 추가
+        // 4. 카드 리스트에 추가
+        handCards.Add(cardObject);
 
-        // 애니메이션 처리 (덱 → 손 위치로 이동)
+        // 5. 카드 수에 따른 위치 계산
+        List<Vector2> positions = CalculateCardPositions(handCards.Count);
+
+        // 6. 이동 애니메이션 수행
         float elapsedTime = 0f;
         while (elapsedTime < drawDuration)
         {
             elapsedTime += Time.deltaTime;
             float t = Mathf.Clamp01(elapsedTime / drawDuration);
-            rectTransform.anchoredPosition = Vector2.Lerp(startPosition, targetPosition, t);
+
+            int count = Mathf.Min(handCards.Count, positions.Count);
+            for (int i = 0; i < count; i++)
+            {
+                if (handCards[i] == null) continue;
+
+                RectTransform rt = handCards[i].GetComponent<RectTransform>();
+                if (rt == null) continue;
+
+                Vector2 target = positions[i];
+                rt.anchoredPosition = Vector2.Lerp(rt.anchoredPosition, target, t);
+            }
+
             yield return null;
         }
 
-        rectTransform.anchoredPosition = targetPosition;
+        // 7. 정렬 마무리 (위치 고정)
+        int finalCount = Mathf.Min(handCards.Count, positions.Count);
+        for (int i = 0; i < finalCount; i++)
+        {
+            if (handCards[i] == null) continue;
 
-        // 카드 전체 정렬 갱신
-        ReorganizeHand();
+            RectTransform rt = handCards[i].GetComponent<RectTransform>();
+            if (rt == null) continue;
+
+            rt.anchoredPosition = positions[i];
+        }
     }
 
     // 카드 수에 맞게 손패에서 위치 정렬 계산
@@ -113,25 +135,21 @@ public class CardDrawManager : MonoBehaviour
     {
         List<Vector2> positions = new List<Vector2>();
 
-        float panelWidth = handPanel.rect.width;
-        float cardY = 50f; // 카드의 Y 고정값
+        float cardY = -25f; // Y 위치 고정
 
         if (cardCount == 0) return positions;
 
-        if (cardCount == 1)
-        {
-            // 카드가 한 장이면 중앙 배치
-            positions.Add(new Vector2(0f, cardY));
-            return positions;
-        }
+        // 카드 간 최대 간격 제한 (겹치게 만들기 위한 설정)
+        float maxSpacing = 160f; // spacing을 줄이려면 이 값 줄이기
+        float spacing = Mathf.Min(maxSpacing, handPanel.rect.width / cardCount);
 
-        float totalWidth = panelWidth;
-        float leftEdge = -totalWidth / 2f;
-        float spacing = totalWidth / (cardCount - 1); // 카드 간 간격
+        // 전체 카드 너비
+        float totalWidth = spacing * (cardCount - 1);
+        float startX = -totalWidth / 2f;
 
         for (int i = 0; i < cardCount; i++)
         {
-            float x = leftEdge + i * spacing;
+            float x = startX + i * spacing;
             positions.Add(new Vector2(x, cardY));
         }
 
@@ -144,7 +162,7 @@ public class CardDrawManager : MonoBehaviour
         if (handCards.Contains(cardObject))
         {
             handCards.Remove(cardObject);
-            Destroy(cardObject);
+            Destroy(cardObject); // ← 제거는 마지막에
         }
         ReorganizeHand();
     }
