@@ -4,8 +4,8 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Unit
   - Enemy
+  - Unit
   layers:
   - Default
   - TransparentFX
