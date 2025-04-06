@@ -27,7 +27,7 @@ public class EnemyHealthBar : MonoBehaviour
 
         // 적의 체력 상태를 반영해서 너비 조정 (0~1 사이 값)
         float healthPercentage = Mathf.Clamp01(enemy.health / 100f);
-        healthBarFill.style.width = new Length(healthPercentage * 100, LengthUnit.Percent);
+        healthBarFill.style.width = new Length(healthPercentage * 100f, LengthUnit.Percent);
     }
 
     private void LateUpdate()
@@ -36,7 +36,7 @@ public class EnemyHealthBar : MonoBehaviour
 
         // 체력바 위치를 적 머리 위로 조정
         float height = enemy.GetComponent<Renderer>().bounds.size.y;
-        transform.position = enemy.transform.position + new Vector3(0, height + 0.3f, 0);
+        transform.position = enemy.transform.position + new Vector3(-0.5f, height + 0.3f, 0);
 
         // UI가 카메라를 바라보도록
         transform.LookAt(transform.position + mainCamera.transform.rotation * Vector3.forward,

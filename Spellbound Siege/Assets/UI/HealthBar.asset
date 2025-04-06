@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 19101, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: HealthBar
   m_EditorClassIdentifier: 
-  themeUss: {fileID: -4733365628477956816, guid: 52762fc76881b8d448aeaa8bacced5bb, type: 3}
+  themeUss: {fileID: -4733365628477956816, guid: 39cecf6cbe551a74baed4d375e8a04b2, type: 3}
   m_DisableNoThemeWarning: 0
   m_TargetTexture: {fileID: 0}
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_WorldSpaceLayer: 0
   m_ScaleMode: 1
   m_ReferenceSpritePixelsPerUnit: 100
@@ -30,7 +30,7 @@ MonoBehaviour:
   m_TargetDisplay: 0
   m_BindingLogLevel: 0
   m_ClearDepthStencil: 1
-  m_ClearColor: 0
+  m_ClearColor: 1
   m_ColorClearValue: {r: 0, g: 0, b: 0, a: 0}
   m_VertexBudget: 0
   m_DynamicAtlasSettings:
