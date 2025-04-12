@@ -1,73 +1,83 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// Waypoint µéÀ» ±âÁØÀ¸·Î À¯´ÖÀÌ Áö³ª°¥ ¼ö ÀÖ´Â °æ·Î¸¦ »ı¼ºÇÏ°í,
-/// ÇØ´ç °æ·Î À§¿¡ PathTile ÇÁ¸®ÆÕÀ» ÀÚµ¿À¸·Î ¹èÄ¡ÇÏ´Â ½ºÅ©¸³Æ®
+/// Waypoint ë“¤ì„ ê¸°ì¤€ìœ¼ë¡œ ê²½ë¡œ íƒ€ì¼ì„ ìë™ ìƒì„±
 /// </summary>
 public class WaypointManager : MonoBehaviour
 {
-    public Transform[] waypoints;             // ÇÏÀÌ¾î¶óÅ°¿¡ ÀÖ´Â WayPoint1~4 °°Àº ¿ÀºêÁ§Æ®µé
-    public GameObject pathTilePrefab;         // °æ·Î Å¸ÀÏ ÇÁ¸®ÆÕ
-    public float tileSize = 1.0f;             // Å¸ÀÏ °£°İ (±×¸®µå ´ÜÀ§¿Í °°°Ô)
-    public float tileHeight = 0.01f;          // ¹Ù´Úº¸´Ù »ìÂ¦ À§¿¡ ¶ç¿ì±â (°ãÄ§ ¹æÁö¿ë)
+    public Transform[] waypoints;
+    public GameObject pathTilePrefab;
+    public float tileSize = 1.0f;
+    public float tileHeight = 0.01f;
 
-    private void Start()
+    private void Awake() // ê²Œì„ ì‹œì‘ ì „ ìƒì„±
     {
-        // °ÔÀÓ ½ÃÀÛ ½Ã ÀÚµ¿À¸·Î °æ·Î Å¸ÀÏ »ı¼º
         GeneratePathTiles();
     }
 
-    /// <summary>
-    /// WayPointµé °£ÀÇ °æ·Î¸¦ µû¶ó Å¸ÀÏÀ» »ı¼º
-    /// °¢ WayPoint »çÀÌ¿¡ Á÷¼± °æ·Î¸¦ ¸¸µé°í ±× À§¿¡ PathTileÀ» ¹èÄ¡
-    /// </summary>
     public void GeneratePathTiles()
     {
         if (pathTilePrefab == null || waypoints.Length < 2)
         {
-            Debug.LogWarning("PathTile ÇÁ¸®ÆÕ ¶Ç´Â ¿şÀÌÆ÷ÀÎÆ®°¡ ºÎÁ·ÇÕ´Ï´Ù.");
+            Debug.LogWarning("PathTile í”„ë¦¬íŒ¹ ë˜ëŠ” ì›¨ì´í¬ì¸íŠ¸ê°€ ë¶€ì¡±í•©ë‹ˆë‹¤.");
             return;
         }
 
         for (int i = 0; i < waypoints.Length - 1; i++)
         {
-            // ½ÃÀÛÁ¡°ú ³¡Á¡ ¹Ş¾Æ¿À±â
             Vector3 start = waypoints[i].position;
             Vector3 end = waypoints[i + 1].position;
 
-            // ½ÃÀÛÁ¡°ú ³¡Á¡À» ±×¸®µå ´ÜÀ§·Î Á¤È®È÷ ½º³À (0.5³ª ¼Ò¼öÁ¡ ´ÜÀ§ ¿ÀÂ÷ ¹æÁö)
             start.x = Mathf.Round(start.x / tileSize) * tileSize;
             start.z = Mathf.Round(start.z / tileSize) * tileSize;
             end.x = Mathf.Round(end.x / tileSize) * tileSize;
             end.z = Mathf.Round(end.z / tileSize) * tileSize;
-            start.y = end.y = tileHeight; // ³ôÀÌ °íÁ¤
+            start.y = end.y = tileHeight;
 
-            // ¹æÇâ º¤ÅÍ °è»ê (Á¤±ÔÈ­)
             Vector3 direction = (end - start).normalized;
-
-            // ÃÑ °Å¸® ÃøÁ¤ ÈÄ Å¸ÀÏ °³¼ö °è»ê
             float distance = Vector3.Distance(start, end);
             int steps = Mathf.CeilToInt(distance / tileSize);
 
             for (int j = 0; j <= steps; j++)
             {
-                // ÇöÀç Å¸ÀÏ À§Ä¡ °è»ê
                 Vector3 rawPos = start + direction * j * tileSize;
-
-                // À§Ä¡¸¦ Å¸ÀÏ °İÀÚ¿¡ ¸ÂÃç ½º³À
                 float snappedX = Mathf.Round(rawPos.x / tileSize) * tileSize;
                 float snappedZ = Mathf.Round(rawPos.z / tileSize) * tileSize;
                 Vector3 snappedPos = new Vector3(snappedX, tileHeight, snappedZ);
 
-                // Å¸ÀÏ ÇÁ¸®ÆÕ »ı¼º
-                Instantiate(pathTilePrefab, snappedPos, Quaternion.identity, transform);
+                GameObject tile = Instantiate(pathTilePrefab, snappedPos, Quaternion.identity, transform);
+
+                // ì„¤ì¹˜ ê¸ˆì§€ íƒ€ì¼ í‘œì‹œ
+                GridTile gt = tile.GetComponent<GridTile>();
+                if (gt != null) gt.SetAsPathTile();
             }
 
-            // ¸¶Áö¸· ÁöÁ¡¿¡ ¸íÈ®È÷ ÇÑ ¹ø ´õ »ı¼º (È¤½Ã ¾È ¸ÂÀ» °æ¿ì ´ëºñ)
-            float finalX = Mathf.Round(end.x / tileSize) * tileSize;
-            float finalZ = Mathf.Round(end.z / tileSize) * tileSize;
-            Vector3 endSnappedPos = new Vector3(finalX, tileHeight, finalZ);
-            Instantiate(pathTilePrefab, endSnappedPos, Quaternion.identity, transform);
+            // ë§ˆì§€ë§‰ ì¢…ì°©ì ë„ ë³´ì •í•´ì„œ í•œ ì¹¸ ë” ê¹”ê¸°
+            Vector3 endSnappedPos = new Vector3(
+                Mathf.Round(end.x / tileSize) * tileSize,
+                tileHeight,
+                Mathf.Round(end.z / tileSize) * tileSize
+            );
+
+            GameObject finalTile = Instantiate(pathTilePrefab, endSnappedPos, Quaternion.identity, transform);
+
+            GridTile gtFinal = finalTile.GetComponent<GridTile>();
+            if (gtFinal != null) gtFinal.SetAsPathTile();
         }
+    }
+
+    public Transform GetWaypoint(int index)
+    {
+        if (index >= 0 && index < waypoints.Length)
+            return waypoints[index];
+        return null;
+    }
+
+    public Vector3[] GetAllWaypointPositions()
+    {
+        Vector3[] positions = new Vector3[waypoints.Length];
+        for (int i = 0; i < waypoints.Length; i++)
+            positions[i] = waypoints[i].position;
+        return positions;
     }
 }
