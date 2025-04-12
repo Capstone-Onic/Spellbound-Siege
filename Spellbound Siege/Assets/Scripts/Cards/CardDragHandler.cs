@@ -12,13 +12,14 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private Vector3 originalScale;
     private Vector3 initialScale;
     private bool isDragging = false;
-    public bool IsDragging => isDragging; // 읽기 전용 프로퍼티
+    public bool IsDragging => isDragging;
+    private TileHighlighter lastHighlightedTile;
 
     void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
-        initialScale = transform.localScale; // 항상 기준되는 크기
+        initialScale = transform.localScale;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -32,12 +33,9 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
         transform.SetAsLastSibling();
 
-        canvasGroup.alpha = 0.8f;
+        canvasGroup.alpha = 0.5f;
         canvasGroup.blocksRaycasts = false;
 
-        LeanTween.cancel(gameObject);
-
-        // 드래그 시 살짝 작아짐
         LeanTween.cancel(gameObject);
         LeanTween.scale(gameObject, initialScale * 0.5f, 0.1f).setEaseOutQuad();
     }
@@ -45,6 +43,26 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public void OnDrag(PointerEventData eventData)
     {
         rectTransform.anchoredPosition += eventData.delta / transform.lossyScale;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            TileHighlighter tile = hit.collider.GetComponent<TileHighlighter>();
+
+            if (tile != null)
+            {
+                if (lastHighlightedTile != null && lastHighlightedTile != tile)
+                    lastHighlightedTile.SetHighlighted(false);
+
+                tile.SetHighlighted(true);
+                lastHighlightedTile = tile;
+            }
+            else if (lastHighlightedTile != null)
+            {
+                lastHighlightedTile.SetHighlighted(false);
+                lastHighlightedTile = null;
+            }
+        }
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -54,31 +72,53 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
 
-        bool success = eventData.pointerEnter != null && eventData.pointerEnter.CompareTag("DropZone");
-
-        if (success)
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            GetComponent<CardDisplay>().UseCard();
-        }
-        else
-        {
-            StartCoroutine(ReturnToHand());
+            // 타겟이 "CardTarget" 태그를 가졌을 때만 카드 효과 적용
+            if (hit.collider.CompareTag("CardTarget"))
+            {
+                Debug.Log("카드 사용: rock 타일에 드롭됨");
+
+                // 카드 효과 → 해당 위치에서 enemy 탐색
+                Vector3 position = hit.collider.transform.position;
+                Collider[] hits = Physics.OverlapSphere(position, 0.4f);
+                foreach (var h in hits)
+                {
+                    var tile = h.GetComponent<Collider>();
+                    if (tile != null)
+                    {
+                        CardEffectProcessor.ApplyCardEffectToTile(GetComponent<CardDisplay>().cardData, null, position);
+                        GetComponent<CardDisplay>().UseCard();
+                        return;
+                    }
+                }
+            }
         }
 
+        StartCoroutine(ReturnToHand());
         LeanTween.scale(gameObject, originalScale, 0.15f).setEaseOutQuad();
+
+        if (lastHighlightedTile != null)
+        {
+            lastHighlightedTile.SetHighlighted(false);
+            lastHighlightedTile = null;
+        }
     }
 
     private IEnumerator ReturnToHand()
     {
         transform.SetParent(originalParent);
-        transform.SetSiblingIndex(originalSiblingIndex);
-        yield return null; // UI 시스템이 부모 적용되도록 대기
+        yield return null;
 
         rectTransform.anchoredPosition = originalAnchoredPosition;
 
         LeanTween.cancel(gameObject);
-        LeanTween.scale(gameObject, Vector3.one, 0.15f).setEaseOutQuad();
-        StartCoroutine(ShakeCard());
+        LeanTween.scale(gameObject, initialScale, 0.15f).setEaseOutQuad();
+
+        yield return StartCoroutine(ShakeCard());
+
+        FindObjectOfType<CardDrawManager>()?.ReorganizeHand(includeAllCards: true);
     }
 
     private IEnumerator ShakeCard()
