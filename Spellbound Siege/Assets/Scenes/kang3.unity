@@ -687,7 +687,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fde151a648c236644b875127e6db689d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectPrefabToUse: {fileID: 0}
+  fireEffect: {fileID: 775456305183095712, guid: 790dac9e4c3d8cc48a5e22fe0d8d2d97, type: 3}
+  waterEffect: {fileID: 775456305183095712, guid: 74aae8e765a49ad43ac963dd91b62711, type: 3}
+  iceEffect: {fileID: 775456305183095712, guid: 0fb5675e1e69d3f4f87b55a2a79112fc, type: 3}
 --- !u!4 &700473878
 Transform:
   m_ObjectHideFlags: 0

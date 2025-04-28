@@ -1,12 +1,16 @@
 using UnityEngine;
-
+using Spellbound;
 
 public class GameInitializer : MonoBehaviour
 {
-    public GameObject effectPrefabToUse;
+    public GameObject fireEffect;
+    public GameObject waterEffect;
+    public GameObject iceEffect;
 
     void Start()
     {
-        CardEffectProcessor.defaultEffectPrefab = effectPrefabToUse;
+        CardEffectProcessor.fireEffectPrefab = fireEffect;
+        CardEffectProcessor.waterEffectPrefab = waterEffect;
+        CardEffectProcessor.iceEffectPrefab = iceEffect;
     }
 }

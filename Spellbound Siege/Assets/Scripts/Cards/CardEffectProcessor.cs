@@ -5,6 +5,9 @@ using Spellbound;
 public static class CardEffectProcessor
 {
     public static GameObject defaultEffectPrefab;
+    public static GameObject fireEffectPrefab;
+    public static GameObject waterEffectPrefab;
+    public static GameObject iceEffectPrefab;
 
     public static void ApplyCardEffectToTile(Card cardData, GridTile unused, Vector3 position)
     {
@@ -16,17 +19,15 @@ public static class CardEffectProcessor
             {
                 case Card.DamageType.Fire:
                     ApplyBurn(position);
-                    flashColor = Color.red;
                     break;
                 case Card.DamageType.Water:
                     ApplyWater(position);
-                    flashColor = Color.blue;
                     break;
                 case Card.DamageType.Ice:
                     ApplyIce(position);
-                    flashColor = Color.cyan;
                     break;
             }
+            SpawnParticleEffect(position, type); // 여기서 호출!
         }
 
         // 이펙트 표시
@@ -140,5 +141,29 @@ public static class CardEffectProcessor
         }
 
         GameObject.Destroy(effect, 1.5f);
+    }
+
+    private static void SpawnParticleEffect(Vector3 position, Card.DamageType type)
+    {
+        GameObject prefab = null;
+
+        switch (type)
+        {
+            case Card.DamageType.Fire:
+                prefab = fireEffectPrefab;
+                break;
+            case Card.DamageType.Water:
+                prefab = waterEffectPrefab;
+                break;
+            case Card.DamageType.Ice:
+                prefab = iceEffectPrefab;
+                break;
+        }
+
+        if (prefab != null)
+        {
+            GameObject fx = GameObject.Instantiate(prefab, position + Vector3.up * 0.5f, Quaternion.identity);
+            GameObject.Destroy(fx, 2f); // 2초 후 자동 제거
+        }
     }
 }
