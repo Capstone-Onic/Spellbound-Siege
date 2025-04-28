@@ -7,10 +7,34 @@ public class EnemyController : MonoBehaviour
     public float speed = 3f; // 기본 이동 속도
     public float health = 100f; // 적의 최대 체력
     public float speedMultiplier = 1f; // 상태 효과로 인한 속도 변화 (예: 감속, 가속)
+    public GameObject deathEffectPrefab;
 
     private List<Transform> waypoints; // 경로 정보
     private int waypointIndex = 0; // 현재 목표로 하는 웨이포인트 인덱스
+    public enum EnemyType
+    {
+        Normal,
+        Elite,
+        Boss
+    }
+    private void Start()
+    {
+        switch (enemyType)
+        {
+            case EnemyType.Normal:
+                rewardGold = 10;
+                break;
+            case EnemyType.Elite:
+                rewardGold = 25;
+                break;
+            case EnemyType.Boss:
+                rewardGold = 100;
+                break;
+        }
+    }
 
+    public EnemyType enemyType = EnemyType.Normal; // 인스펙터에서 선택 가능
+    public int rewardGold = 10;
     public void Initialize(List<Transform> waypoints)
     {
         this.waypoints = waypoints;
@@ -53,9 +77,18 @@ public class EnemyController : MonoBehaviour
     {
         if (killedByPlayer)
         {
-            // 골드, 경험치 등의 보상 처리 가능
-            
+            if (GoldManager.instance != null)
+            {
+                GoldManager.instance.AddGold(rewardGold);
+            }
         }
-        Destroy(gameObject); // 적 오브젝트 제거
+
+        //이펙트 생성
+        if (deathEffectPrefab != null)
+        {
+            Instantiate(deathEffectPrefab, transform.position, Quaternion.identity);
+        }
+
+        Destroy(gameObject);
     }
 }

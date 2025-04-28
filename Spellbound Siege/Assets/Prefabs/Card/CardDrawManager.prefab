@@ -56,7 +56,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 742343d4b7778e149864b94999da41d4, type: 2}
   - {fileID: 11400000, guid: 742343d4b7778e149864b94999da41d4, type: 2}
   handPanel: {fileID: 0}
-  cardPrefab: {fileID: 6723647511661419327, guid: f445dafbfc990d64ea8d7b397912141e, type: 3}
+  cardPrefab: {fileID: 0}
   maxHandSize: 8
   deckTransform: {fileID: 0}
   drawDuration: 1.5

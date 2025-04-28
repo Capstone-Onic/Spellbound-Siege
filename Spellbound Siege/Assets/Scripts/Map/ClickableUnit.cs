@@ -2,8 +2,18 @@ using UnityEngine;
 
 public class ClickableUnit : MonoBehaviour
 {
+    private GridTile parentTile;
+
+    public void SetParentTile(GridTile tile)
+    {
+        parentTile = tile;
+    }
+
     private void OnMouseDown()
     {
-        Destroy(gameObject); // 유닛 오브젝트 제거
+        if (!StartGameManager.gameStarted && parentTile != null)
+        {
+            parentTile.ClearUnit();
+        }
     }
 }
