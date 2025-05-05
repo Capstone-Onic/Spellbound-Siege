@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 // 유닛 타입을 구분하는 열거형
-public enum UnitType { Melee, Ranged }
+public enum UnitType { knight, mage }
 
 public class BaseUnit : MonoBehaviour
 {
@@ -14,7 +14,6 @@ public class BaseUnit : MonoBehaviour
     private UnitRangeDetector rangeDetector;    // 적 감지기
     private Animator animator;                  // 애니메이터   
 
-    // 시작 시 rangeDetector 컴포넌트 찾기
     void Start()
     {
         rangeDetector = GetComponentInChildren<UnitRangeDetector>();
