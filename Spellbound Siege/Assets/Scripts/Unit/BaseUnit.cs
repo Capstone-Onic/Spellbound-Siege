@@ -12,7 +12,7 @@ public class BaseUnit : MonoBehaviour
 
     private float nextAttackTime;               // 다음 공격 가능 시간
     private UnitRangeDetector rangeDetector;    // 적 감지기
-    private Animator animator;                  // 애니메이터                
+    private Animator animator;                  // 애니메이터     
 
     // 시작 시 rangeDetector 컴포넌트 찾기
     void Start()
