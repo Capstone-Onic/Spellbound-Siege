@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Spellbound;
 
@@ -12,90 +13,64 @@ public static class CardEffectProcessor
     public static void ApplyCardEffectToTile(Card cardData, GridTile unused, Vector3 position)
     {
         Color flashColor = Color.white;
+        float radius = cardData.effectRadius;
 
-        foreach (var type in cardData.damageType)
+        List<EnemyController> enemies = GetEnemiesInRange(position, radius);
+
+        foreach (var enemy in enemies)
         {
-            switch (type)
+            string name = cardData.cardName.ToLower(); // 소문자로 비교
+
+            if (name.Contains("fire ball"))
             {
-                case Card.DamageType.Fire:
-                    ApplyBurn(position);
-                    break;
-                case Card.DamageType.Water:
-                    ApplyWater(position);
-                    break;
-                case Card.DamageType.Ice:
-                    ApplyIce(position);
-                    break;
+                enemy.TakeDamage(10f); // 데미지
+                enemy.StartCoroutine(ApplyBurnDamage(enemy, 2f, 0.5f, 3f)); // 도트 데미지
+                SpawnParticleEffect(enemy.transform.position, Card.DamageType.Fire);
             }
-            SpawnParticleEffect(position, type); // 여기서 호출!
-        }
+            else if (name.Contains("fire wall"))
+            {
+                enemy.StartCoroutine(ApplyBurnDamage(enemy, 5f, 0.5f, 3f)); // 도트 데미지
+                SpawnParticleEffect(enemy.transform.position, Card.DamageType.Fire);
+            }
+            else if (name.Contains("ice spear"))
+            {
+                enemy.TakeDamage(12f); // 데미지
+                enemy.StartCoroutine(ApplySlow(enemy, 0.5f, 2f)); // 슬로우
+                SpawnParticleEffect(enemy.transform.position, Card.DamageType.Ice);
+            }
+            else if (name.Contains("stone"))
+            {
+                enemy.TakeDamage(10f); // 데미지
+                enemy.StartCoroutine(ApplyStun(enemy, 1.0f)); // 스턴
+                SpawnParticleEffect(enemy.transform.position, Card.DamageType.Earth);
+            }
+            else if (name.Contains("water shot"))
+            {
+                enemy.TakeDamage(18f); // 데미지
+                SpawnParticleEffect(enemy.transform.position, Card.DamageType.Water);
+            }
 
-        // 이펙트 표시
-        ShowEffect(position, flashColor);
-
-        // 색상 플래시
-        Collider[] hits = Physics.OverlapSphere(position, 0.4f);
-        foreach (var hit in hits)
-        {
-            var flash = hit.GetComponent<ColorFlashEffect>();
+            var flash = enemy.GetComponent<ColorFlashEffect>();
             if (flash != null)
-            {
                 flash.FlashColor(flashColor);
-            }
         }
+
+        ShowEffect(position, flashColor);
     }
 
-    private static void ApplyWater(Vector3 pos)
+    private static List<EnemyController> GetEnemiesInRange(Vector3 pos, float radius)
     {
-        var enemy = GetEnemyAtPosition(pos);
-        if (enemy != null)
-        {
-            enemy.TakeDamage(8f);
-            Debug.Log("물 데미지 적용");
-        }
-    }
-
-    private static void ApplyBurn(Vector3 pos)
-    {
-        var enemy = GetEnemyAtPosition(pos);
-        if (enemy != null)
-        {
-            enemy.StartCoroutine(ApplyBurnDamage(enemy, 2f, 0.5f, 3f));
-            Debug.Log("지속 피해 시작");
-        }
-    }
-
-    private static void ApplyIce(Vector3 pos)
-    {
-        var enemy = GetEnemyAtPosition(pos);
-        if (enemy != null)
-        {
-            enemy.StartCoroutine(ApplySlow(enemy, 0.3f, 2f));
-            Debug.Log("슬로우 적용");
-        }
-    }
-
-    private static EnemyController GetEnemyAtPosition(Vector3 pos)
-    {
-        Collider[] hits = Physics.OverlapSphere(pos, 0.4f);
+        List<EnemyController> enemies = new List<EnemyController>();
+        Collider[] hits = Physics.OverlapSphere(pos, radius);
         foreach (var hit in hits)
         {
             var enemy = hit.GetComponent<EnemyController>();
-            if (enemy != null) return enemy;
-        }
-        return null;
-    }
-
-    private static EnemyController GetEnemyOnTile(GridTile tile)
-    {
-        Collider[] hits = Physics.OverlapSphere(tile.transform.position, 0.4f);
-        foreach (var hit in hits)
-        {
-            EnemyController enemy = hit.GetComponent<EnemyController>();
             if (enemy != null)
-                return enemy;
+            {
+                enemies.Add(enemy);
+            }
         }
-        return null;
+        return enemies;
     }
 
     private static IEnumerator ApplyBurnDamage(EnemyController enemy, float damage, float interval, float duration)
@@ -119,18 +94,25 @@ public static class CardEffectProcessor
             enemy.speedMultiplier = originalSpeed;
     }
 
+    private static IEnumerator ApplyStun(EnemyController enemy, float duration)
+    {
+        float originalSpeed = enemy.speedMultiplier;
+        enemy.speedMultiplier = 0f;
+        yield return new WaitForSeconds(duration);
+        if (enemy != null)
+            enemy.speedMultiplier = originalSpeed;
+    }
+
     private static void ShowEffect(Vector3 position, Color color)
     {
         GameObject effect;
 
         if (defaultEffectPrefab != null)
         {
-            // 지정된 프리팹 사용
             effect = GameObject.Instantiate(defaultEffectPrefab, position + Vector3.up * 0.5f, Quaternion.identity);
         }
         else
         {
-            // 기본 Sphere 이펙트 사용
             effect = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             effect.transform.position = position + Vector3.up * 0.5f;
             effect.transform.localScale = Vector3.one * 1.5f;
@@ -163,7 +145,7 @@ public static class CardEffectProcessor
         if (prefab != null)
         {
             GameObject fx = GameObject.Instantiate(prefab, position + Vector3.up * 0.5f, Quaternion.identity);
-            GameObject.Destroy(fx, 2f); // 2초 후 자동 제거
+            GameObject.Destroy(fx, 2f);
         }
     }
 }

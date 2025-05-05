@@ -33,9 +33,12 @@ public class CardDrawManager : MonoBehaviour
     // 시작 시 덱을 초기화하고, 초기 카드 5장 드로우 및 자동 드로우 시작
     void Start()
     {
-        ResetDeck();
-        DrawCard(5);
-        StartCoroutine(AutoDraw());
+        //ResetDeck();
+        //DrawCard(5);
+        //StartCoroutine(AutoDraw());
+
+        if (handPanel != null) // card ui hide
+            handPanel.gameObject.SetActive(false);
     }
 
     // 덱 초기화 (드로우 덱에 카드 복사 + 셔플)
@@ -211,7 +214,7 @@ public class CardDrawManager : MonoBehaviour
     }
 
     // 일정 시간마다 자동으로 카드 드로우
-    private IEnumerator AutoDraw()
+    public IEnumerator AutoDraw()
     {
         while (true)
         {

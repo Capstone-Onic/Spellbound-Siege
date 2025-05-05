@@ -18,4 +18,4 @@ MonoBehaviour:
   damageMin: 1
   damageMax: 2
   damageType: 02000000
-  unitPrefab: {fileID: 0}
+  effectRadius: 2
