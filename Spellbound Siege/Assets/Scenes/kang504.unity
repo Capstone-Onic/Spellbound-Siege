@@ -722,7 +722,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -873, y: 106.9}
+  m_AnchoredPosition: {x: -919, y: 106.9}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &452566616
@@ -1528,6 +1528,7 @@ MonoBehaviour:
   enemyPrefab: {fileID: 8700132901175406899, guid: 560318c00546d86428331831728b439a, type: 3}
   spawnPoint: {fileID: 1186253568}
   spawnInterval: 2
+  poolSize: 20
 --- !u!4 &1529726508
 Transform:
   m_ObjectHideFlags: 0
@@ -1554,6 +1555,22 @@ PrefabInstance:
     - target: {fileID: 1885706515601013636, guid: ddbb8aeea4cb6254bad7cc14e7fd1f4e, type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 4679187736149263738, guid: ddbb8aeea4cb6254bad7cc14e7fd1f4e, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4679187736149263738, guid: ddbb8aeea4cb6254bad7cc14e7fd1f4e, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4679187736149263738, guid: ddbb8aeea4cb6254bad7cc14e7fd1f4e, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 1920
+      objectReference: {fileID: 0}
+    - target: {fileID: 4679187736149263738, guid: ddbb8aeea4cb6254bad7cc14e7fd1f4e, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 1080
       objectReference: {fileID: 0}
     - target: {fileID: 7990027345680068495, guid: ddbb8aeea4cb6254bad7cc14e7fd1f4e, type: 3}
       propertyPath: m_Pivot.x

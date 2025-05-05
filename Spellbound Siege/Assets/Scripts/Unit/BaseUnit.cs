@@ -1,20 +1,20 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-// À¯´Ö Å¸ÀÔÀ» ±¸ºĞÇÏ´Â ¿­°ÅÇü
+// ìœ ë‹› íƒ€ì…ì„ êµ¬ë¶„í•˜ëŠ” ì—´ê±°í˜•
 public enum UnitType { Melee, Ranged }
 
 public class BaseUnit : MonoBehaviour
 {
-    public UnitType unitType;                   // À¯´Ö Å¸ÀÔ ¼³Á¤
-    public float attackCooldown = 1f;           // °ø°İ ÄğÅ¸ÀÓ
-    public float damage = 10f;                  // °ø°İ·Â
-    public GameObject projectilePrefab;         // ¿ø°Å¸®¿ë Åõ»çÃ¼ ÇÁ¸®ÆÕ
+    public UnitType unitType;                   // ìœ ë‹› íƒ€ì… ì„¤ì •
+    public float attackCooldown = 1f;           // ê³µê²© ì¿¨íƒ€ì„
+    public float damage = 10f;                  // ê³µê²©ë ¥
+    public GameObject projectilePrefab;         // ì›ê±°ë¦¬ìš© íˆ¬ì‚¬ì²´ í”„ë¦¬íŒ¹
 
-    private float nextAttackTime;               // ´ÙÀ½ °ø°İ °¡´É ½Ã°£
-    private UnitRangeDetector rangeDetector;    // Àû °¨Áö±â
-    private Animator animator;                  // ¾Ö´Ï¸ŞÀÌÅÍ    
+    private float nextAttackTime;               // ë‹¤ìŒ ê³µê²© ê°€ëŠ¥ ì‹œê°„
+    private UnitRangeDetector rangeDetector;    // ì  ê°ì§€ê¸°
+    private Animator animator;                  // ì• ë‹ˆë©”ì´í„°   
 
-    // ½ÃÀÛ ½Ã rangeDetector ÄÄÆ÷³ÍÆ® Ã£±â
+    // ì‹œì‘ ì‹œ rangeDetector ì»´í¬ë„ŒíŠ¸ ì°¾ê¸°
     void Start()
     {
         rangeDetector = GetComponentInChildren<UnitRangeDetector>();
@@ -22,31 +22,31 @@ public class BaseUnit : MonoBehaviour
 
     void Update()
     {
-        // ÄğÅ¸ÀÓÀÌ Áö³µ°í, Àû °¨Áö±â°¡ Á¸ÀçÇÒ ¶§
+        // ì¿¨íƒ€ì„ì´ ì§€ë‚¬ê³ , ì  ê°ì§€ê¸°ê°€ ì¡´ì¬í•  ë•Œ
         if (Time.time >= nextAttackTime && rangeDetector != null)
         {
-            EnemyController target = FindClosestTarget(); // ¹üÀ§ ³» °¡Àå °¡±î¿î Àû Ã£±â
+            EnemyController target = FindClosestTarget(); // ë²”ìœ„ ë‚´ ê°€ì¥ ê°€ê¹Œìš´ ì  ì°¾ê¸°
 
             if (target != null)
             {
-                // ±Ù°Å¸® À¯´ÖÀÌ¸é Áï½Ã µ¥¹ÌÁö
+                // ê·¼ê±°ë¦¬ ìœ ë‹›ì´ë©´ ì¦‰ì‹œ ë°ë¯¸ì§€
                 if (unitType == UnitType.Melee)
                 {
                     target.TakeDamage(damage);
                 }
-                // ¿ø°Å¸® À¯´ÖÀÌ¸é Åõ»çÃ¼ ¹ß»ç
+                // ì›ê±°ë¦¬ ìœ ë‹›ì´ë©´ íˆ¬ì‚¬ì²´ ë°œì‚¬
                 else
                 {
                     FireProjectile(target);
                 }
 
-                // ´ÙÀ½ °ø°İ ½Ã°£ °»½Å
+                // ë‹¤ìŒ ê³µê²© ì‹œê°„ ê°±ì‹ 
                 nextAttackTime = Time.time + attackCooldown;
             }
         }
     }
 
-    // ¹üÀ§ ³» °¡Àå °¡±î¿î ÀûÀ» Ã£´Â ÇÔ¼ö
+    // ë²”ìœ„ ë‚´ ê°€ì¥ ê°€ê¹Œìš´ ì ì„ ì°¾ëŠ” í•¨ìˆ˜
     EnemyController FindClosestTarget()
     {
         EnemyController closest = null;
@@ -67,7 +67,7 @@ public class BaseUnit : MonoBehaviour
         return closest;
     }
 
-    // Åõ»çÃ¼¸¦ »ı¼ºÇÏ¿© ÀûÀ» ÇâÇØ ¹ß»ç
+    // íˆ¬ì‚¬ì²´ë¥¼ ìƒì„±í•˜ì—¬ ì ì„ í–¥í•´ ë°œì‚¬
     void FireProjectile(EnemyController target)
     {
         if (projectilePrefab == null) return;
