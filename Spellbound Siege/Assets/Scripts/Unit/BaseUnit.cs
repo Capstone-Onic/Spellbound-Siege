@@ -1,52 +1,77 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-// À¯´Ö Å¸ÀÔÀ» ±¸ºĞÇÏ´Â ¿­°ÅÇü
-public enum UnitType { Melee, Ranged }
+// ìœ ë‹› íƒ€ì… ì •ì˜
+public enum UnitType { knight, mage }
 
 public class BaseUnit : MonoBehaviour
 {
-    // À¯´Ö ¼³Á¤ °ªµé (Inspector¿¡¼­ Á¶Àı °¡´É)
-    public UnitType unitType;                   // À¯´Ö Å¸ÀÔ (±Ù°Å¸® / ¿ø°Å¸®)
-    public float attackCooldown = 1f;           // °ø°İ °£°İ
-    public float damage = 10f;                  // ±âº» °ø°İ·Â
-    public GameObject projectilePrefab;         // ¿ø°Å¸® À¯´ÖÀÏ °æ¿ì »ç¿ëÇÒ Åõ»çÃ¼ ÇÁ¸®ÆÕ
+    public UnitType unitType;                   // ìœ ë‹› íƒ€ì… ì„¤ì •
+    public float attackCooldown = 1f;           // ê³µê²© ì¿¨íƒ€ì„
+    public float damage = 10f;                  // ê³µê²©ë ¥
+    public GameObject projectilePrefab;         // ì›ê±°ë¦¬ìš© íˆ¬ì‚¬ì²´ í”„ë¦¬íŒ¹
 
-    private float nextAttackTime;               // ´ÙÀ½ °ø°İ °¡´ÉÇÑ ½Ã°£
-    private UnitRangeDetector rangeDetector;    // ¹üÀ§ ³» Àû °¨Áö ÄÄÆ÷³ÍÆ®
+    private float nextAttackTime;               // ë‹¤ìŒ ê³µê²© ê°€ëŠ¥ ì‹œê°„
+    private UnitRangeDetector rangeDetector;    // ì  ê°ì§€ê¸°
+    private Animator animator;                  // ì• ë‹ˆë©”ì´í„°
 
-    // ½ÃÀÛ ½Ã rangeDetector ÄÄÆ÷³ÍÆ® Ã£±â
     void Start()
     {
+        // ì‹œì‘ ì‹œ ìœ ë‹› Xì¶• 180ë„ íšŒì „
+        transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+
         rangeDetector = GetComponentInChildren<UnitRangeDetector>();
+        animator = GetComponent<Animator>(); // Animator ì—°ê²°
     }
 
     void Update()
     {
-        // ÄğÅ¸ÀÓÀÌ Áö³µ°í, Àû °¨Áö±â°¡ Á¸ÀçÇÒ ¶§
         if (Time.time >= nextAttackTime && rangeDetector != null)
         {
-            EnemyController target = FindClosestTarget(); // ¹üÀ§ ³» °¡Àå °¡±î¿î Àû Ã£±â
+            EnemyController target = FindClosestTarget();
 
             if (target != null)
             {
-                // ±Ù°Å¸® À¯´ÖÀÌ¸é Áï½Ã µ¥¹ÌÁö
-                if (unitType == UnitType.Melee)
+                // âœ… ì ì„ ë°”ë¼ë³´ë„ë¡ íšŒì „
+                Vector3 direction = (target.transform.position - transform.position).normalized;
+                direction.y = 0f;
+                if (direction != Vector3.zero)
+                {
+                    transform.forward = direction;
+                }
+
+                // âœ… ì• ë‹ˆë©”ì´ì…˜ ì‹¤í–‰ (Attack íŠ¸ë¦¬ê±°)
+                if (animator != null)
+                {
+                    if (unitType == UnitType.knight)
+                    {
+                        animator.SetTrigger("Attack_knight");
+                        target.TakeDamage(damage);
+                    }
+                    else if(unitType == UnitType.mage)
+                    {
+                        animator.SetTrigger("Attack_mage");
+                        FireProjectile(target);
+                    }
+                }
+
+
+                // âœ… ê³µê²© ì²˜ë¦¬
+                if (unitType == UnitType.knight)
                 {
                     target.TakeDamage(damage);
                 }
-                // ¿ø°Å¸® À¯´ÖÀÌ¸é Åõ»çÃ¼ ¹ß»ç
-                else
+                else if(unitType == UnitType.mage)
                 {
                     FireProjectile(target);
                 }
 
-                // ´ÙÀ½ °ø°İ ½Ã°£ °»½Å
+                // âœ… ì¿¨íƒ€ì„ ê°±ì‹ 
                 nextAttackTime = Time.time + attackCooldown;
             }
         }
     }
 
-    // ¹üÀ§ ³» °¡Àå °¡±î¿î ÀûÀ» Ã£´Â ÇÔ¼ö
+    // ê°€ì¥ ê°€ê¹Œìš´ ì ì„ íƒìƒ‰
     EnemyController FindClosestTarget()
     {
         EnemyController closest = null;
@@ -67,7 +92,7 @@ public class BaseUnit : MonoBehaviour
         return closest;
     }
 
-    // Åõ»çÃ¼¸¦ »ı¼ºÇÏ¿© ÀûÀ» ÇâÇØ ¹ß»ç
+    // íˆ¬ì‚¬ì²´ ë°œì‚¬
     void FireProjectile(EnemyController target)
     {
         if (projectilePrefab == null) return;
