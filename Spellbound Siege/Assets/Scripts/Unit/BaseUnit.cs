@@ -14,6 +14,11 @@ public class BaseUnit : MonoBehaviour
     private UnitRangeDetector rangeDetector;    // 적 감지기
     private Animator animator;                  // 애니메이터
 
+    public string unitName;
+    public Sprite unitIcon;
+    public int goldCost;
+
+
     void Start()
     {
         // 시작 시 유닛 X축 180도 회전
