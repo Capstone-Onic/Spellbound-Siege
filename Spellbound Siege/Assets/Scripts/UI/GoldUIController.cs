@@ -1,27 +1,43 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class GoldUIController : MonoBehaviour
 {
     public TextMeshProUGUI goldText;
     private int displayedGold = 0;
+    public Image coinIcon;
+    private bool isAnimating = false;
 
     private void Start()
     {
         UpdateGoldInstantly(); // 시작 시 맞춰줌
     }
+    public void UpdateGold(int value)
+    {
+        goldText.text = $"{value}";
+    }
 
     private void Update()
     {
-        // 현재 골드와 표시된 골드가 다르면 부드럽게 증가
         int targetGold = GoldManager.instance.currentGold;
-        if (displayedGold < targetGold)
-        {
-            displayedGold += Mathf.CeilToInt((targetGold - displayedGold) * Time.deltaTime * 8f); // 부드럽게 증가
-            if (displayedGold > targetGold)
-                displayedGold = targetGold;
 
+        if (displayedGold != targetGold)
+        {
+            float speed = 200f;
+            displayedGold = Mathf.RoundToInt(Mathf.MoveTowards(displayedGold, targetGold, speed * Time.deltaTime));
             goldText.text = $"{displayedGold}";
+
+            if (!isAnimating)
+            {
+                isAnimating = true;
+
+                LeanTween.cancel(coinIcon.gameObject);
+                coinIcon.transform.localScale = Vector3.one * 1.08f;
+                LeanTween.scale(coinIcon.gameObject, Vector3.one, 0.2f)
+                    .setEaseOutBack()
+                    .setOnComplete(() => isAnimating = false); // 완료 후 다시 실행 가능
+            }
         }
     }
 
