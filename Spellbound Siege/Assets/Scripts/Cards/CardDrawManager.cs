@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 using Spellbound;
+using UnityEngine.UI;
 
 public class CardDrawManager : MonoBehaviour
 {
@@ -32,9 +33,12 @@ public class CardDrawManager : MonoBehaviour
     // 시작 시 덱을 초기화하고, 초기 카드 5장 드로우 및 자동 드로우 시작
     void Start()
     {
-        ResetDeck();
-        DrawCard(5);
-        StartCoroutine(AutoDraw());
+        //ResetDeck();
+        //DrawCard(5);
+        //StartCoroutine(AutoDraw());
+
+        if (handPanel != null) // card ui hide
+            handPanel.gameObject.SetActive(false);
     }
 
     // 덱 초기화 (드로우 덱에 카드 복사 + 셔플)
@@ -74,7 +78,7 @@ public class CardDrawManager : MonoBehaviour
     // 카드 UI를 생성하고 덱에서 손 위치로 이동하는 코루틴
     private IEnumerator CreateCardUI(Card card)
     {
-        // 1. 파괴된 카드 정리
+        // 1. 파괴된 카드 제거
         handCards.RemoveAll(cardObj => cardObj == null);
 
         if (deckTransform == null || handPanel == null) yield break;
@@ -89,25 +93,31 @@ public class CardDrawManager : MonoBehaviour
         Vector2 startPosition = deckTransform.anchoredPosition;
         rectTransform.anchoredPosition = startPosition;
 
-        // 4. 카드 리스트에 추가
+        // 4. 리스트에 추가
         handCards.Add(cardObject);
 
-        // 5. 카드 수에 따른 위치 계산
-        List<Vector2> positions = CalculateCardPositions(handCards.Count);
+        // 5. 드래그 중이 아닌 카드만 정렬 대상
+        List<GameObject> activeCards = handCards.FindAll(card =>
+        {
+            CardDragHandler drag = card?.GetComponent<CardDragHandler>();
+            return card != null && (drag == null || !drag.IsDragging);
+        });
 
-        // 6. 이동 애니메이션 수행
+        List<Vector2> positions = CalculateCardPositions(activeCards);
+
+        // 6. 애니메이션 이동
         float elapsedTime = 0f;
         while (elapsedTime < drawDuration)
         {
             elapsedTime += Time.deltaTime;
             float t = Mathf.Clamp01(elapsedTime / drawDuration);
 
-            int count = Mathf.Min(handCards.Count, positions.Count);
+            int count = Mathf.Min(activeCards.Count, positions.Count);
             for (int i = 0; i < count; i++)
             {
-                if (handCards[i] == null) continue;
+                if (activeCards[i] == null) continue;
 
-                RectTransform rt = handCards[i].GetComponent<RectTransform>();
+                RectTransform rt = activeCards[i].GetComponent<RectTransform>();
                 if (rt == null) continue;
 
                 Vector2 target = positions[i];
@@ -117,13 +127,12 @@ public class CardDrawManager : MonoBehaviour
             yield return null;
         }
 
-        // 7. 정렬 마무리 (위치 고정)
-        int finalCount = Mathf.Min(handCards.Count, positions.Count);
-        for (int i = 0; i < finalCount; i++)
+        // 7. 위치 고정
+        for (int i = 0; i < activeCards.Count; i++)
         {
-            if (handCards[i] == null) continue;
+            if (activeCards[i] == null) continue;
 
-            RectTransform rt = handCards[i].GetComponent<RectTransform>();
+            RectTransform rt = activeCards[i].GetComponent<RectTransform>();
             if (rt == null) continue;
 
             rt.anchoredPosition = positions[i];
@@ -131,19 +140,23 @@ public class CardDrawManager : MonoBehaviour
     }
 
     // 카드 수에 맞게 손패에서 위치 정렬 계산
-    private List<Vector2> CalculateCardPositions(int cardCount)
+    private List<Vector2> CalculateCardPositions(List<GameObject> activeCards)
     {
         List<Vector2> positions = new List<Vector2>();
 
-        float cardY = -25f; // Y 위치 고정
-
+        int cardCount = activeCards.Count;
         if (cardCount == 0) return positions;
 
-        // 카드 간 최대 간격 제한 (겹치게 만들기 위한 설정)
-        float maxSpacing = 160f; // spacing을 줄이려면 이 값 줄이기
+        float cardY = -25f;
+
+        // 카드 간 최대 간격 제한 (겹쳐 보이게 만들기)
+        float maxSpacing = 160f;
         float spacing = Mathf.Min(maxSpacing, handPanel.rect.width / cardCount);
 
-        // 전체 카드 너비
+        // 너무 붙지 않게 최소 간격도 설정 (optional)
+        float minSpacing = 90f;
+        spacing = Mathf.Clamp(spacing, minSpacing, maxSpacing);
+
         float totalWidth = spacing * (cardCount - 1);
         float startX = -totalWidth / 2f;
 
@@ -168,27 +181,67 @@ public class CardDrawManager : MonoBehaviour
     }
 
     // 손에 있는 카드들의 위치 재배치
-    private void ReorganizeHand()
+    public void ReorganizeHand(bool includeAllCards = false)
     {
-        List<Vector2> positions = CalculateCardPositions(handCards.Count);
-
-        for (int i = 0; i < handCards.Count; i++)
-        {
-            RectTransform rectTransform = handCards[i].GetComponent<RectTransform>();
-            if (rectTransform != null)
+        List<GameObject> cardsToSort = includeAllCards
+            ? handCards
+            : handCards.FindAll(card =>
             {
-                rectTransform.anchoredPosition = positions[i];
+                CardDragHandler drag = card?.GetComponent<CardDragHandler>();
+                return card != null && (drag == null || !drag.IsDragging);
+            });
+
+        List<Vector2> positions = CalculateCardPositions(cardsToSort);
+
+        for (int i = 0; i < cardsToSort.Count; i++)
+        {
+            if (cardsToSort[i] == null) continue;
+
+            RectTransform rt = cardsToSort[i].GetComponent<RectTransform>();
+            if (rt != null)
+            {
+                LeanTween.cancel(rt.gameObject);
+                LeanTween.move(rt, positions[i], 0.15f).setEaseOutQuad();
+                rt.SetSiblingIndex(i);
             }
+        }
+
+        // 레이아웃 강제 재적용
+        if (handPanel != null)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(handPanel);
         }
     }
 
     // 일정 시간마다 자동으로 카드 드로우
-    private IEnumerator AutoDraw()
+    public IEnumerator AutoDraw()
     {
         while (true)
         {
             yield return new WaitForSeconds(5f); // 5초마다
             DrawCard(1);
+        }
+    }
+
+    // CardDrawManager.cs 안에 추가
+    public void MoveCardToEnd(GameObject card)
+    {
+        if (handCards.Contains(card))
+        {
+            handCards.Remove(card);
+            handCards.Add(card);
+        }
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            foreach (var card in handCards)
+            {
+                if (card != null)
+                    card.GetComponent<RectTransform>().anchoredPosition += new Vector2(Random.Range(-10f, 10f), 0);
+            }
         }
     }
 }

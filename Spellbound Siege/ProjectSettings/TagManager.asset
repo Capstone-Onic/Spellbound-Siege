@@ -6,7 +6,7 @@ TagManager:
   tags:
   - Enemy
   - Unit
-  - DropZone
+  - CardTarget
   layers:
   - Default
   - TransparentFX
