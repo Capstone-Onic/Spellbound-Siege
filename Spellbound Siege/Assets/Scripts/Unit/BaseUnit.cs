@@ -47,7 +47,7 @@ public class BaseUnit : MonoBehaviour
                         animator.SetTrigger("Attack_knight");
                         target.TakeDamage(damage);
                     }
-                    else if (unitType == UnitType.mage)
+                    else if(unitType == UnitType.mage)
                     {
                         animator.SetTrigger("Attack_mage");
                         FireProjectile(target);
@@ -58,7 +58,7 @@ public class BaseUnit : MonoBehaviour
                 {
                     target.TakeDamage(damage);
                 }
-                else if (unitType == UnitType.mage)
+                else if(unitType == UnitType.mage)
                 {
                     FireProjectile(target);
                 }
