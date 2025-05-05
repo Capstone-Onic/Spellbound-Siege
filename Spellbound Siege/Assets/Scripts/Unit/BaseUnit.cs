@@ -51,6 +51,8 @@ public class BaseUnit : MonoBehaviour
                     {
                         animator.SetTrigger("Attack_mage");
                         FireProjectile(target);
+
+
                     }
                 }
                 // ✅ 공격 처리
