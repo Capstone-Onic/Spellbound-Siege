@@ -4,14 +4,15 @@ using UnityEngine;
 public enum UnitType { Melee, Ranged }
 
 public class BaseUnit : MonoBehaviour
-{ 
-    public UnitType unitType;                 
-    public float attackCooldown = 1f;         
-    public float damage = 10f;                  
-    public GameObject projectilePrefab;                    
+{
+    public UnitType unitType;                   // 유닛 타입 설정
+    public float attackCooldown = 1f;           // 공격 쿨타임
+    public float damage = 10f;                  // 공격력
+    public GameObject projectilePrefab;         // 원거리용 투사체 프리팹
 
-    private float nextAttackTime;               
-    private UnitRangeDetector rangeDetector;
+    private float nextAttackTime;               // 다음 공격 가능 시간
+    private UnitRangeDetector rangeDetector;    // 적 감지기
+    private Animator animator;                  // 애니메이터
 
     public string unitName;
     public Sprite unitIcon;
