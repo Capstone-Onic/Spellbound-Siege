@@ -967,6 +967,7 @@ GameObject:
   m_Component:
   - component: {fileID: 890341288}
   - component: {fileID: 890341287}
+  - component: {fileID: 890341289}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1007,6 +1008,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &890341289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 890341286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fde151a648c236644b875127e6db689d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireballEffect: {fileID: 2590524686154786745, guid: 44240b632ed6d3b49a31f2ef45dfc9cd, type: 3}
+  firewallEffect: {fileID: 2294555824928324180, guid: 3e33a52d79be8d64d936e68cfa38b605, type: 3}
+  icespearEffect: {fileID: 7031711661290200971, guid: 9a10e7fa8b74dcb46829ad3dce4ef4da, type: 3}
+  stoneEffect: {fileID: 8490756215475655487, guid: 72b730f5c37013544825594f97fa45c3, type: 3}
+  watershotEffect: {fileID: 5270293092982160256, guid: 31b7e818b1c9ab8458e851630289e0d5, type: 3}
 --- !u!1 &1023672320
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,14 +3,18 @@ using Spellbound;
 
 public class GameInitializer : MonoBehaviour
 {
-    public GameObject fireEffect;
-    public GameObject waterEffect;
-    public GameObject iceEffect;
-
+    public GameObject fireballEffect;
+    public GameObject firewallEffect;
+    public GameObject icespearEffect;
+    public GameObject stoneEffect;
+    public GameObject watershotEffect;
+    
     void Start()
     {
-        CardEffectProcessor.fireEffectPrefab = fireEffect;
-        CardEffectProcessor.waterEffectPrefab = waterEffect;
-        CardEffectProcessor.iceEffectPrefab = iceEffect;
+        CardEffectProcessor.fireballEffect = fireballEffect;
+        CardEffectProcessor.firewallEffect = firewallEffect;
+        CardEffectProcessor.icespearEffect = icespearEffect;
+        CardEffectProcessor.stoneEffect = stoneEffect;
+        CardEffectProcessor.watershotEffect = watershotEffect;
     }
 }
