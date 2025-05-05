@@ -14,10 +14,6 @@ public class BaseUnit : MonoBehaviour
     private UnitRangeDetector rangeDetector;    
     private Animator animator;                  
 
-    public string unitName;
-    public Sprite unitIcon;
-    public int goldCost;
-
     // 시작 시 rangeDetector 컴포넌트 찾기
     void Start()
     {
