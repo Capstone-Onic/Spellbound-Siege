@@ -4,28 +4,60 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public GameObject enemyPrefab; // 생성할 적 프리팹
-    public Transform spawnPoint; // 적이 생성될 위치
-    public float spawnInterval = 2f; // 적 생성 간격 (초)
+    public GameObject enemyPrefab;
+    public Transform spawnPoint;
+    public float spawnInterval = 2f;
+    public int poolSize = 20;
+
+    private List<GameObject> enemyPool = new List<GameObject>();
+    private PathSystem pathSystem;
 
     private void Start()
     {
-        // 적 생성 코루틴 시작
+        pathSystem = GetComponent<PathSystem>();
+        InitializePool();
         StartCoroutine(SpawnEnemies());
     }
 
-    // 적을 일정 간격으로 생성하는 코루틴 함수
+    private void InitializePool()
+    {
+        for (int i = 0; i < poolSize; i++)
+        {
+            GameObject enemy = Instantiate(enemyPrefab);
+            enemy.SetActive(false);
+            enemyPool.Add(enemy);
+        }
+    }
+
+    private GameObject GetPooledEnemy()
+    {
+        foreach (var enemy in enemyPool)
+        {
+            if (!enemy.activeInHierarchy)
+                return enemy;
+        }
+
+        // 풀에 여유가 없다면 새로 생성해도 되지만, 기본은 풀 사이즈 내에서 재사용
+        return null;
+    }
+
     private IEnumerator SpawnEnemies()
     {
         while (true)
         {
-            // 적 생성 및 초기화
-            GameObject enemy = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
-            enemy.GetComponent<EnemyController>().Initialize(GetComponent<PathSystem>().waypoints);
-            // 다음 적 생성까지 대기
+            GameObject enemy = GetPooledEnemy();
+
+            if (enemy != null)
+            {
+                enemy.transform.position = spawnPoint.position;
+                enemy.transform.rotation = Quaternion.identity;
+                enemy.SetActive(true);
+
+                var controller = enemy.GetComponent<EnemyController>();
+                controller.Initialize(pathSystem.waypoints);
+            }
+
             yield return new WaitForSeconds(spawnInterval);
         }
     }
 }
-
-

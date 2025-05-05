@@ -83,12 +83,15 @@ public class EnemyController : MonoBehaviour
             }
         }
 
-        //이펙트 생성
         if (deathEffectPrefab != null)
         {
             Instantiate(deathEffectPrefab, transform.position, Quaternion.identity);
         }
 
-        Destroy(gameObject);
+        gameObject.SetActive(false); // Destroy 대신 비활성화
+        waypointIndex = 0; // 다음 사용을 위해 상태 초기화
+        health = 100f; // 초기 체력 복구
+        speedMultiplier = 1f;
     }
+
 }

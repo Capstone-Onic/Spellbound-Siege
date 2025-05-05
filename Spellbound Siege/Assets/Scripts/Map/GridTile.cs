@@ -66,18 +66,29 @@ public class GridTile : MonoBehaviour
     private void PlaceUnit()
     {
         if (currentShadow != null)
-        {
             Destroy(currentShadow);
+
+        GameObject unitPrefab = UnitManager.instance.selectedUnit;
+
+        //BaseUnit에서 설치 비용 가져오기
+        BaseUnit baseUnit = unitPrefab.GetComponent<BaseUnit>();
+        if (baseUnit == null)
+        {
+            Debug.LogWarning("BaseUnit 컴포넌트가 유닛 프리팹에 없습니다.");
+            return;
         }
-        currentUnit = Instantiate(UnitManager.instance.selectedUnit, transform.position + Vector3.up * 0.5f, Quaternion.identity);
+
+        //골드 차감 시도
+        if (!GoldManager.instance.SpendGold(baseUnit.goldCost))
+        {
+            CancelPlacement(); // 골드 부족 → 배치 취소
+            return;
+        }
+
+        //유닛 설치
+        currentUnit = Instantiate(unitPrefab, transform.position + Vector3.up * 0.5f, Quaternion.identity);
         isOccupied = true;
         isPlacing = false;
-
-        ClickableUnit cu = currentUnit.GetComponent<ClickableUnit>();
-        if (cu != null)
-        {
-            cu.SetParentTile(this);
-        }
     }
 
     public void ClearUnit()
