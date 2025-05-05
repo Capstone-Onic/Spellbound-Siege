@@ -4,19 +4,18 @@ using UnityEngine;
 public enum UnitType { Melee, Ranged }
 
 public class BaseUnit : MonoBehaviour
-{
-    // 유닛 설정 값들 (Inspector에서 조절 가능)
+{ 
+    public UnitType unitType;                 
+    public float attackCooldown = 1f;         
+    public float damage = 10f;                  
+    public GameObject projectilePrefab;                    
+
+    private float nextAttackTime;               
+    private UnitRangeDetector rangeDetector;
+
     public string unitName;
     public Sprite unitIcon;
     public int goldCost;
-    
-    public UnitType unitType;                   // 유닛 타입 (근거리 / 원거리)
-    public float attackCooldown = 1f;           // 공격 간격
-    public float damage = 10f;                  // 기본 공격력
-    public GameObject projectilePrefab;         // 원거리 유닛일 경우 사용할 투사체 프리팹             
-
-    private float nextAttackTime;               // 다음 공격 가능한 시간
-    private UnitRangeDetector rangeDetector;    // 범위 내 적 감지 컴포넌트
 
     // 시작 시 rangeDetector 컴포넌트 찾기
     void Start()
