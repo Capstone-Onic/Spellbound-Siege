@@ -82,10 +82,11 @@ public class BaseUnit : MonoBehaviour
         EnemyController closest = null;
         float minDist = float.MaxValue;
 
+        // ✅ null이거나 비활성화된 적을 제거하면서 순회
+        rangeDetector.enemiesInRange.RemoveAll(e => e == null || !e.gameObject.activeInHierarchy);
+
         foreach (var enemy in rangeDetector.enemiesInRange)
         {
-            if (enemy == null) continue;
-
             float dist = Vector3.Distance(transform.position, enemy.transform.position);
             if (dist < minDist)
             {

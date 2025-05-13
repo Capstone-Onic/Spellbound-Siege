@@ -239,6 +239,7 @@ MonoBehaviour:
   deathEffectPrefab: {fileID: 2271809943457990670, guid: 7cb5fb532ba58804f9722a60011a36d3, type: 3}
   enemyType: 0
   rewardGold: 10
+  healthBarPrefab: {fileID: 489826809949023994, guid: 3d66becaeb3915f438b0f22c8606cbcf, type: 3}
 --- !u!54 &787728940365645903
 Rigidbody:
   m_ObjectHideFlags: 0
