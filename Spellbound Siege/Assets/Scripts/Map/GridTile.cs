@@ -12,21 +12,25 @@ public class GridTile : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (StartGameManager.gameStarted) return;
-        if (isPathTile) return; // 경로 타일엔 설치 금지
-
-        if (isOccupied && currentUnit != null)
+        // 1. 게임 시작 전 (처음 유닛 선택 가능)
+        if (!StartGameManager.gameStarted)
         {
-            ClearUnit();
+            if (isPathTile) return;
+
+            TryPlaceOrRemoveUnit();
             return;
         }
 
-        if (!isOccupied &&
-            UnitManager.instance != null &&
-            UnitManager.instance.selectedUnit != null)
+        // 2. 게임 시작 후 + 라운드 종료 상태 (배치 시간)
+        if (StartGameManager.isPlacementPhase)
         {
-            StartPlacingUnit();
+            if (isPathTile) return;
+
+            TryPlaceOrRemoveUnit();
+            return;
         }
+
+        // 3. 그 외에는 무시 (라운드 진행 중)
     }
 
     private void Update()
@@ -52,7 +56,6 @@ public class GridTile : MonoBehaviour
             }
         }
     }
-
     private void StartPlacingUnit()
     {
         if (!isOccupied)
@@ -121,6 +124,21 @@ public class GridTile : MonoBehaviour
         if (rend != null)
         {
             rend.material.color = new Color(0.4f, 0.4f, 0.4f); // 회색
+        }
+    }
+    private void TryPlaceOrRemoveUnit()
+    {
+        if (isOccupied && currentUnit != null)
+        {
+            ClearUnit();
+            return;
+        }
+
+        if (!isOccupied &&
+            UnitManager.instance != null &&
+            UnitManager.instance.selectedUnit != null)
+        {
+            StartPlacingUnit();
         }
     }
 }

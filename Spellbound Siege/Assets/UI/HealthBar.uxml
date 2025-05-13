@@ -1,5 +1,0 @@
-<UXML xmlns="UnityEngine.UIElements">
-    <VisualElement class="healthbar-root">
-        <VisualElement name="HealthBarFill" class="healthbar-fill" />
-    </VisualElement>
-</UXML>

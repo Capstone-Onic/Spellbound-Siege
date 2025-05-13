@@ -1,63 +1,65 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public GameObject enemyPrefab;
+    public GameObject enemyPrefab;             // 기본 프리팹 (테스트용)
     public Transform spawnPoint;
     public float spawnInterval = 2f;
-    public int poolSize = 20;
+    public RoundManager roundManager;
 
     private List<GameObject> enemyPool = new List<GameObject>();
     private PathSystem pathSystem;
 
-    private void Start()
+    private void Awake()
     {
         pathSystem = GetComponent<PathSystem>();
-        InitializePool();
-        StartCoroutine(SpawnEnemies());
     }
 
-    private void InitializePool()
+    /// <summary>
+    /// 라운드 시작 전에 필요한 수만큼 풀 채우기
+    /// </summary>
+    public void PreparePool(GameObject prefab, int requiredCount)
     {
-        for (int i = 0; i < poolSize; i++)
+        while (enemyPool.Count < requiredCount)
         {
-            GameObject enemy = Instantiate(enemyPrefab);
+            GameObject enemy = Instantiate(prefab);
             enemy.SetActive(false);
             enemyPool.Add(enemy);
         }
     }
 
-    private GameObject GetPooledEnemy()
+    /// <summary>
+    /// 풀에서 비활성화된 적을 꺼내 스폰
+    /// </summary>
+    public void SpawnEnemy(GameObject prefab)
+    {
+        GameObject enemy = GetPooledEnemy(prefab);
+        if (enemy != null)
+        {
+            enemy.transform.position = spawnPoint.position;
+            enemy.transform.rotation = Quaternion.identity;
+
+            // 초기화 후 활성화
+            var controller = enemy.GetComponent<EnemyController>();
+            controller.Initialize(pathSystem.waypoints);
+
+            enemy.SetActive(true);
+
+        }
+    }
+
+    /// <summary>
+    /// 비활성화된 적 하나 반환
+    /// </summary>
+    private GameObject GetPooledEnemy(GameObject prefab)
     {
         foreach (var enemy in enemyPool)
         {
-            if (!enemy.activeInHierarchy)
+            if (!enemy.activeInHierarchy && enemy.name.Contains(prefab.name))
                 return enemy;
         }
 
-        // 풀에 여유가 없다면 새로 생성해도 되지만, 기본은 풀 사이즈 내에서 재사용
         return null;
-    }
-
-    private IEnumerator SpawnEnemies()
-    {
-        while (true)
-        {
-            GameObject enemy = GetPooledEnemy();
-
-            if (enemy != null)
-            {
-                enemy.transform.position = spawnPoint.position;
-                enemy.transform.rotation = Quaternion.identity;
-                enemy.SetActive(true);
-
-                var controller = enemy.GetComponent<EnemyController>();
-                controller.Initialize(pathSystem.waypoints);
-            }
-
-            yield return new WaitForSeconds(spawnInterval);
-        }
     }
 }
