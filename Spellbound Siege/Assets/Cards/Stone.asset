@@ -19,3 +19,4 @@ MonoBehaviour:
   damageMax: 2
   damageType: 03000000
   effectRadius: 1
+  effectDuration: 1

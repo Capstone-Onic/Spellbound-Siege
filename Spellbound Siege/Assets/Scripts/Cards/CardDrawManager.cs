@@ -1,6 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
 using Spellbound;
 using UnityEngine.UI;
 
@@ -30,14 +30,9 @@ public class CardDrawManager : MonoBehaviour
     // 현재 손에 있는 카드 오브젝트들
     private List<GameObject> handCards = new List<GameObject>();
 
-    // 시작 시 덱을 초기화하고, 초기 카드 5장 드로우 및 자동 드로우 시작
     void Start()
     {
-        //ResetDeck();
-        //DrawCard(5);
-        //StartCoroutine(AutoDraw());
-
-        if (handPanel != null) // card ui hide
+        if (handPanel != null)
             handPanel.gameObject.SetActive(false);
     }
 
@@ -65,77 +60,68 @@ public class CardDrawManager : MonoBehaviour
     {
         for (int i = 0; i < count; i++)
         {
-            // 드로우할 카드가 없거나 손이 가득 찼을 경우 중단
             if (drawPile.Count == 0 || handCards.Count >= maxHandSize)
                 return;
 
             Card drawnCard = drawPile[0];
             drawPile.RemoveAt(0);
-            StartCoroutine(CreateCardUI(drawnCard)); // 카드 UI 생성 및 애니메이션 처리
+            StartCoroutine(CreateCardUI(drawnCard));
         }
     }
 
     // 카드 UI를 생성하고 덱에서 손 위치로 이동하는 코루틴
     private IEnumerator CreateCardUI(Card card)
     {
-        // 1. 파괴된 카드 제거
+        // 손패에서 파괴된 카드 제거
         handCards.RemoveAll(cardObj => cardObj == null);
 
-        if (deckTransform == null || handPanel == null) yield break;
+        if (deckTransform == null || handPanel == null)
+            yield break;
 
-        // 2. 새 카드 생성
+        // 새 카드 생성
         GameObject cardObject = Instantiate(cardPrefab, handPanel);
-        RectTransform rectTransform = cardObject.GetComponent<RectTransform>();
-        CardDisplay cardDisplay = cardObject.GetComponent<CardDisplay>();
-        cardDisplay.SetCard(card);
+        RectTransform rt = cardObject.GetComponent<RectTransform>();
+        CardDisplay cd = cardObject.GetComponent<CardDisplay>();
+        cd.SetCard(card);
 
-        // 3. 덱 위치에서 시작
-        Vector2 startPosition = deckTransform.anchoredPosition;
-        rectTransform.anchoredPosition = startPosition;
+        // 덱 위치에서 시작 위치 지정
+        Vector2 startPos = deckTransform.anchoredPosition;
+        rt.anchoredPosition = startPos;
 
-        // 4. 리스트에 추가
+        // 리스트에 추가
         handCards.Add(cardObject);
 
-        // 5. 드래그 중이 아닌 카드만 정렬 대상
-        List<GameObject> activeCards = handCards.FindAll(card =>
-        {
-            CardDragHandler drag = card?.GetComponent<CardDragHandler>();
-            return card != null && (drag == null || !drag.IsDragging);
-        });
-
+        // 5. 모든 카드를 정렬 대상으로 설정 (드래그 중인 카드 포함)
+        List<GameObject> activeCards = new List<GameObject>(handCards);
         List<Vector2> positions = CalculateCardPositions(activeCards);
 
-        // 6. 애니메이션 이동
-        float elapsedTime = 0f;
-        while (elapsedTime < drawDuration)
+        // 애니메이션 이동
+        float elapsed = 0f;
+        while (elapsed < drawDuration)
         {
-            elapsedTime += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsedTime / drawDuration);
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / drawDuration);
 
-            int count = Mathf.Min(activeCards.Count, positions.Count);
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < activeCards.Count && i < positions.Count; i++)
             {
-                if (activeCards[i] == null) continue;
-
-                RectTransform rt = activeCards[i].GetComponent<RectTransform>();
-                if (rt == null) continue;
-
-                Vector2 target = positions[i];
-                rt.anchoredPosition = Vector2.Lerp(rt.anchoredPosition, target, t);
+                GameObject obj = activeCards[i];
+                if (obj == null) continue;
+                RectTransform cardRt = obj.GetComponent<RectTransform>();
+                if (cardRt == null) continue;
+                cardRt.anchoredPosition = Vector2.Lerp(cardRt.anchoredPosition, positions[i], t);
             }
 
             yield return null;
         }
 
-        // 7. 위치 고정
-        for (int i = 0; i < activeCards.Count; i++)
+        // 최종 위치 고정
+        for (int i = 0; i < activeCards.Count && i < positions.Count; i++)
         {
-            if (activeCards[i] == null) continue;
-
-            RectTransform rt = activeCards[i].GetComponent<RectTransform>();
-            if (rt == null) continue;
-
-            rt.anchoredPosition = positions[i];
+            GameObject obj = activeCards[i];
+            if (obj == null) continue;
+            RectTransform cardRt = obj.GetComponent<RectTransform>();
+            if (cardRt == null) continue;
+            cardRt.anchoredPosition = positions[i];
         }
     }
 
@@ -143,17 +129,12 @@ public class CardDrawManager : MonoBehaviour
     private List<Vector2> CalculateCardPositions(List<GameObject> activeCards)
     {
         List<Vector2> positions = new List<Vector2>();
-
         int cardCount = activeCards.Count;
         if (cardCount == 0) return positions;
 
         float cardY = -25f;
-
-        // 카드 간 최대 간격 제한 (겹쳐 보이게 만들기)
         float maxSpacing = 160f;
         float spacing = Mathf.Min(maxSpacing, handPanel.rect.width / cardCount);
-
-        // 너무 붙지 않게 최소 간격도 설정 (optional)
         float minSpacing = 90f;
         spacing = Mathf.Clamp(spacing, minSpacing, maxSpacing);
 
@@ -175,7 +156,7 @@ public class CardDrawManager : MonoBehaviour
         if (handCards.Contains(cardObject))
         {
             handCards.Remove(cardObject);
-            Destroy(cardObject); // ← 제거는 마지막에
+            Destroy(cardObject);
         }
         ReorganizeHand();
     }
@@ -185,31 +166,29 @@ public class CardDrawManager : MonoBehaviour
     {
         List<GameObject> cardsToSort = includeAllCards
             ? handCards
-            : handCards.FindAll(card =>
+            : handCards.FindAll(cardObj =>
             {
-                CardDragHandler drag = card?.GetComponent<CardDragHandler>();
-                return card != null && (drag == null || !drag.IsDragging);
+                CardDragHandler drag = cardObj?.GetComponent<CardDragHandler>();
+                return cardObj != null && (drag == null || !drag.IsDragging);
             });
 
         List<Vector2> positions = CalculateCardPositions(cardsToSort);
-
         for (int i = 0; i < cardsToSort.Count; i++)
         {
-            if (cardsToSort[i] == null) continue;
-
-            RectTransform rt = cardsToSort[i].GetComponent<RectTransform>();
-            if (rt != null)
+            GameObject obj = cardsToSort[i];
+            if (obj == null) continue;
+            RectTransform rt2 = obj.GetComponent<RectTransform>();
+            if (rt2 != null)
             {
-                LeanTween.cancel(rt.gameObject);
-                LeanTween.move(rt, positions[i], 0.15f).setEaseOutQuad();
-                rt.SetSiblingIndex(i);
+                LeanTween.cancel(rt2.gameObject);
+                LeanTween.move(rt2, positions[i], 0.15f).setEaseOutQuad();
+                rt2.SetSiblingIndex(i);
             }
         }
 
-        // 레이아웃 강제 재적용
         if (handPanel != null)
         {
-            LayoutRebuilder.ForceRebuildLayoutImmediate(handPanel);
+            UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(handPanel);
         }
     }
 
@@ -218,12 +197,12 @@ public class CardDrawManager : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(5f); // 5초마다
+            yield return new WaitForSeconds(5f);
             DrawCard(1);
         }
     }
 
-    // CardDrawManager.cs 안에 추가
+    // 특정 카드를 손패 끝으로 이동 (선택 로직에 사용 가능)
     public void MoveCardToEnd(GameObject card)
     {
         if (handCards.Contains(card))
@@ -235,6 +214,7 @@ public class CardDrawManager : MonoBehaviour
 
     void Update()
     {
+        // 디버그용: R 키로 카드 위치 랜덤 섞기
         if (Input.GetKeyDown(KeyCode.R))
         {
             foreach (var card in handCards)
