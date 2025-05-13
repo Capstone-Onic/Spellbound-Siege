@@ -1020,6 +1020,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0e7a9038587ab24094094673fc0c247, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rangeIndicatorPrefab: {fileID: 6001965815573015611, guid: 299b4cd7bdc62b9478c94516f1b7f650, type: 3}
+  indicatorOffsetHeight: 0.1
+  dragScale: 1.2
+  optionLineTexture: {fileID: 0}
 --- !u!225 &7261801000637298940
 CanvasGroup:
   m_ObjectHideFlags: 0

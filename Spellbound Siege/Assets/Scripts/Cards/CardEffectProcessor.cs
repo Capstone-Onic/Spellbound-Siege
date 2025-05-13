@@ -5,7 +5,6 @@ using Spellbound;
 
 public static class CardEffectProcessor
 {
-    public static GameObject defaultEffectPrefab;
     public static GameObject fireballEffect;
     public static GameObject firewallEffect;
     public static GameObject icespearEffect;
@@ -25,39 +24,34 @@ public static class CardEffectProcessor
 
             if (name.Contains("fire ball"))
             {
-                enemy.TakeDamage(15f); // 데미지
-                enemy.StartCoroutine(ApplyBurnDamage(enemy, 6f, 0.5f, 3f)); // 도트 데미지
-                SpawnParticleEffect(enemy.transform.position, cardData.cardName);
+                enemy.TakeDamage(15f);
+                if (enemy != null && enemy.gameObject.activeInHierarchy)
+                    enemy.StartCoroutine(ApplyBurnDamage(enemy, 6f, 0.5f, 3f));
             }
-            else if (name.Contains("fire wall"))
+            else if (name.Contains("fire field"))
             {
-                enemy.StartCoroutine(ApplyBurnDamage(enemy, 6f, 0.5f, 3f)); // 도트 데미지
-                SpawnParticleEffect(enemy.transform.position, cardData.cardName);
+                if (enemy != null && enemy.gameObject.activeInHierarchy)
+                    enemy.StartCoroutine(ApplyBurnDamage(enemy, 6f, 0.5f, 3f));
             }
             else if (name.Contains("ice spear"))
             {
-                enemy.TakeDamage(17f); // 데미지
-                enemy.StartCoroutine(ApplySlow(enemy, 0.5f, 2f)); // 슬로우
-                SpawnParticleEffect(enemy.transform.position, cardData.cardName);
+                enemy.TakeDamage(15f);
+                if (enemy != null && enemy.gameObject.activeInHierarchy)
+                    enemy.StartCoroutine(ApplySlow(enemy, 0.5f, 2f));
             }
             else if (name.Contains("stone"))
             {
-                enemy.TakeDamage(13f); // 데미지
-                enemy.StartCoroutine(ApplyStun(enemy, 1.0f)); // 스턴
-                SpawnParticleEffect(enemy.transform.position, cardData.cardName);
+                enemy.TakeDamage(13f);
+                if (enemy != null && enemy.gameObject.activeInHierarchy)
+                    enemy.StartCoroutine(ApplyStun(enemy, 1.0f));
             }
             else if (name.Contains("water shot"))
             {
-                enemy.TakeDamage(25f); // 데미지
-                SpawnParticleEffect(enemy.transform.position, cardData.cardName);
+                enemy.TakeDamage(25f);
             }
-
-            var flash = enemy.GetComponent<ColorFlashEffect>();
-            if (flash != null)
-                flash.FlashColor(flashColor);
         }
 
-        ShowEffect(position, flashColor);
+        SpawnParticleEffect(position, cardData);
     }
 
     private static List<EnemyController> GetEnemiesInRange(Vector3 pos, float radius)
@@ -105,35 +99,46 @@ public static class CardEffectProcessor
             enemy.speedMultiplier = originalSpeed;
     }
 
-    private static void ShowEffect(Vector3 position, Color color)
-    {
-        if (defaultEffectPrefab != null)
-        {
-            GameObject effect = GameObject.Instantiate(defaultEffectPrefab, position + Vector3.up * 0.5f, Quaternion.identity);
-            GameObject.Destroy(effect, 1.5f);
-        }
-    }
-
-    private static void SpawnParticleEffect(Vector3 position, string cardName)
+    private static void SpawnParticleEffect(Vector3 position, Card cardData)
     {
         GameObject prefab = null;
-        string name = cardName.ToLower(); // 비교를 위해 소문자 처리
+        string name = cardData.cardName.ToLower();
 
         if (name.Contains("fire ball"))
+        {
             prefab = fireballEffect;
-        else if (name.Contains("fire wall"))
+        }
+        else if (name.Contains("fire field"))
+        {
             prefab = firewallEffect;
+        }
         else if (name.Contains("ice spear"))
+        {
             prefab = icespearEffect;
+        }
         else if (name.Contains("stone"))
+        {
             prefab = stoneEffect;
+        }
         else if (name.Contains("water shot"))
+        {
             prefab = watershotEffect;
+        }
 
         if (prefab != null)
         {
             GameObject fx = GameObject.Instantiate(prefab, position + Vector3.up * 0.5f, Quaternion.identity);
-            GameObject.Destroy(fx, 2f);
+
+            var area = fx.GetComponent<AreaEffectTrigger>();
+            if (area != null)
+            {
+                area.sourceCard = cardData;
+                area.duration = cardData.effectDuration;
+            }
+            else
+            {
+                GameObject.Destroy(fx, 1f);
+            }
         }
     }
 }

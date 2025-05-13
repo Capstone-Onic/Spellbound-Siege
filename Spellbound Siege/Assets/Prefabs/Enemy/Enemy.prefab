@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5170544102608510220}
   - component: {fileID: 5482106859108310589}
   - component: {fileID: 8697656488056447735}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: HealthBarUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 3189327461503878884}
   - component: {fileID: 2895125308715011554}
   - component: {fileID: 787728940365645903}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
