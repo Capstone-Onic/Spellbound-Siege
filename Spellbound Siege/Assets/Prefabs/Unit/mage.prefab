@@ -1748,7 +1748,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1201374975834427629}
@@ -1811,6 +1811,9 @@ MonoBehaviour:
   attackCooldown: 1
   damage: 20
   projectilePrefab: {fileID: 4944089641033070485, guid: f94b1a458b3b5e6499885ff1ada10e94, type: 3}
+  unitName: mage
+  unitIcon: {fileID: -164947489, guid: 05e0567213a58c840a3ea79a4409bdfd, type: 3}
+  goldCost: 15
 --- !u!135 &139947448589669901
 SphereCollider:
   m_ObjectHideFlags: 0
