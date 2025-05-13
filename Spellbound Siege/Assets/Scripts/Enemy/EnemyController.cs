@@ -106,9 +106,13 @@ public class EnemyController : MonoBehaviour
             rm.NotifyEnemyKilled();
         }
 
-        if (deathEffectPrefab != null)
+        if (DeathEffectPool.instance != null)
         {
-            Instantiate(deathEffectPrefab, transform.position, Quaternion.identity);
+            GameObject fx = DeathEffectPool.instance.GetEffect();
+            fx.transform.position = transform.position;
+            fx.SetActive(true);
+
+            DeathEffectPool.instance.PlayAndRelease(fx, 1f);
         }
 
         if (healthBar != null)
