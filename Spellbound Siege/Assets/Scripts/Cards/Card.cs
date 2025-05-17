@@ -8,6 +8,7 @@ namespace Spellbound
     public class Card : ScriptableObject
     {
         public string cardName;
+        public Sprite cardImage;
         public List<CardType> cardType;
         public int cost;
         public int damageMin;
@@ -20,6 +21,9 @@ namespace Spellbound
         
         [Header("지속 효과")]
         public float effectDuration = 3f;
+
+        [TextArea(2, 5)]
+        public string description;  // 카드 설명
 
         public enum CardType
 

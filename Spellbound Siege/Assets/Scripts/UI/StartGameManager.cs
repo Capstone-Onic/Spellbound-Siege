@@ -47,6 +47,8 @@ public class StartGameManager : MonoBehaviour
         if (unitSelectionPanel != null) unitSelectionPanel.SetActive(false);
         if (startButton != null) startButton.SetActive(false);
 
+        ManaManager.Instance?.StartRegen(); // 마나 회복 시작
+
         // ─── 카드 드로우 초기화 및 실행 ─────────────────────────
         // 1) 덱 초기화 및 셔플
         cardDrawManager.ResetDeck();

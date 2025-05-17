@@ -16,8 +16,16 @@ public class CardDropTarget : MonoBehaviour, IDropHandler
                 GridTile tile = hit.collider.GetComponent<GridTile>();
                 if (tile != null)
                 {
-                    CardEffectProcessor.ApplyCardEffectToTile(cardDisplay.cardData, tile, tile.transform.position);
-                    cardDisplay.UseCard(); // 카드 제거
+                    if (ManaManager.Instance.ConsumeMana(cardDisplay.cardData.cost))
+                    {
+                        CardEffectProcessor.ApplyCardEffectToTile(cardDisplay.cardData, tile, tile.transform.position);
+                        cardDisplay.UseCard(); // 카드 제거
+                    }
+                    else
+                    {
+                        Debug.Log("마나 부족으로 카드 사용 불가");
+                        ManaManager.Instance.ShowManaWarning();
+                    }
                 }
             }
         }
