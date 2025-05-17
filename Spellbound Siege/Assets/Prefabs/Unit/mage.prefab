@@ -1733,7 +1733,7 @@ GameObject:
   - component: {fileID: 139947448589669901}
   m_Layer: 0
   m_Name: mage
-  m_TagString: Untagged
+  m_TagString: Unit
   m_Icon: {fileID: -1412012063857583412, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1809,12 +1809,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitType: 1
-  attackCooldown: 1
+  attackCooldown: 2
   damage: 20
   projectilePrefab: {fileID: 4944089641033070485, guid: f94b1a458b3b5e6499885ff1ada10e94, type: 3}
   unitName: mage
   unitIcon: {fileID: -164947489, guid: 05e0567213a58c840a3ea79a4409bdfd, type: 3}
   goldCost: 15
+  druidDuration: 0
+  druidTickInterval: 0
+  druidEffectRadius: 0
 --- !u!135 &139947448589669901
 SphereCollider:
   m_ObjectHideFlags: 0
