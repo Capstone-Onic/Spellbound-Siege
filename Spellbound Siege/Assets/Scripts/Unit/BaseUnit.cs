@@ -100,42 +100,4 @@ public class BaseUnit : MonoBehaviour
         Projectile projectile = proj.GetComponent<Projectile>();
         projectile.Initialize(target.transform.position, damage);
     }
-
-
-    void SpawnDruidArea(EnemyController target)
-    {
-        if (projectilePrefab == null) return;
-
-        Vector3 spawnPos = target.transform.position;
-        spawnPos.y += 0.1f; 
-
-        GameObject field = Instantiate(projectilePrefab, spawnPos, Quaternion.identity);
-        StartCoroutine(DruidEffectCoroutine(field, spawnPos));
-    }
-
-    private IEnumerator DruidEffectCoroutine(GameObject field, Vector3 position)
-    {
-        float elapsed = 0f;
-
-        while (elapsed < druidDuration)
-        {
-            Collider[] hits = Physics.OverlapSphere(position, druidEffectRadius);
-            foreach (var hit in hits)
-            {
-                EnemyController enemy = hit.GetComponent<EnemyController>();
-                if (enemy != null && enemy.gameObject.activeInHierarchy)
-                {
-                    enemy.TakeDamage(damage);
-                }
-            }
-
-            yield return new WaitForSeconds(druidTickInterval);
-            elapsed += druidTickInterval;
-        }
-
-        if (field != null)
-        {
-            Destroy(field);
-        }
-    }
 }
