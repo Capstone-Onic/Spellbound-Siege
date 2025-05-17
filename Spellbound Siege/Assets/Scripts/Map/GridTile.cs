@@ -73,7 +73,6 @@ public class GridTile : MonoBehaviour
 
         GameObject unitPrefab = UnitManager.instance.selectedUnit;
 
-        //BaseUnit에서 설치 비용 가져오기
         BaseUnit baseUnit = unitPrefab.GetComponent<BaseUnit>();
         if (baseUnit == null)
         {
@@ -81,15 +80,21 @@ public class GridTile : MonoBehaviour
             return;
         }
 
-        //골드 차감 시도
         if (!GoldManager.instance.SpendGold(baseUnit.goldCost))
         {
-            CancelPlacement(); // 골드 부족 → 배치 취소
+            CancelPlacement();
             return;
         }
 
-        //유닛 설치
+        //유닛 생성 및 위치 설정
         currentUnit = Instantiate(unitPrefab, transform.position + Vector3.up * 0.5f, Quaternion.identity);
+
+        ClickableUnit clickable = currentUnit.GetComponent<ClickableUnit>();
+        if (clickable != null)
+        {
+            clickable.SetParentTile(this);
+        }
+
         isOccupied = true;
         isPlacing = false;
     }
@@ -98,12 +103,23 @@ public class GridTile : MonoBehaviour
     {
         if (currentUnit != null)
         {
+            var clickable = currentUnit.GetComponent<ClickableUnit>();
+            if (clickable != null)
+            {
+                clickable.SetParentTile(null);
+            }
+
             Destroy(currentUnit);
+        }
+        else
+        {
+            Debug.Log("[GridTile] currentUnit은 이미 null임");
         }
 
         currentUnit = null;
         isOccupied = false;
     }
+
 
     private void CancelPlacement()
     {
@@ -128,12 +144,15 @@ public class GridTile : MonoBehaviour
     }
     private void TryPlaceOrRemoveUnit()
     {
+        Debug.Log($"[GridTile] 유닛 설치 시도 → isOccupied={isOccupied}, currentUnit={(currentUnit == null ? "null" : currentUnit.name)}");
+        // 유닛이 있으면 제거하지 않고 판매는 유닛 자체에서 처리
         if (isOccupied && currentUnit != null)
         {
-            ClearUnit();
+            Debug.Log("[GridTile] 유닛이 이미 설치되어 있어 설치 불가");
             return;
         }
 
+        // 빈 타일 + 선택된 유닛 있으면 배치
         if (!isOccupied &&
             UnitManager.instance != null &&
             UnitManager.instance.selectedUnit != null)
