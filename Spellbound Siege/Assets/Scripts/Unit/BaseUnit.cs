@@ -107,4 +107,11 @@ public class BaseUnit : MonoBehaviour
         Projectile projectile = proj.GetComponent<Projectile>();
         projectile.Initialize(target.transform.position, damage);
     }
+    public void IncreaseStats()
+    {
+        // 나중에 외형/애니메이션 변경도 여기서 구현
+        damage += 5f;
+        attackCooldown *= 0.9f;
+        Debug.Log("[BaseUnit] 강화 효과 적용됨");
+    }
 }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class StartGameManager : MonoBehaviour
 {
     public static bool gameStarted = false;        // 게임이 시작되었는지 여부 (static)
-    public static bool isPlacementPhase = false;   // 배치 단계인지 여부
+    public static bool isPlacementPhase = true;   // 배치 단계인지 여부
 
     public GameObject unitSelectionPanel;          // 유닛 선택 UI 패널
     public GameObject startButton;                 // Start 버튼 오브젝트
