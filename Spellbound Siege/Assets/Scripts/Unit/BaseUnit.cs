@@ -102,9 +102,43 @@ public class BaseUnit : MonoBehaviour
     }
     public void IncreaseStats()
     {
-        // 나중에 외형/애니메이션 변경도 여기서 구현
         damage += 5f;
         attackCooldown *= 0.9f;
-        Debug.Log("[BaseUnit] 강화 효과 적용됨");
+    }
+    void SpawnDruidArea(EnemyController target)
+    {
+        if (projectilePrefab == null) return;
+
+        Vector3 spawnPos = target.transform.position;
+        spawnPos.y += 0.1f;
+
+        GameObject field = Instantiate(projectilePrefab, spawnPos, Quaternion.identity);
+        StartCoroutine(DruidEffectCoroutine(field, spawnPos));
+    }
+
+    private IEnumerator DruidEffectCoroutine(GameObject field, Vector3 position)
+    {
+        float elapsed = 0f;
+
+        while (elapsed < druidDuration)
+        {
+            Collider[] hits = Physics.OverlapSphere(position, druidEffectRadius);
+            foreach (var hit in hits)
+            {
+                EnemyController enemy = hit.GetComponent<EnemyController>();
+                if (enemy != null && enemy.gameObject.activeInHierarchy)
+                {
+                    enemy.TakeDamage(damage);
+                }
+            }
+
+            yield return new WaitForSeconds(druidTickInterval);
+            elapsed += druidTickInterval;
+        }
+
+        if (field != null)
+        {
+            Destroy(field);
+        }
     }
 }
