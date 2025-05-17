@@ -1985,12 +1985,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rounds:
-  - enemyPrefab: {fileID: 8700132901175406899, guid: 5ffba8a6fe5acc446bfdeb37d60ec85a, type: 3}
+  - enemyPrefab: {fileID: 6547498573638406973, guid: 7461873ee81070b4a913be27771b1b90, type: 3}
     enemyCount: 2
-  - enemyPrefab: {fileID: 8700132901175406899, guid: 5a36ed16b60afa14a9f7225fd02ebc08, type: 3}
+  - enemyPrefab: {fileID: 6547498573638406973, guid: 7461873ee81070b4a913be27771b1b90, type: 3}
     enemyCount: 5
-  - enemyPrefab: {fileID: 8700132901175406899, guid: 5ffba8a6fe5acc446bfdeb37d60ec85a, type: 3}
-    enemyCount: 7
   spawnInterval: 1.5
   spawner: {fileID: 1529726507}
   startGameManager: {fileID: 890341287}
@@ -2806,7 +2804,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d11514feead5a2642ae46298ce5b1ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 8700132901175406899, guid: 560318c00546d86428331831728b439a, type: 3}
+  enemyPrefab: {fileID: 6547498573638406973, guid: 7461873ee81070b4a913be27771b1b90, type: 3}
   spawnPoint: {fileID: 1186253568}
   spawnInterval: 2
   roundManager: {fileID: 0}

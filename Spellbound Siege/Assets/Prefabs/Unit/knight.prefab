@@ -1667,7 +1667,7 @@ GameObject:
   - component: {fileID: 8751332199594820595}
   m_Layer: 0
   m_Name: knight
-  m_TagString: Untagged
+  m_TagString: Unit
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1748,6 +1748,9 @@ MonoBehaviour:
   unitName: knight
   unitIcon: {fileID: 2022066493, guid: 05e0567213a58c840a3ea79a4409bdfd, type: 3}
   goldCost: 10
+  druidDuration: 0
+  druidTickInterval: 0
+  druidEffectRadius: 0
 --- !u!135 &8751332199594820595
 SphereCollider:
   m_ObjectHideFlags: 0

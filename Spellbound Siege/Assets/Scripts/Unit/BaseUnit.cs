@@ -1,31 +1,34 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-// 유닛 타입 정의
-public enum UnitType { knight, mage }
+public enum UnitType { knight, mage, druid }
 
 public class BaseUnit : MonoBehaviour
 {
-    public UnitType unitType;                   // 유닛 타입 설정
-    public float attackCooldown = 1f;           // 공격 쿨타임
-    public float damage = 10f;                  // 공격력
-    public GameObject projectilePrefab;         // 원거리용 투사체 프리팹
+    public UnitType unitType;
+    public float attackCooldown = 1f;
+    public float damage = 10f;
+    public GameObject projectilePrefab;
 
-    private float nextAttackTime;               // 다음 공격 가능 시간
-    private UnitRangeDetector rangeDetector;    // 적 감지기
-    private Animator animator;                  // 애니메이터
+    private float nextAttackTime;
+    private UnitRangeDetector rangeDetector;
+    private Animator animator;
 
     public string unitName;
     public Sprite unitIcon;
     public int goldCost;
 
+    [Header("Druid Area Effect Settings")]
+    public float druidDuration = 3f;             // 효과 지속 시간
+    public float druidTickInterval = 1f;         // 데미지 간격
+    public float druidEffectRadius = 1.5f;       // 범위 반경
 
     void Start()
     {
-        // 시작 시 유닛 X축 180도 회전
         transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-
         rangeDetector = GetComponentInChildren<UnitRangeDetector>();
-        animator = GetComponent<Animator>(); // Animator 연결
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -36,7 +39,6 @@ public class BaseUnit : MonoBehaviour
 
             if (target != null)
             {
-                // ✅ 적을 바라보도록 회전
                 Vector3 direction = (target.transform.position - transform.position).normalized;
                 direction.y = 0f;
                 if (direction != Vector3.zero)
@@ -44,45 +46,37 @@ public class BaseUnit : MonoBehaviour
                     transform.forward = direction;
                 }
 
-                // ✅ 애니메이션 실행 (Attack 트리거)
                 if (animator != null)
                 {
                     if (unitType == UnitType.knight)
-                    {
                         animator.SetTrigger("Attack_knight");
-                        target.TakeDamage(damage);
-                    }
-                    else if(unitType == UnitType.mage)
-                    {
-                        animator.SetTrigger("Attack_mage");
-                        FireProjectile(target);
-                    }
+                    else
+                        animator.SetTrigger("Attack_mage"); // mage, druid 공유
                 }
 
-
-                // ✅ 공격 처리
                 if (unitType == UnitType.knight)
                 {
                     target.TakeDamage(damage);
                 }
-                else if(unitType == UnitType.mage)
+                else if (unitType == UnitType.mage)
                 {
                     FireProjectile(target);
                 }
+                else if (unitType == UnitType.druid)
+                {
+                    SpawnDruidArea(target);
+                }
 
-                // ✅ 쿨타임 갱신
                 nextAttackTime = Time.time + attackCooldown;
             }
         }
     }
 
-    // 가장 가까운 적을 탐색
     EnemyController FindClosestTarget()
     {
         EnemyController closest = null;
         float minDist = float.MaxValue;
 
-        // ✅ null이거나 비활성화된 적을 제거하면서 순회
         rangeDetector.enemiesInRange.RemoveAll(e => e == null || !e.gameObject.activeInHierarchy);
 
         foreach (var enemy in rangeDetector.enemiesInRange)
@@ -98,7 +92,6 @@ public class BaseUnit : MonoBehaviour
         return closest;
     }
 
-    // 투사체 발사
     void FireProjectile(EnemyController target)
     {
         if (projectilePrefab == null) return;
@@ -106,5 +99,43 @@ public class BaseUnit : MonoBehaviour
         GameObject proj = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
         Projectile projectile = proj.GetComponent<Projectile>();
         projectile.Initialize(target.transform.position, damage);
+    }
+
+    // ✅ 드루이드: 적 위치에 지속 이펙트 생성
+    void SpawnDruidArea(EnemyController target)
+    {
+        if (projectilePrefab == null) return;
+
+        Vector3 spawnPos = target.transform.position;
+        spawnPos.y += 0.1f; // ✅ 바닥에서 살짝 띄우기
+
+        GameObject field = Instantiate(projectilePrefab, spawnPos, Quaternion.identity);
+        StartCoroutine(DruidEffectCoroutine(field, spawnPos));
+    }
+
+    private IEnumerator DruidEffectCoroutine(GameObject field, Vector3 position)
+    {
+        float elapsed = 0f;
+
+        while (elapsed < druidDuration)
+        {
+            Collider[] hits = Physics.OverlapSphere(position, druidEffectRadius);
+            foreach (var hit in hits)
+            {
+                EnemyController enemy = hit.GetComponent<EnemyController>();
+                if (enemy != null && enemy.gameObject.activeInHierarchy)
+                {
+                    enemy.TakeDamage(damage);
+                }
+            }
+
+            yield return new WaitForSeconds(druidTickInterval);
+            elapsed += druidTickInterval;
+        }
+
+        if (field != null)
+        {
+            Destroy(field);
+        }
     }
 }

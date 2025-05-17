@@ -1,3 +1,4 @@
+癤퓎sing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,8 +20,13 @@ public class EnemyController : MonoBehaviour
     public GameObject healthBarPrefab;
     private SimpleHealthBar healthBar;
 
+    private Animator animator;
+    private bool isDead = false;
+
     private void Start()
     {
+        animator = GetComponent<Animator>();
+
         switch (enemyType)
         {
             case EnemyType.Normal: rewardGold = 10; break;
@@ -37,8 +43,8 @@ public class EnemyController : MonoBehaviour
 
         health = 100f;
         speedMultiplier = 1f;
+        isDead = false;
 
-        // 체력바 인스턴스화 및 설정
         if (healthBar == null && healthBarPrefab != null)
         {
             GameObject go = Instantiate(healthBarPrefab);
@@ -51,16 +57,37 @@ public class EnemyController : MonoBehaviour
             healthBar.SetHealth(health, 100f);
             healthBar.gameObject.SetActive(true);
         }
+
+        if (animator != null)
+        {
+            animator.ResetTrigger("Die");
+            animator.SetBool("isWalking", true);
+        }
     }
 
     private void Update()
     {
-        if (waypoints == null || waypointIndex >= waypoints.Count) return;
+        if (isDead || waypoints == null || waypointIndex >= waypoints.Count) return;
 
         Transform targetPoint = waypoints[waypointIndex];
         Vector3 direction = (targetPoint.position - transform.position).normalized;
         float adjustedSpeed = speed * speedMultiplier;
+
         transform.position += direction * adjustedSpeed * Time.deltaTime;
+
+        if (direction != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+
+            if (animator != null)
+                animator.SetBool("isWalking", true);
+        }
+        else
+        {
+            if (animator != null)
+                animator.SetBool("isWalking", false);
+        }
 
         if (Vector3.Distance(transform.position, targetPoint.position) < 0.1f)
         {
@@ -80,6 +107,8 @@ public class EnemyController : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
+        if (isDead) return;
+
         health -= amount;
 
         if (healthBar != null)
@@ -95,6 +124,14 @@ public class EnemyController : MonoBehaviour
 
     private void OnDeath(bool killedByPlayer)
     {
+        isDead = true;
+
+        if (animator != null)
+        {
+            animator.SetTrigger("Die");
+            animator.SetBool("isWalking", false);
+        }
+
         if (killedByPlayer && GoldManager.instance != null)
         {
             GoldManager.instance.AddGold(rewardGold);
@@ -111,7 +148,6 @@ public class EnemyController : MonoBehaviour
             GameObject fx = DeathEffectPool.instance.GetEffect();
             fx.transform.position = transform.position;
             fx.SetActive(true);
-
             DeathEffectPool.instance.PlayAndRelease(fx, 1f);
         }
 
@@ -120,16 +156,29 @@ public class EnemyController : MonoBehaviour
             healthBar.gameObject.SetActive(false);
         }
 
+        StartCoroutine(DeactivateAfterDelay(2f));
+    }
+
+    private IEnumerator DeactivateAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
         gameObject.SetActive(false);
     }
 
     private void OnEnable()
     {
-        // 풀링 대비 초기화
+        isDead = false;
+
         if (healthBar != null)
         {
             healthBar.gameObject.SetActive(true);
             healthBar.SetHealth(100f, 100f);
+        }
+
+        if (animator != null)
+        {
+            animator.ResetTrigger("Die");
+            animator.SetBool("isWalking", true);
         }
     }
 }
