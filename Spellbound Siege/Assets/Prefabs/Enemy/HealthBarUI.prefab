@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fillImage: {fileID: 7191215837044737263}
   target: {fileID: 0}
-  offset: {x: 0, y: 1, z: 0}
+  offset: {x: 0, y: 2, z: 0}
   maxHealth: 100
   currentHealth: 100
 --- !u!1 &2401723748653307053

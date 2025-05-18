@@ -1809,15 +1809,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitType: 1
-  attackCooldown: 2
+  attackCooldown: 2.15
   damage: 20
-  projectilePrefab: {fileID: 4944089641033070485, guid: f94b1a458b3b5e6499885ff1ada10e94, type: 3}
+  projectilePrefab: {fileID: 2602591039207990355, guid: dcd6eaf9af5d22d4db16da10b9392423, type: 3}
+  stunIndicatorPrefab: {fileID: 4944089641033070485, guid: f94b1a458b3b5e6499885ff1ada10e94, type: 3}
   unitName: mage
   unitIcon: {fileID: -164947489, guid: 05e0567213a58c840a3ea79a4409bdfd, type: 3}
   goldCost: 15
   druidDuration: 0
   druidTickInterval: 0
   druidEffectRadius: 0
+  upgradeEffectPrefabs:
+  - {fileID: 4127915676937216771, guid: 3b01c70bb2e712845b81df6e5b127ad1, type: 3}
+  - {fileID: 4127915676937216771, guid: 10e9e4f985c8db4419b1377d004d32fb, type: 3}
 --- !u!135 &139947448589669901
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1837,8 +1841,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.8
+  m_Center: {x: 0, y: 0.7, z: 0}
 --- !u!1 &8781477614454814183
 GameObject:
   m_ObjectHideFlags: 0
