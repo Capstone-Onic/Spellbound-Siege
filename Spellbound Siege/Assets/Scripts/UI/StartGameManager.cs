@@ -43,6 +43,11 @@ public class StartGameManager : MonoBehaviour
         // 배치 단계 종료 → 본격 플레이 모드 진입
         isPlacementPhase = false;
 
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.CloseUI();
+        }
+
         if (cardUI != null) cardUI.SetActive(true);
         if (unitSelectionPanel != null) unitSelectionPanel.SetActive(false);
         if (startButton != null) startButton.SetActive(false);

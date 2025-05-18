@@ -28,28 +28,27 @@ public class ClickableUnit : MonoBehaviour
 
     private void ToggleUnitUI()
     {
-        if (currentUI != null)
+        if (UIManager.Instance.IsUIOpen)
         {
-            Destroy(currentUI);
-            currentUI = null;
-            return;
+            // 같은 유닛 다시 누르면 토글 닫기
+            if (UIManager.Instance.currentUnitUI == currentUI)
+            {
+                UIManager.Instance.CloseUI();
+                return;
+            }
+
+            // 다른 UI가 열려 있으면 닫기
+            UIManager.Instance.CloseUI();
         }
 
-        Vector3 spawnPos = transform.position + Vector3.up * 1.2f;
+        Renderer rend = GetComponentInChildren<Renderer>();
+        float unitHeight = rend != null ? rend.bounds.size.y : 2f;
+        Vector3 spawnPos = transform.position + Vector3.up * (unitHeight + 0.2f);
+
         currentUI = Instantiate(unitActionUIPrefab, spawnPos, Quaternion.identity);
-
-        // 1. 부모 제거: 유닛 회전 영향 차단
         currentUI.transform.SetParent(null);
+        UIManager.Instance.OpenUI(currentUI); // UI 등록
 
-        // 2. 카메라 정면 바라보도록 회전 설정
-        if (Camera.main != null)
-        {
-            // 정확히 카메라를 바라보는 방향으로 앞면 강제
-            Vector3 cameraForward = Camera.main.transform.forward;
-            currentUI.transform.forward = cameraForward;
-        }
-
-        // 3. 버튼 기능 연결
         UnitActionUI ui = currentUI.GetComponent<UnitActionUI>();
         if (ui != null)
         {

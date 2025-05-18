@@ -388,6 +388,7 @@ GameObject:
   m_Component:
   - component: {fileID: 15714886083519126}
   - component: {fileID: 199183630820226884}
+  - component: {fileID: 7995396368583558207}
   m_Layer: 0
   m_Name: UnitSelectUI
   m_TagString: Untagged
@@ -425,6 +426,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sellButton: {fileID: 837883068035851975}
   upgradeButton: {fileID: 1365139520092088595}
+--- !u!114 &7995396368583558207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5167031949170404354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac58ecb4bbf1c4a499afe75d8cbd213a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7675394229495598668
 GameObject:
   m_ObjectHideFlags: 0
