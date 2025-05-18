@@ -1691,15 +1691,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitType: 2
-  attackCooldown: 2
+  attackCooldown: 2.2
   damage: 3
   projectilePrefab: {fileID: 7179959940208803169, guid: 1fc05c6524b233c4884c09f9e16d0a04, type: 3}
+  stunIndicatorPrefab: {fileID: 4944089641033070485, guid: f94b1a458b3b5e6499885ff1ada10e94, type: 3}
   unitName: druid
   unitIcon: {fileID: -1107025847, guid: 132358e9bf26b60458b731bf001e31db, type: 3}
   goldCost: 20
   druidDuration: 2
   druidTickInterval: 0.1
   druidEffectRadius: 1
+  upgradeEffectPrefabs:
+  - {fileID: 4127915676937216771, guid: 3b01c70bb2e712845b81df6e5b127ad1, type: 3}
+  - {fileID: 4127915676937216771, guid: 10e9e4f985c8db4419b1377d004d32fb, type: 3}
 --- !u!135 &5492303710873532740
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1719,8 +1723,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.8
+  m_Center: {x: 0, y: 0.7, z: 0}
 --- !u!1 &8416384801085856458
 GameObject:
   m_ObjectHideFlags: 0

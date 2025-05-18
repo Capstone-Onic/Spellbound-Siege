@@ -307,3 +307,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   aoeRadius: 2
+  launchDelay: 0.25
