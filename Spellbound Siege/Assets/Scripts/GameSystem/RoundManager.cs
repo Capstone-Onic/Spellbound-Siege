@@ -10,14 +10,17 @@ public class RoundManager : MonoBehaviour
     [System.Serializable]
     public class RoundData
     {
-        public GameObject enemyPrefab;
-        public int enemyCount;
+        public GameObject enemyPrefabA;
+        public int enemyCountA;
+        public GameObject enemyPrefabB;
+        public int enemyCountB;
     }
 
     [Header("Round")]
     public List<RoundData> rounds = new();
     public float spawnInterval = 1.5f;
-    public EnemySpawner spawner;
+    public EnemySpawner spawnerA;
+    public EnemySpawner spawnerB;
     public StartGameManager startGameManager;
 
     public UnityEvent<int> onRoundStarted;
@@ -41,8 +44,8 @@ public class RoundManager : MonoBehaviour
 
     private void Start()
     {
-        ResetLifeUI(); // 게임 시작 시 하트 리셋
-        UpdateLifeUI(); // UI 동기화
+        ResetLifeUI();
+        UpdateLifeUI();
     }
 
     public void StartNextRound()
@@ -53,23 +56,35 @@ public class RoundManager : MonoBehaviour
         currentRound++;
 
         killedEnemiesThisRound = 0;
-        totalEnemiesThisRound = round.enemyCount;
+        totalEnemiesThisRound = round.enemyCountA + round.enemyCountB;
 
         UpdateRoundUI();
         UpdateEnemyUI();
 
-        spawner.PreparePool(round.enemyPrefab, round.enemyCount);
-        StartCoroutine(SpawnEnemies(round));
+        spawnerA.PreparePool(round.enemyPrefabA, round.enemyCountA);
+        spawnerB.PreparePool(round.enemyPrefabB, round.enemyCountB);
+
+        ManaManager.Instance.currentMana = 0;
+        ManaManager.Instance.UpdateManaUI();
+        ManaManager.Instance.StartRegen();
+
+        StartCoroutine(SpawnEnemiesDual(round));
     }
 
-    private IEnumerator SpawnEnemies(RoundData round)
+    private IEnumerator SpawnEnemiesDual(RoundData round)
     {
         isRunning = true;
         onRoundStarted?.Invoke(currentRound);
 
-        for (int i = 0; i < round.enemyCount; i++)
+        int maxCount = Mathf.Max(round.enemyCountA, round.enemyCountB);
+        for (int i = 0; i < maxCount; i++)
         {
-            spawner.SpawnEnemy(round.enemyPrefab);
+            if (i < round.enemyCountA)
+                spawnerA.SpawnEnemy(round.enemyPrefabA);
+
+            if (i < round.enemyCountB)
+                spawnerB.SpawnEnemy(round.enemyPrefabB);
+
             yield return new WaitForSeconds(spawnInterval);
         }
 
@@ -86,6 +101,8 @@ public class RoundManager : MonoBehaviour
             Debug.Log("[RoundManager] 라운드 종료: 모든 적 처치됨");
             isRunning = false;
             onRoundEnded?.Invoke(currentRound);
+
+            ManaManager.Instance?.StopRegen();
 
             if (startGameManager != null)
             {
@@ -139,8 +156,7 @@ public class RoundManager : MonoBehaviour
     {
         Debug.Log("[RoundManager] Game Over triggered!");
         Time.timeScale = 0;
-
-        // TODO: Game Over UI 열기 등 추가 가능
+        // Game Over UI 열기 등 추가 가능
     }
 
     private void ResetLifeUI()
@@ -149,7 +165,7 @@ public class RoundManager : MonoBehaviour
         {
             if (lifeIcons[i] == null) continue;
 
-            lifeIcons[i].gameObject.SetActive(i < lifeCount); // 5개만 표시
+            lifeIcons[i].gameObject.SetActive(i < lifeCount);
             lifeIcons[i].transform.localScale = Vector3.one;
             lifeIcons[i].color = Color.white;
         }

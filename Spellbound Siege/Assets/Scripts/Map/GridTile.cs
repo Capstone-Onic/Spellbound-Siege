@@ -144,6 +144,11 @@ public class GridTile : MonoBehaviour
     }
     private void TryPlaceOrRemoveUnit()
     {
+        if (UIManager.Instance != null && UIManager.Instance.IsUIOpen)
+        {
+            Debug.Log("[배치 차단] UI가 열려있음");
+            return;
+        }
         Debug.Log($"[GridTile] 유닛 설치 시도 → isOccupied={isOccupied}, currentUnit={(currentUnit == null ? "null" : currentUnit.name)}");
         // 유닛이 있으면 제거하지 않고 판매는 유닛 자체에서 처리
         if (isOccupied && currentUnit != null)

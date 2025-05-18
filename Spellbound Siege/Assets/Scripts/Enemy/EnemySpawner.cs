@@ -56,10 +56,14 @@ public class EnemySpawner : MonoBehaviour
     {
         foreach (var enemy in enemyPool)
         {
-            if (!enemy.activeInHierarchy && enemy.name.Contains(prefab.name))
+            if (!enemy.activeInHierarchy && enemy.name.StartsWith(prefab.name))
                 return enemy;
         }
 
-        return null;
+        // 풀에 없으면 새로 생성
+        GameObject newEnemy = Instantiate(prefab);
+        newEnemy.SetActive(false);
+        enemyPool.Add(newEnemy);
+        return newEnemy;
     }
 }
