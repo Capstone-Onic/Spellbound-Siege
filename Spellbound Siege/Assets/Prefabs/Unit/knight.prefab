@@ -1747,7 +1747,7 @@ MonoBehaviour:
   damage: 50
   projectilePrefab: {fileID: 4699416279442992812, guid: 6ffcdf54bac53fd458b339003fef476d, type: 3}
   stunIndicatorPrefab: {fileID: 4944089641033070485, guid: f94b1a458b3b5e6499885ff1ada10e94, type: 3}
-  unitName: knight
+  unitName: "\uAE30\uC0AC"
   unitIcon: {fileID: 2022066493, guid: 05e0567213a58c840a3ea79a4409bdfd, type: 3}
   goldCost: 10
   druidDuration: 0

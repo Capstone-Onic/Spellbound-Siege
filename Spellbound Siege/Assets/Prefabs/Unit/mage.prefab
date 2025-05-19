@@ -1813,7 +1813,7 @@ MonoBehaviour:
   damage: 20
   projectilePrefab: {fileID: 2602591039207990355, guid: dcd6eaf9af5d22d4db16da10b9392423, type: 3}
   stunIndicatorPrefab: {fileID: 4944089641033070485, guid: f94b1a458b3b5e6499885ff1ada10e94, type: 3}
-  unitName: mage
+  unitName: "\uB9C8\uBC95\uC0AC"
   unitIcon: {fileID: -164947489, guid: 05e0567213a58c840a3ea79a4409bdfd, type: 3}
   goldCost: 15
   druidDuration: 0
