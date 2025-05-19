@@ -98,7 +98,7 @@ public class RoundManager : MonoBehaviour
 
         if (isRunning && killedEnemiesThisRound >= totalEnemiesThisRound)
         {
-            Debug.Log("[RoundManager] ���� ����: ��� �� óġ��");
+            Debug.Log("[RoundManager] 라운드 종료: 모든 적 처치됨");
             isRunning = false;
             onRoundEnded?.Invoke(currentRound);
 
@@ -156,7 +156,7 @@ public class RoundManager : MonoBehaviour
     {
         Debug.Log("[RoundManager] Game Over triggered!");
         Time.timeScale = 0;
-        // Game Over UI ���� �� �߰� ����
+        // Game Over UI 열기 등 추가 가능
     }
 
     private void ResetLifeUI()
@@ -190,5 +190,6 @@ public class RoundManager : MonoBehaviour
 
     private void UpdateLifeUI()
     {
-        // �ʿ� �� ���� UI�� �Բ� ����� �� �ֵ��� Ȯ�� ����
+        // 필요 시 숫자 UI와 함께 사용할 수 있도록 확장 가능
     }
+}
