@@ -156,6 +156,7 @@ public class RoundManager : MonoBehaviour
     {
         Debug.Log("[RoundManager] Game Over triggered!");
         Time.timeScale = 0;
+        // Game Over UI 열기 등 추가 가능
     }
 
     private void ResetLifeUI()
