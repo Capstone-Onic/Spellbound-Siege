@@ -21,5 +21,8 @@ MonoBehaviour:
   damageType: 02000000
   effectRadius: 2
   effectDuration: 2
+  statusEffectDuration: 2
   description: "\uBC94\uC704 \uB0B4\uC758 \uC801\uC5D0\uAC8C 15\uC758 \uB370\uBBF8\uC9C0\uB97C
     \uC785\uD788\uACE0 2\uCD08\uAC04 \uC774\uB3D9\uC18D\uB3C4\uB97C 50% \uAC10\uC18C\uC2DC\uD0B5\uB2C8\uB2E4."
+  fallEffectPrefab: {fileID: 0}
+  impactEffectPrefab: {fileID: 7356203045360921323, guid: ce9dcfeb2d71e97458e008652103e968, type: 3}

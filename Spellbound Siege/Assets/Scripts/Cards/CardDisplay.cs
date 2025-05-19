@@ -45,7 +45,8 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     void Awake()
     {
-        originalScale = transform.localScale;
+        if (originalScale == Vector3.zero) // 이미 설정된 경우 재설정 방지
+            originalScale = transform.localScale;
     }
 
     void Start()
@@ -109,7 +110,10 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void OnPointerEnter(PointerEventData eventData)
     {
         CardDragHandler dragHandler = GetComponent<CardDragHandler>();
-        if (dragHandler != null && dragHandler.IsDragging) return;
+        CardHoldZoom holdZoom = GetComponent<CardHoldZoom>();
+
+        // 드래그 중이거나 확대 상태면 Hover 효과 비활성화
+        if ((dragHandler != null && dragHandler.IsDragging) || (holdZoom != null && holdZoom.IsZooming)) return;
 
         if (glowBorder != null)
             glowBorder.SetActive(true);

@@ -59,6 +59,11 @@ public class RoundManager : MonoBehaviour
         UpdateEnemyUI();
 
         spawner.PreparePool(round.enemyPrefab, round.enemyCount);
+
+        ManaManager.Instance.currentMana = 0;
+        ManaManager.Instance.UpdateManaUI();     // UI 동기화
+        ManaManager.Instance.StartRegen();       // 회복 시작
+
         StartCoroutine(SpawnEnemies(round));
     }
 
@@ -86,6 +91,8 @@ public class RoundManager : MonoBehaviour
             Debug.Log("[RoundManager] 라운드 종료: 모든 적 처치됨");
             isRunning = false;
             onRoundEnded?.Invoke(currentRound);
+
+            ManaManager.Instance?.StopRegen(); // 라운드 종료 시 마나 회복 종료
 
             if (startGameManager != null)
             {

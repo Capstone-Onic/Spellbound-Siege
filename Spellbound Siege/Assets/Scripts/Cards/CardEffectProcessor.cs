@@ -25,49 +25,17 @@ public static class CardEffectProcessor
     // 카드 효과 적용
     public static void ApplyCardEffectToTile(Card cardData, GridTile unused, Vector3 position)
     {
-        Color flashColor = Color.white;
-        float radius = cardData.effectRadius;
-
-        List<EnemyController> enemies = GetEnemiesInRange(position, radius);
-
-        foreach (var enemy in enemies)
+        if (cardData.deliveryType == Card.EffectDeliveryType.Falling)
         {
-            string name = cardData.cardName.ToLower(); // 카드 이름 기준 분기
-
-            if (name.Contains("fire ball"))
-            {
-                enemy.TakeDamage(15f);
-                if (enemy != null && enemy.gameObject.activeInHierarchy)
-                    enemy.StartCoroutine(ApplyBurnDamage(enemy, 3f, 0.5f, 3f));
-            }
-            else if (name.Contains("fire field"))
-            {
-                if (enemy != null && enemy.gameObject.activeInHierarchy)
-                    enemy.StartCoroutine(ApplyBurnDamage(enemy, 6f, 0.5f, 3f));
-            }
-            else if (name.Contains("ice spear"))
-            {
-                enemy.TakeDamage(15f);
-                if (enemy != null && enemy.gameObject.activeInHierarchy)
-                    enemy.StartCoroutine(ApplySlow(enemy, 0.5f, 2f));
-            }
-            else if (name.Contains("stone"))
-            {
-                enemy.TakeDamage(13f);
-                if (enemy != null && enemy.gameObject.activeInHierarchy)
-                    enemy.StartCoroutine(ApplyStun(enemy, 1.0f));
-            }
-            else if (name.Contains("water shot"))
-            {
-                enemy.TakeDamage(25f);
-            }
-
-            //  속성 기반 공통 상태 이펙트 부착
-            AttachStatusEffect(cardData, enemy, cardData.effectDuration);
+            // 낙하형 → 이펙트만 생성, 피해는 FallingEffectController에서 적용
+            SpawnParticleEffect(position, cardData);
         }
-
-        // 시각 이펙트 생성
-        SpawnParticleEffect(position, cardData);
+        else if (cardData.deliveryType == Card.EffectDeliveryType.GroundGrow)
+        {
+            // GroundGrow → 이펙트 + 피해 즉시 적용
+            SpawnParticleEffect(position, cardData);
+            ApplyDamageAndStatus(cardData, position);
+        }
     }
 
     // 적 감지
@@ -96,7 +64,7 @@ public static class CardEffectProcessor
                 GameObject fx = GameObject.Instantiate(prefab, enemy.transform);
                 float height = enemy.GetComponent<Renderer>().bounds.size.y;
                 fx.transform.localPosition = new Vector3(0, height * 0.3f, 0);
-                GameObject.Destroy(fx, duration);
+                GameObject.Destroy(fx, cardData.statusEffectDuration);
                 return; // 한 타입만 적용 (필요 시 제거 가능)
             }
         }
@@ -138,44 +106,78 @@ public static class CardEffectProcessor
     // 카드 이펙트 프리팹 생성
     private static void SpawnParticleEffect(Vector3 position, Card cardData)
     {
-        GameObject prefab = null;
-        string name = cardData.cardName.ToLower();
-
-        if (name.Contains("fire ball"))
+        if (cardData.deliveryType == Card.EffectDeliveryType.Falling)
         {
-            prefab = fireballEffect;
-        }
-        else if (name.Contains("fire field"))
-        {
-            prefab = firewallEffect;
-        }
-        else if (name.Contains("ice spear"))
-        {
-            prefab = icespearEffect;
-        }
-        else if (name.Contains("stone"))
-        {
-            prefab = stoneEffect;
-        }
-        else if (name.Contains("water shot"))
-        {
-            prefab = watershotEffect;
-        }
-
-        if (prefab != null)
-        {
-            GameObject fx = GameObject.Instantiate(prefab, position + Vector3.up * 0.5f, Quaternion.identity);
-
-            var area = fx.GetComponent<AreaEffectTrigger>();
-            if (area != null)
+            if (cardData.fallEffectPrefab == null || cardData.impactEffectPrefab == null)
             {
-                area.sourceCard = cardData;
-                area.duration = cardData.effectDuration;
+                Debug.LogWarning($"[CardEffectProcessor] 낙하형 카드에 필요한 프리팹이 없습니다: {cardData.cardName}");
+                return;
             }
-            else
+
+            Vector3 startPos = position + Vector3.up * 3f;
+            Quaternion prefabRotation = cardData.fallEffectPrefab.transform.rotation;
+
+            GameObject fx = GameObject.Instantiate(cardData.fallEffectPrefab, startPos, prefabRotation);
+
+            var falling = fx.AddComponent<FallingEffectController>();
+            falling.Initialize(position, cardData, cardData.impactEffectPrefab);
+        }
+        else if (cardData.deliveryType == Card.EffectDeliveryType.GroundGrow)
+        {
+            if (cardData.impactEffectPrefab == null)
             {
-                GameObject.Destroy(fx, 1f); // 즉발형 이펙트는 1초 후 제거
+                Debug.LogWarning($"[CardEffectProcessor] GroundGrow 카드에 폭발 이펙트 프리팹이 없습니다: {cardData.cardName}");
+                return;
             }
+
+            Vector3 spawnPos = position + Vector3.up * 0.1f;
+            Quaternion prefabRotation = cardData.impactEffectPrefab.transform.rotation;
+
+            GameObject fx = GameObject.Instantiate(cardData.impactEffectPrefab, spawnPos, prefabRotation);
+
+            // impactEffectPrefab의 기본 Y 스케일은 유지, XZ만 radius * 2
+            float radius = cardData.effectRadius;
+            Vector3 baseScale = cardData.impactEffectPrefab.transform.localScale;
+            Vector3 targetScale = new Vector3(radius * 2f, baseScale.y, radius * 2f);
+
+            fx.transform.localScale = Vector3.zero;
+            LeanTween.scale(fx, targetScale, 0.5f).setEaseOutExpo();
+
+            ApplyDamageAndStatus(cardData, position);
+            GameObject.Destroy(fx, 1.5f);
+        }
+    }
+
+    public static void ApplyDamageAndStatus(Card cardData, Vector3 position)
+    {
+        float radius = cardData.effectRadius;
+        List<EnemyController> enemies = GetEnemiesInRange(position, radius);
+
+        foreach (var enemy in enemies)
+        {
+            string name = cardData.cardName.ToLower();
+
+            if (name.Contains("fire ball"))
+            {
+                enemy.TakeDamage(15f);
+                enemy.StartCoroutine(ApplyBurnDamage(enemy, 3f, 0.5f, cardData.statusEffectDuration));
+            }
+            else if (name.Contains("ice spear"))
+            {
+                enemy.TakeDamage(15f);
+                enemy.StartCoroutine(ApplySlow(enemy, 0.5f, cardData.effectDuration));
+            }
+            else if (name.Contains("stone"))
+            {
+                enemy.TakeDamage(13f);
+                enemy.StartCoroutine(ApplyStun(enemy, 1.0f));
+            }
+            else if (name.Contains("water shot"))
+            {
+                enemy.TakeDamage(25f);
+            }
+
+            AttachStatusEffect(cardData, enemy, cardData.statusEffectDuration);
         }
     }
 }

@@ -30,6 +30,7 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private int raycastLayerMask;
 
     private bool wasCardUsed = false;
+    public bool IsZoomLocked { get; set; } = false;
 
     void Awake()
     {
@@ -44,6 +45,8 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (IsZoomLocked) return; // 확대 상태이면 드래그 차단
+
         isDragging = true;
 
         originalAnchoredPosition = rectTransform.anchoredPosition;
@@ -99,6 +102,8 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (IsZoomLocked) return;
+
         isDragging = false;
         canvasGroup.blocksRaycasts = true;
         wasCardUsed = false;

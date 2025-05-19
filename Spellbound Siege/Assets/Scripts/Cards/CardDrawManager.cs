@@ -84,6 +84,27 @@ public class CardDrawManager : MonoBehaviour
         CardDisplay cd = cardObject.GetComponent<CardDisplay>();
         cd.SetCard(card);
 
+        // CanvasGroup이 없으면 추가
+        CanvasGroup cg = cardObject.GetComponent<CanvasGroup>();
+        if (cg == null)
+            cg = cardObject.AddComponent<CanvasGroup>();
+
+        // 확대 중인 카드가 하나라도 있다면 마우스 반응 비활성화
+        bool anyCardZoomed = false;
+        foreach (var zoom in FindObjectsOfType<CardHoldZoom>())
+        {
+            if (zoom.IsZooming)
+            {
+                anyCardZoomed = true;
+                break;
+            }
+        }
+        if (anyCardZoomed)
+        {
+            cg.blocksRaycasts = false;
+            cg.interactable = false;
+        }
+
         // 덱 위치에서 시작 위치 지정
         Vector2 startPos = deckTransform.anchoredPosition;
         rt.anchoredPosition = startPos;
@@ -91,7 +112,7 @@ public class CardDrawManager : MonoBehaviour
         // 리스트에 추가
         handCards.Add(cardObject);
 
-        // 5. 모든 카드를 정렬 대상으로 설정 (드래그 중인 카드 포함)
+        // 모든 카드 위치 계산
         List<GameObject> activeCards = new List<GameObject>(handCards);
         List<Vector2> positions = CalculateCardPositions(activeCards);
 
@@ -177,11 +198,14 @@ public class CardDrawManager : MonoBehaviour
         {
             GameObject obj = cardsToSort[i];
             if (obj == null) continue;
+
             RectTransform rt2 = obj.GetComponent<RectTransform>();
             if (rt2 != null)
             {
                 LeanTween.cancel(rt2.gameObject);
                 LeanTween.move(rt2, positions[i], 0.15f).setEaseOutQuad();
+
+                // 오른쪽에 있는 카드일수록 위에 오도록 순서 부여
                 rt2.SetSiblingIndex(i);
             }
         }

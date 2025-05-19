@@ -1101,7 +1101,6 @@ MonoBehaviour:
   rangeIndicatorPrefab: {fileID: 6001965815573015611, guid: 299b4cd7bdc62b9478c94516f1b7f650, type: 3}
   indicatorOffsetHeight: 0.1
   dragScale: 1.2
-  optionLineTexture: {fileID: 0}
 --- !u!225 &7261801000637298940
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1126,6 +1125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b56378764b01b949936d898c2e18518, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  screenEdgeEffectPrefab: {fileID: 8962368663310730568, guid: 64230e79d7098a346945775cdc13b94e, type: 3}
 --- !u!1 &7398108424526167499
 GameObject:
   m_ObjectHideFlags: 0
@@ -1184,7 +1184,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.3254902, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

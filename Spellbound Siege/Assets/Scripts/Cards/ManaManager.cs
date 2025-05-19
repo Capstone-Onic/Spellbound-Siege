@@ -65,7 +65,7 @@ public class ManaManager : MonoBehaviour
         UpdateManaUI();
     }
 
-    private void UpdateManaUI()
+    public void UpdateManaUI()
     {
         if (manaText != null)
             manaText.text = currentMana.ToString();
@@ -137,5 +137,14 @@ public class ManaManager : MonoBehaviour
             {
                 LeanTween.scale(rt, originalScale, 0.2f).setEaseInOutQuad();
             });
+    }
+
+    public void StopRegen()
+    {
+        if (regenRoutine != null)
+        {
+            StopCoroutine(regenRoutine);
+            regenRoutine = null;
+        }
     }
 }
