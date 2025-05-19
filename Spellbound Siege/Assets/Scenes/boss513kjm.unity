@@ -3660,55 +3660,6 @@ Transform:
   - {fileID: 120975609}
   m_Father: {fileID: 1892012581}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &257099932
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 257099934}
-  - component: {fileID: 257099933}
-  m_Layer: 0
-  m_Name: CameraShakeManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &257099933
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 257099932}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24a2b68611641b7458532cc8352695bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maximumTranslationShake: {x: 1, y: 1, z: 1}
-  maximumAngularShake: {x: 15, y: 15, z: 15}
-  shakeFrequency: 25
-  shakeSmoothingExponent: 1
-  shakeRecoverPerSecond: 1
---- !u!4 &257099934
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 257099932}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 130.81345, y: 62.367844, z: -185.33873}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &259354541 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4981501542204198383, guid: 4a478a818ad8a5447961348049fb6a55, type: 3}
@@ -14169,14 +14120,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rounds:
-  - enemyPrefab: {fileID: 8700132901175406899, guid: 5ffba8a6fe5acc446bfdeb37d60ec85a, type: 3}
-    enemyCount: 5
-  - enemyPrefab: {fileID: 8700132901175406899, guid: 5ffba8a6fe5acc446bfdeb37d60ec85a, type: 3}
-    enemyCount: 8
-  - enemyPrefab: {fileID: 8700132901175406899, guid: 5ffba8a6fe5acc446bfdeb37d60ec85a, type: 3}
-    enemyCount: 10
+  - enemyPrefabA: {fileID: 5827603114723507568, guid: 4f884d6463ab5b348825861cd7df25ef, type: 3}
+    enemyCountA: 1
+    enemyPrefabB: {fileID: 4535944762957367978, guid: 9df468a018c6df34d8476a17fa58abea, type: 3}
+    enemyCountB: 1
+  - enemyPrefabA: {fileID: 1706697100392022547, guid: 0e083ce51392a014bbaef7e4522ef903, type: 3}
+    enemyCountA: 1
+    enemyPrefabB: {fileID: 228744820281511042, guid: 566475cb1347bc649b2268073fc9a229, type: 3}
+    enemyCountB: 1
+  - enemyPrefabA: {fileID: 0}
+    enemyCountA: 0
+    enemyPrefabB: {fileID: 0}
+    enemyCountB: 0
   spawnInterval: 1.5
-  spawner: {fileID: 2143137926}
+  spawnerA: {fileID: 2143137926}
+  spawnerB: {fileID: 1717672100}
   startGameManager: {fileID: 890341287}
   onRoundStarted:
     m_PersistentCalls:
@@ -20010,6 +19968,55 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8d360172b8dc2e943b35b44b313e78ca, type: 3}
+--- !u!1 &1316964822
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1316964824}
+  - component: {fileID: 1316964823}
+  m_Layer: 0
+  m_Name: Shaker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1316964823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316964822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24a2b68611641b7458532cc8352695bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maximumTranslationShake: {x: 1, y: 1, z: 1}
+  maximumAngularShake: {x: 15, y: 15, z: 15}
+  shakeFrequency: 25
+  shakeSmoothingExponent: 1
+  shakeRecoverPerSecond: 1
+--- !u!4 &1316964824
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316964822}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 109.94141, y: 53.629944, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1321676740
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34522,4 +34529,4 @@ SceneRoots:
   - {fileID: 1892012581}
   - {fileID: 342491882}
   - {fileID: 615847015}
-  - {fileID: 257099934}
+  - {fileID: 1316964824}

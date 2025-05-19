@@ -102,7 +102,7 @@ public class RoundManager : MonoBehaviour
             isRunning = false;
             onRoundEnded?.Invoke(currentRound);
 
-            ManaManager.Instance?.StopRegen();
+            ManaManager.Instance?.StopRegen(); // 라운드 종료 시 마나 회복 종료
 
             if (startGameManager != null)
             {

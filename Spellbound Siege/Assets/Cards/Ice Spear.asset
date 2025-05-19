@@ -24,5 +24,6 @@ MonoBehaviour:
   statusEffectDuration: 2
   description: "\uBC94\uC704 \uB0B4\uC758 \uC801\uC5D0\uAC8C 15\uC758 \uB370\uBBF8\uC9C0\uB97C
     \uC785\uD788\uACE0 2\uCD08\uAC04 \uC774\uB3D9\uC18D\uB3C4\uB97C 50% \uAC10\uC18C\uC2DC\uD0B5\uB2C8\uB2E4."
-  fallEffectPrefab: {fileID: 0}
-  impactEffectPrefab: {fileID: 7356203045360921323, guid: ce9dcfeb2d71e97458e008652103e968, type: 3}
+  fallEffectPrefab: {fileID: 7385561637741291255, guid: 96c492e7cb1d4fd409e5261883da9a08, type: 3}
+  impactEffectPrefab: {fileID: 4419759629879435267, guid: a2f885768dc890544af1ef2b318eac93, type: 3}
+  deliveryType: 0
