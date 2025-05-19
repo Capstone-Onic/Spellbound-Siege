@@ -1,4 +1,4 @@
-ï»¿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -98,7 +98,7 @@ public class RoundManager : MonoBehaviour
 
         if (isRunning && killedEnemiesThisRound >= totalEnemiesThisRound)
         {
-            Debug.Log("[RoundManager] ë¼ìš´ë“œ ì¢…ë£Œ: ëª¨ë“  ì  ì²˜ì¹˜ë¨");
+            Debug.Log("[RoundManager] ¶ó¿îµå Á¾·á: ¸ğµç Àû Ã³Ä¡µÊ");
             isRunning = false;
             onRoundEnded?.Invoke(currentRound);
 
@@ -156,7 +156,7 @@ public class RoundManager : MonoBehaviour
     {
         Debug.Log("[RoundManager] Game Over triggered!");
         Time.timeScale = 0;
-        // Game Over UI ì—´ê¸° ë“± ì¶”ê°€ ê°€ëŠ¥
+        // Game Over UI ¿­±â µî Ãß°¡ °¡´É
     }
 
     private void ResetLifeUI()
@@ -190,6 +190,6 @@ public class RoundManager : MonoBehaviour
 
     private void UpdateLifeUI()
     {
-        // í•„ìš” ì‹œ ìˆ«ì UIì™€ í•¨ê»˜ ì‚¬ìš©í•  ìˆ˜ ìˆë„ë¡ í™•ì¥ ê°€ëŠ¥
+        // ÇÊ¿ä ½Ã ¼ıÀÚ UI¿Í ÇÔ²² »ç¿ëÇÒ ¼ö ÀÖµµ·Ï È®Àå °¡´É
     }
 }
