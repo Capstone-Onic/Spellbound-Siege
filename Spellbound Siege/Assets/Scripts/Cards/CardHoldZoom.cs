@@ -1,37 +1,65 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class CardHoldZoom : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class CardHoldZoom : MonoBehaviour, IPointerDownHandler
 {
     private bool isHolding = false;
-    private float holdTime = 2f;
+    private bool isZoomed = false;
+    public bool IsZooming => isZoomed;
+    private float holdTime = 1f;
     private float holdTimer = 0f;
 
-    private Vector3 originalPosition;
-    private Vector3 originalScale;
-    private bool isZoomed = false;
-
-    private RectTransform rectTransform;
     private Canvas parentCanvas;
     private CardDragHandler dragHandler;
+    private CardDisplay originalCardDisplay;
+    private CardDisplay cardDisplay;
+
+    private GameObject zoomedCardInstance;
+    private RectTransform zoomedCardRect;
+    private Vector3 originalScale;
+
+    [Header("Zoom Visual Effect")]
+    public GameObject screenEdgeEffectPrefab; // 테두리 이펙트 프리팹
+    private GameObject currentEffectInstance;
 
     void Awake()
     {
-        rectTransform = GetComponent<RectTransform>();
-        parentCanvas = GetComponentInParent<Canvas>();
+        cardDisplay = GetComponent<CardDisplay>();
+
+        // 전체 Canvas 찾기
+        GameObject rootCanvasGO = GameObject.Find("Canvas");
+        if (rootCanvasGO != null)
+            parentCanvas = rootCanvasGO.GetComponent<Canvas>();
+        else
+            Debug.LogError("[CardHoldZoom] Canvas 오브젝트를 찾을 수 없습니다!");
+
         dragHandler = GetComponent<CardDragHandler>();
+        originalCardDisplay = GetComponent<CardDisplay>();
+        originalScale = Vector3.one;
     }
 
     void Update()
     {
         if (isHolding && !isZoomed && !dragHandler.IsDragging)
         {
-            holdTimer += Time.unscaledDeltaTime;
+            // 추가 조건: 마나가 충분하지 않으면 확대하지 않도록 차단
+            if (cardDisplay != null && ManaManager.Instance != null &&
+                ManaManager.Instance.currentMana < cardDisplay.cardData.cost)
+                return;
 
+            holdTimer += Time.unscaledDeltaTime;
             if (holdTimer >= holdTime)
             {
                 ZoomInCard();
             }
+        }
+
+        if (isZoomed && Input.GetMouseButtonUp(0))
+        {
+            ZoomOutCard();
+            isHolding = false;
+            holdTimer = 0f;
         }
     }
 
@@ -41,35 +69,51 @@ public class CardHoldZoom : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         holdTimer = 0f;
     }
 
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        if (isZoomed)
-        {
-            ZoomOutCard();
-        }
-        isHolding = false;
-        holdTimer = 0f;
-    }
-
     private void ZoomInCard()
     {
         isZoomed = true;
         Time.timeScale = 0.2f;
 
-        originalPosition = rectTransform.anchoredPosition;
-        originalScale = rectTransform.localScale;
+        if (zoomedCardInstance != null) Destroy(zoomedCardInstance);
 
-        // 부모를 캔버스로 바꾸되, 월드 좌표 유지하지 않음
-        rectTransform.SetParent(parentCanvas.transform, false);
-        rectTransform.SetAsLastSibling();
+        // 카드 복제 생성
+        zoomedCardInstance = Instantiate(gameObject, parentCanvas.transform);
+        zoomedCardInstance.transform.SetAsLastSibling();
 
-        // 화면 정중앙으로 이동
-        rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-        rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        rectTransform.pivot = new Vector2(0.5f, 0.5f);
-        rectTransform.anchoredPosition = Vector2.zero;
+        // RectTransform 설정
+        zoomedCardRect = zoomedCardInstance.GetComponent<RectTransform>();
+        zoomedCardRect.anchorMin = new Vector2(0.5f, 0.5f);
+        zoomedCardRect.anchorMax = new Vector2(0.5f, 0.5f);
+        zoomedCardRect.pivot = new Vector2(0.5f, 0.5f);
+        zoomedCardRect.anchoredPosition = Vector2.zero;
+        zoomedCardInstance.transform.localScale = originalScale;
 
-        LeanTween.scale(gameObject, originalScale * 2f, 0.2f).setEaseOutQuad();
+        // 마우스 이벤트 차단
+        CanvasGroup cg = zoomedCardInstance.GetComponent<CanvasGroup>();
+        if (cg != null)
+        {
+            cg.blocksRaycasts = false;
+            cg.interactable = false;
+        }
+
+        // 확대 애니메이션
+        LeanTween.scale(zoomedCardInstance, originalScale * 2f, 0.25f).setEaseOutExpo();
+
+        // 테두리 이펙트 생성
+        if (screenEdgeEffectPrefab != null && currentEffectInstance == null)
+        {
+            currentEffectInstance = Instantiate(screenEdgeEffectPrefab, parentCanvas.transform);
+            currentEffectInstance.transform.SetAsLastSibling();
+
+            RectTransform fxRect = currentEffectInstance.GetComponent<RectTransform>();
+            if (fxRect != null)
+            {
+                fxRect.anchorMin = Vector2.zero;
+                fxRect.anchorMax = Vector2.one;
+                fxRect.offsetMin = Vector2.zero;
+                fxRect.offsetMax = Vector2.zero;
+            }
+        }
     }
 
     private void ZoomOutCard()
@@ -77,12 +121,16 @@ public class CardHoldZoom : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         isZoomed = false;
         Time.timeScale = 1f;
 
-        LeanTween.move(rectTransform, originalPosition, 0.2f).setEaseOutQuad();
-        LeanTween.scale(gameObject, originalScale, 0.2f).setEaseOutQuad().setOnComplete(() =>
+        if (zoomedCardInstance != null)
         {
-            // 부모 복원 및 위치 재설정
-            rectTransform.SetParent(dragHandler?.transform.parent, false);
-            rectTransform.anchoredPosition = originalPosition;
-        });
+            Destroy(zoomedCardInstance);
+            zoomedCardInstance = null;
+        }
+
+        if (currentEffectInstance != null)
+        {
+            Destroy(currentEffectInstance);
+            currentEffectInstance = null;
+        }
     }
 }

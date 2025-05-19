@@ -22,8 +22,18 @@ namespace Spellbound
         [Header("지속 효과")]
         public float effectDuration = 3f;
 
+        [Header("상태 효과 지속시간")]
+        public float statusEffectDuration = 3f;
+
         [TextArea(2, 5)]
         public string description;  // 카드 설명
+
+        [Header("이펙트 프리팹")]
+        public GameObject fallEffectPrefab;   // 낙하 이펙트 (위에서 떨어지는 이펙트)
+        public GameObject impactEffectPrefab; // 바닥에 도달한 후 폭발 이펙트
+
+        [Header("이펙트 유형")]
+        public EffectDeliveryType deliveryType = EffectDeliveryType.Falling;
 
         public enum CardType
 
@@ -44,6 +54,12 @@ namespace Spellbound
             Earth,
             Light,
             Dark
+        }
+
+        public enum EffectDeliveryType
+        {
+            Falling,    // 하늘에서 낙하 후 폭발
+            GroundGrow  // 바닥에서 즉시 시작하여 확장
         }
     }
 }
