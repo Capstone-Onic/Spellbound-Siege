@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dfb00fc8631c4b4bb221917379c8afa, type: 3}
   m_Name: Stone
   m_EditorClassIdentifier: 
-  cardName: Stone
-  cardImage: {fileID: 21300000, guid: 812703559676f0d4fada048d1fc0229c, type: 3}
+  cardName: "\uB099\uC11D"
+  cardImage: {fileID: 21300000, guid: 7ed2f6c2499f5f04db94190dc65793d0, type: 3}
   cardType: 03000000
   cost: 1
   damageMin: 1

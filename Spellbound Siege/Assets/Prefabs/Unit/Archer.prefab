@@ -913,7 +913,7 @@ GameObject:
   - component: {fileID: 7742869907405839522}
   - component: {fileID: 5052821853053671916}
   m_Layer: 0
-  m_Name: archer
+  m_Name: Archer
   m_TagString: Unit
   m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -994,7 +994,7 @@ MonoBehaviour:
   damage: 40
   projectilePrefab: {fileID: 6927400756019520099, guid: e90c722fea4f08b478585c092c4fc2e7, type: 3}
   stunIndicatorPrefab: {fileID: 4944089641033070485, guid: f94b1a458b3b5e6499885ff1ada10e94, type: 3}
-  unitName: Archer
+  unitName: "\uAD81\uC218"
   unitIcon: {fileID: -1730254177, guid: 132358e9bf26b60458b731bf001e31db, type: 3}
   goldCost: 15
   druidDuration: 0

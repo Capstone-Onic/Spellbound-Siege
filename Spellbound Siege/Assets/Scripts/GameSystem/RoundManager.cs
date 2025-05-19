@@ -175,7 +175,7 @@ public class RoundManager : MonoBehaviour
     {
         if (roundText != null)
         {
-            roundText.text = $"Round: {currentRound}";
+            roundText.text = $"라운드: {currentRound}";
         }
     }
 
@@ -184,7 +184,7 @@ public class RoundManager : MonoBehaviour
         if (enemyCountText != null)
         {
             int remaining = Mathf.Max(0, totalEnemiesThisRound - killedEnemiesThisRound);
-            enemyCountText.text = $"Enemies: {remaining} / {totalEnemiesThisRound}";
+            enemyCountText.text = $"적 처치: {remaining} / {totalEnemiesThisRound}";
         }
     }
 

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dfb00fc8631c4b4bb221917379c8afa, type: 3}
   m_Name: Ice Spear
   m_EditorClassIdentifier: 
-  cardName: Ice Spear
-  cardImage: {fileID: 21300000, guid: f4ffc1ede2f0c1b40873417a82da2f15, type: 3}
+  cardName: "\uC5BC\uC74C\uCC3D"
+  cardImage: {fileID: 21300000, guid: bf9521c5beece8c41b205d56abaebc7a, type: 3}
   cardType: 02000000
   cost: 1
   damageMin: 1
@@ -26,3 +26,4 @@ MonoBehaviour:
     \uC785\uD788\uACE0 2\uCD08\uAC04 \uC774\uB3D9\uC18D\uB3C4\uB97C 50% \uAC10\uC18C\uC2DC\uD0B5\uB2C8\uB2E4."
   fallEffectPrefab: {fileID: 0}
   impactEffectPrefab: {fileID: 7356203045360921323, guid: ce9dcfeb2d71e97458e008652103e968, type: 3}
+  deliveryType: 0

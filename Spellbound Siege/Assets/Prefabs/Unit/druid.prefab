@@ -1695,8 +1695,8 @@ MonoBehaviour:
   damage: 3
   projectilePrefab: {fileID: 7179959940208803169, guid: 1fc05c6524b233c4884c09f9e16d0a04, type: 3}
   stunIndicatorPrefab: {fileID: 4944089641033070485, guid: f94b1a458b3b5e6499885ff1ada10e94, type: 3}
-  unitName: druid
-  unitIcon: {fileID: -1107025847, guid: 132358e9bf26b60458b731bf001e31db, type: 3}
+  unitName: "\uB4DC\uB8E8\uC774\uB4DC"
+  unitIcon: {fileID: 798309987, guid: 132358e9bf26b60458b731bf001e31db, type: 3}
   goldCost: 20
   druidDuration: 2
   druidTickInterval: 0.1
