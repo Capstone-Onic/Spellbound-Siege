@@ -5,54 +5,35 @@ using Spellbound;
 
 public class AreaEffectTrigger : MonoBehaviour
 {
-    public Card sourceCard;
-    public float duration = 3f;
-    public float tickInterval = 0.2f;
+    public Card sourceCard;           // 사용된 카드 정보
+    public float duration = 3f;       // 전체 지속 시간 (초)
+    public float tickInterval = 0.2f; // ApplyEffect 호출 간격 (초)
 
-    [Header("Visual Effects")]
-    public GameObject iceSlowEffectPrefab;
-    public GameObject fireBurnEffectPrefab;
-
-    private HashSet<EnemyController> affectedEnemies = new();
-    private Dictionary<EnemyController, Coroutine> restoreCoroutines = new();
-    private Dictionary<EnemyController, GameObject> activeEffects = new();
+    // 이미 처리한 적을 다시 처리하지 않기 위한 집합
+    private HashSet<EnemyController> affectedEnemies = new HashSet<EnemyController>();
 
     private void Start()
     {
         if (sourceCard == null)
         {
-            Debug.LogError("[AreaEffectTrigger] sourceCard가 설정되지 않았습니다. 이펙트 적용이 중단됩니다.");
+            Debug.LogError("[AreaEffectTrigger] sourceCard가 설정되지 않았습니다.");
+            Destroy(gameObject);
             return;
         }
 
         StartCoroutine(ApplyEffectOverTime());
     }
 
+    // duration 동안 tickInterval마다 ApplyEffectToEnemiesInRange 실행
     private IEnumerator ApplyEffectOverTime()
     {
         float elapsed = 0f;
-
         while (elapsed < duration)
         {
             ApplyEffectToEnemiesInRange();
             yield return new WaitForSeconds(tickInterval);
             elapsed += tickInterval;
         }
-
-        foreach (var enemy in restoreCoroutines.Keys)
-        {
-            if (enemy != null)
-                enemy.speedMultiplier = 1f;
-        }
-
-        foreach (var fx in activeEffects.Values)
-        {
-            if (fx != null) Destroy(fx);
-        }
-
-        affectedEnemies.Clear();
-        restoreCoroutines.Clear();
-        activeEffects.Clear();
 
         Destroy(gameObject);
     }
@@ -63,70 +44,75 @@ public class AreaEffectTrigger : MonoBehaviour
         foreach (var hit in hits)
         {
             var enemy = hit.GetComponent<EnemyController>();
-            if (enemy == null || affectedEnemies.Contains(enemy)) continue;
+            if (enemy == null || affectedEnemies.Contains(enemy))
+                continue;
 
             affectedEnemies.Add(enemy);
 
-            // Ice 카드: 이동 속도 감소 + 이펙트
-            if (sourceCard.cardType.Count > 0 && sourceCard.cardType[0] == Card.CardType.Ice)
+            // Ice 계열 카드 (Ice Spear, Blizzard 등)
+            if (sourceCard.cardType.Contains(Card.CardType.Ice))
             {
-                enemy.speedMultiplier = 0.5f;
-
-                if (iceSlowEffectPrefab != null)
-                {
-                    GameObject fx = Instantiate(iceSlowEffectPrefab, enemy.transform);
-                    Renderer rend = enemy.GetComponent<Renderer>();
-                    float height = rend != null ? rend.bounds.size.y : 2f;
-                    fx.transform.localPosition = new Vector3(0, height * 0.3f, 0);
-                    activeEffects[enemy] = fx;
-                }
-
-                Coroutine co = StartCoroutine(RestoreSpeedAfterDelay(enemy, sourceCard.statusEffectDuration));
-                restoreCoroutines[enemy] = co;
+                // instantDamage: IceSpear = 0, Blizzard = 30 (SO에서 설정된 damage 값)
+                float instantDamage = sourceCard.damage;
+                StartCoroutine(ApplyDamageAndSlow(
+                    enemy,
+                    instantDamage,
+                    0.5f,                           // 슬로우 배율
+                    sourceCard.statusEffectDuration // IceSpear=3, Blizzard=5 등
+                ));
             }
-
-            // Fire 카드: 도트 데미지 + 이펙트
+            // Fire 계열 카드 (지속 도트)
             else if (sourceCard.cardType.Contains(Card.CardType.Fire))
             {
-                // 도트 데미지는 enemy 기준에서 실행
-                enemy.StartCoroutine(ApplyBurnDamage(enemy, 6f, 0.5f, sourceCard.statusEffectDuration));
-
-                // Burn 이펙트도 enemy 하위로 붙고, 3초 후 자동 제거됨
-                if (fireBurnEffectPrefab != null)
-                {
-                    GameObject fx = Instantiate(fireBurnEffectPrefab, enemy.transform);
-                    Renderer rend = enemy.GetComponent<Renderer>();
-                    float height = rend != null ? rend.bounds.size.y : 2f;
-                    fx.transform.localPosition = new Vector3(0, height * 0.3f, 0);
-                    Destroy(fx, sourceCard.statusEffectDuration);
-                }
+                float instantDamage = sourceCard.damage;
+                StartCoroutine(ApplyBurnDamage(
+                    enemy,
+                    instantDamage,                // 틱당 데미지
+                    0.5f,                         // 틱 간격
+                    sourceCard.effectDuration     // SO에 설정된 지속시간
+                ));
             }
+            // 필요하다면 다른 속성 분기 추가…
         }
     }
 
-    private IEnumerator RestoreSpeedAfterDelay(EnemyController enemy, float delay)
+    // 즉시 대미지 + 슬로우를 처리하고, duration 후 슬로우 해제
+    private IEnumerator ApplyDamageAndSlow(
+        EnemyController enemy,
+        float instantDamage,
+        float slowMultiplier,
+        float duration)
     {
-        yield return new WaitForSeconds(delay);
+        // 즉시 대미지
+        if (instantDamage > 0f)
+            enemy.TakeDamage(instantDamage);
 
+        // 슬로우 적용
+        float originalSpeed = enemy.speedMultiplier;
+        enemy.speedMultiplier = slowMultiplier;
+
+        // 유지 시간 대기
+        yield return new WaitForSeconds(duration);
+
+        // 속도 복구
         if (enemy != null)
-            enemy.speedMultiplier = 1f;
-
-        if (activeEffects.TryGetValue(enemy, out GameObject fx))
-        {
-            if (fx != null) Destroy(fx);
-            activeEffects.Remove(enemy);
-        }
-
-        restoreCoroutines.Remove(enemy);
+            enemy.speedMultiplier = originalSpeed;
     }
 
-    private IEnumerator ApplyBurnDamage(EnemyController enemy, float damage, float interval, float duration)
+    
+    // 일정 시간 동안 interval 간격으로 데미지
+    private IEnumerator ApplyBurnDamage(
+        EnemyController enemy,
+        float damage,
+        float interval,
+        float duration)
     {
-        int repeatCount = Mathf.FloorToInt(duration / interval);
-        for (int i = 0; i < repeatCount; i++)
+        float elapsed = 0f;
+        while (elapsed < duration)
         {
             if (enemy == null) yield break;
             enemy.TakeDamage(damage);
+            elapsed += interval;
             yield return new WaitForSeconds(interval);
         }
     }

@@ -4,12 +4,8 @@ using Spellbound;
 
 public class GameInitializer : MonoBehaviour
 {
-    [Header("기본 카드 이펙트 프리팹")]
-    public GameObject fireballEffect;
-    public GameObject firewallEffect;
-    public GameObject icespearEffect;
-    public GameObject stoneEffect;
-    public GameObject watershotEffect;
+    [Header("사운드")]
+    public AudioSource globalAudioSource;
 
     [System.Serializable]
     public class CardEffectEntry
@@ -23,12 +19,8 @@ public class GameInitializer : MonoBehaviour
 
     void Start()
     {
-        // 기본 이펙트 연결
-        CardEffectProcessor.fireballEffect = fireballEffect;
-        CardEffectProcessor.firewallEffect = firewallEffect;
-        CardEffectProcessor.icespearEffect = icespearEffect;
-        CardEffectProcessor.stoneEffect = stoneEffect;
-        CardEffectProcessor.watershotEffect = watershotEffect;
+        // 사운드 연결
+        CardEffectProcessor.globalAudioSource = globalAudioSource;
 
         // 속성별 상태 이펙트 등록
         foreach (var entry in statusEffectMappings)

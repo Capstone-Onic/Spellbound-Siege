@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Spellbound;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -140,6 +141,9 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void UseCard()
     {
+        // 게임 씬이 아니면 비활성화
+        if (SceneManager.GetActiveScene().name != "GameScene") return;
+
         Debug.Log($"[사용됨] {cardData.cardName}");
         CardDrawManager manager = FindObjectOfType<CardDrawManager>();
         if (manager != null)

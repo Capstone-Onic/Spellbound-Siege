@@ -6,7 +6,7 @@ Texture2D:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: z_ColorRampTexGradientTex{"mode":0,"colorKeys":[{"color":{"r":0.10196076333522797,"g":0.6415910720825195,"b":0.9254902005195618,"a":1.0},"time":0.0},{"color":{"r":0.2216981053352356,"g":1.0,"b":0.9710115790367127,"a":1.0},"time":0.6324254274368286},{"color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"time":1.0}],"alphaKeys":[{"alpha":1.0,"time":0.0},{"alpha":1.0,"time":1.0}]}
+  m_Name: z_ColorRampTexGradientTex{"mode":0,"colorKeys":[{"color":{"r":0.0,"g":0.10700178146362305,"b":1.0,"a":1.0},"time":0.0},{"color":{"r":0.2216981053352356,"g":1.0,"b":0.9710115790367127,"a":1.0},"time":0.5647059082984924},{"color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"time":1.0}],"alphaKeys":[{"alpha":1.0,"time":0.0},{"alpha":1.0,"time":1.0}]}
   m_ImageContentsHash:
     serializedVersion: 2
     Hash: 00000000000000000000000000000000
@@ -40,7 +40,7 @@ Texture2D:
   m_ColorSpace: 0
   m_PlatformBlob: 
   image data: 256
-  _typelessdata: 1aa4ecff1ba6ecff1ca8edff1caaedff1dadedff1eafedff1fb1eeff1fb4eeff20b6eeff21b8efff22bbefff22bdefff23bfefff24c1f0ff25c4f0ff25c6f0ff26c8f1ff27cbf1ff28cdf1ff29cff2ff29d1f2ff2ad4f2ff2bd6f2ff2cd8f3ff2cdbf3ff2dddf3ff2edff4ff2fe2f4ff2fe4f4ff30e6f4ff31e8f5ff32ebf5ff33edf5ff33eff6ff34f2f6ff35f4f6ff36f6f6ff36f8f7ff37fbf7ff38fdf7ff3afff8ff42fff8ff4bfff8ff54fff9ff5cfff9ff65fff9ff6dfffaff76fffaff7efffaff87fffbff90fffbff98fffbffa1fffbffa9fffcffb2fffcffbafffcffc3fffdffccfffdffd4fffdffddfffeffe5fffeffeefffefff6ffffffffffffff
+  _typelessdata: 001bffff0222ffff0328ffff052efeff0635feff083bfeff0a42feff0b48feff0d4efdff0e55fdff105bfdff1162fdff1368fdff156efcff1675fcff187bfcff1982fcff1b88fbff1d8efbff1e95fbff209bfbff21a2fbff23a8faff25affaff26b5faff28bbfaff29c2faff2bc8f9ff2ccff9ff2ed5f9ff30dbf9ff31e2f9ff33e8f8ff34eff8ff36f5f8ff38fbf8ff3cfff8ff43fff8ff4afff8ff51fff9ff59fff9ff60fff9ff67fff9ff6efffaff75fffaff7dfffaff84fffaff8bfffbff92fffbff9afffbffa1fffbffa8fffcffaffffcffb7fffcffbefffdffc5fffdffccfffdffd4fffdffdbfffeffe2fffeffe9fffefff1fffefff8ffffffffffffff
   m_StreamData:
     serializedVersion: 2
     offset: 0
@@ -112,11 +112,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 016a2e6efa459ba4ca74cd78c5596bc0, type: 3}
+        m_Texture: {fileID: 2800000, guid: 98b64212b777b704896163bb7d44c346, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 4bd7ed874775ded45913e833aa51cc7e, type: 3}
+        m_Texture: {fileID: 2800000, guid: ab82c389ad900de489ce89e833eaea95, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Shape1MaskTex:
@@ -201,7 +201,7 @@ Material:
     - _HsvSaturation: 1
     - _HsvShift: 0
     - _LightAmount: 0
-    - _MaskPow: 1.01
+    - _MaskPow: 5
     - _OffsetSh1: 1
     - _OffsetSh2: 1
     - _OffsetSh3: 1
@@ -292,7 +292,7 @@ Material:
     - _ZoomAmount: 1.5
     m_Colors:
     - _BackFaceTint: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _Color: {r: 0.754717, g: 1, b: 1, a: 1}
+    - _Color: {r: 0, g: 0, b: 0, a: 1}
     - _ColorGradingDark: {r: 1, g: 1, b: 1, a: 1}
     - _ColorGradingLight: {r: 1, g: 1, b: 1, a: 1}
     - _ColorGradingMiddle: {r: 1, g: 1, b: 1, a: 1}

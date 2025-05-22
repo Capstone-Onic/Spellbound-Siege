@@ -38,12 +38,13 @@ public class FallingEffectController : MonoBehaviour
 
     private void Explode()
     {
-        // 충돌 이펙트
+        // 착지 사운드
+        CardEffectProcessor.PlaySound(cardData.impactSound);
+
         if (impactEffectPrefab != null)
         {
             GameObject fx = Instantiate(impactEffectPrefab, targetPosition, Quaternion.identity);
 
-            // sourceCard 설정
             var trigger = fx.GetComponent<AreaEffectTrigger>();
             if (trigger != null)
             {
@@ -53,9 +54,7 @@ public class FallingEffectController : MonoBehaviour
             Destroy(fx, 1.5f);
         }
 
-        // 피해 처리
         CardEffectProcessor.ApplyDamageAndStatus(cardData, targetPosition);
-
         Destroy(gameObject);
     }
 }

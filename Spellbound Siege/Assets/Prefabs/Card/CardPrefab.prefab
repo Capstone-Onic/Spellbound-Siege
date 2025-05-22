@@ -975,6 +975,7 @@ GameObject:
   - component: {fileID: 1448106457431038611}
   - component: {fileID: 7261801000637298940}
   - component: {fileID: -8572206487007010292}
+  - component: {fileID: 8184791999578568529}
   m_Layer: 5
   m_Name: CardPrefab
   m_TagString: Untagged
@@ -1048,7 +1049,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &2296644460884103320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1126,6 +1127,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   screenEdgeEffectPrefab: {fileID: 8962368663310730568, guid: 64230e79d7098a346945775cdc13b94e, type: 3}
+--- !u!114 &8184791999578568529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7381902124258836310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 233928b26f1f734449bebc809fdc402f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardData: {fileID: 0}
+  addButton: {fileID: 0}
+  removeButton: {fileID: 0}
 --- !u!1 &7398108424526167499
 GameObject:
   m_ObjectHideFlags: 0
