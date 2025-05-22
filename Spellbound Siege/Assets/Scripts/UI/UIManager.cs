@@ -6,7 +6,7 @@ public class UIManager : MonoBehaviour
 
     public GameObject currentUnitUI;
 
-    public bool IsUIOpen => currentUnitUI != null;
+    public bool IsUIOpen { get; private set; } = false;
 
     private void Awake()
     {
@@ -27,5 +27,14 @@ public class UIManager : MonoBehaviour
             Destroy(currentUnitUI);
             currentUnitUI = null;
         }
+
+        IsUIOpen = false;
+
+        // 카메라도 원래 위치로 복귀
+        CameraFocus camFocus = Camera.main.GetComponent<CameraFocus>();
+        if (camFocus != null)
+            camFocus.ResetFocus();
+
+        ClickableUnit.currentlyFocusedUnit = null;
     }
 }

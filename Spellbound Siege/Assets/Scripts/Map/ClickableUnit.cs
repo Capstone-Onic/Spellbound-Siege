@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ClickableUnit : MonoBehaviour
 {
@@ -8,6 +9,9 @@ public class ClickableUnit : MonoBehaviour
     [Header("유닛 액션 UI 프리팹")]
     public GameObject unitActionUIPrefab;
     private GameObject currentUI;
+
+    // 현재 선택된 유닛 추적용
+    public static ClickableUnit currentlyFocusedUnit;
 
     public void SetParentTile(GridTile tile)
     {
@@ -23,39 +27,45 @@ public class ClickableUnit : MonoBehaviour
     {
         if (!StartGameManager.isPlacementPhase) return;
 
+        // UI 위를 클릭했으면 무시
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+
         ToggleUnitUI();
     }
 
     private void ToggleUnitUI()
     {
+        // 같은 유닛 클릭 → UI 닫기
+        if (UIManager.Instance.IsUIOpen && currentlyFocusedUnit == this)
+        {
+            UIManager.Instance.CloseUI();
+            currentlyFocusedUnit = null;
+            return;
+        }
+
+        // 다른 유닛 클릭 → 기존 UI 닫고 새 UI 열기
         if (UIManager.Instance.IsUIOpen)
         {
-            // 같은 유닛 다시 누르면 토글 닫기
-            if (UIManager.Instance.currentUnitUI == currentUI)
-            {
-                UIManager.Instance.CloseUI();
-                return;
-            }
-
-            // 다른 UI가 열려 있으면 닫기
             UIManager.Instance.CloseUI();
         }
 
+        // UI 생성
         Renderer rend = GetComponentInChildren<Renderer>();
         float unitHeight = rend != null ? rend.bounds.size.y : 2f;
         Vector3 spawnPos = transform.position + Vector3.up * (unitHeight + 0.2f);
 
         currentUI = Instantiate(unitActionUIPrefab, spawnPos, Quaternion.identity);
         currentUI.transform.SetParent(null);
-        UIManager.Instance.OpenUI(currentUI); // UI 등록
+        UIManager.Instance.OpenUI(currentUI);
 
         UnitActionUI ui = currentUI.GetComponent<UnitActionUI>();
         if (ui != null)
         {
             ui.Setup(this);
         }
-    }
 
+        currentlyFocusedUnit = this;
+    }
 
     public void SellUnit()
     {
@@ -63,7 +73,10 @@ public class ClickableUnit : MonoBehaviour
         {
             int refund = baseUnit.goldCost / 2;
             GoldManager.instance.AddGold(refund);
+            baseUnit.CleanupUpgradeEffects();
         }
+
+        SFXManager.Instance?.PlaySell();
 
         if (parentTile != null)
         {
@@ -76,13 +89,13 @@ public class ClickableUnit : MonoBehaviour
 
     public void UpgradeUnit()
     {
-        int upgradeCost = 10; // 임의 설정
+        int upgradeCost = 10;
 
         if (GoldManager.instance.SpendGold(upgradeCost))
         {
             Debug.Log("[강화] 유닛 강화 완료");
-
-            baseUnit.IncreaseStats(); // 외형/스탯 변화용 함수 (아직 내부 구현 안함)
+            SFXManager.Instance?.PlayUpgrade();
+            baseUnit.IncreaseStats();
         }
         else
         {

@@ -19,6 +19,7 @@ public class StartGameManager : MonoBehaviour
     {
         // 씬 시작 시 기본 상태 설정
         gameStarted = false;
+        BGMManager.Instance?.PlayIntermissionMusic();
 
         if (cardUI != null) cardUI.SetActive(false);
         if (startButton != null) startButton.SetActive(true);
@@ -37,6 +38,7 @@ public class StartGameManager : MonoBehaviour
         if (!gameStarted)
         {
             gameStarted = true;
+            BGMManager.Instance?.PlayBattleMusic(); // 전투 BGM 재생
             // (필요한 초기 시작 처리 추가 가능)
         }
 
@@ -74,6 +76,7 @@ public class StartGameManager : MonoBehaviour
     public void EnterIntermissionPhase()
     {
         isPlacementPhase = true;
+        BGMManager.Instance?.PlayIntermissionMusic();
 
         if (cardUI != null) cardUI.SetActive(false);
         if (unitSelectionPanel != null) unitSelectionPanel.SetActive(true);

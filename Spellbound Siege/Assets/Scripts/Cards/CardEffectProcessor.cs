@@ -157,22 +157,22 @@ public static class CardEffectProcessor
         {
             string name = cardData.cardName.ToLower();
 
-            if (name.Contains("fire ball"))
+            if (name.Contains("È­¿°±¸"))
             {
                 enemy.TakeDamage(15f);
                 enemy.StartCoroutine(ApplyBurnDamage(enemy, 3f, 0.5f, cardData.statusEffectDuration));
             }
-            else if (name.Contains("ice spear"))
+            else if (name.Contains("¾óÀ½Ã¢"))
             {
                 enemy.TakeDamage(15f);
                 enemy.StartCoroutine(ApplySlow(enemy, 0.5f, cardData.effectDuration));
             }
-            else if (name.Contains("stone"))
+            else if (name.Contains("³«¼®"))
             {
                 enemy.TakeDamage(13f);
                 enemy.StartCoroutine(ApplyStun(enemy, 1.0f));
             }
-            else if (name.Contains("water shot"))
+            else if (name.Contains("¿öÅÍ¼¦"))
             {
                 enemy.TakeDamage(25f);
             }

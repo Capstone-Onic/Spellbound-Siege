@@ -118,6 +118,8 @@ public class RoundManager : MonoBehaviour
         lifeCount = Mathf.Max(0, lifeCount - 1);
         UpdateLifeUI();
 
+        SFXManager.Instance?.PlayLifeLost();
+
         if (lifeCount < lifeIcons.Count && lifeIcons[lifeCount] != null)
         {
             StartCoroutine(AnimateLifeLoss(lifeIcons[lifeCount]));
