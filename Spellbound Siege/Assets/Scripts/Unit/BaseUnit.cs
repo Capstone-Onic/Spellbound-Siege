@@ -43,6 +43,8 @@ public class BaseUnit : MonoBehaviour, IStunnable
     public float druidTickInterval = 1f;       // 틱 간격 (몇 초마다 데미지를 주는지)
     public float druidEffectRadius = 1.5f;     // 드루이드 효과 범위 반경
 
+    private List<GameObject> activeUpgradeEffects = new(); // 강화 시 등장하는 이펙트
+
     void Start()
     {
         // 유닛이 바라보는 방향 기본값 설정 (뒤를 보게)
@@ -225,9 +227,19 @@ public class BaseUnit : MonoBehaviour, IStunnable
             {
                 Vector3 effectPos = transform.position;
                 effectPos.y = 0.05f; // 바닥에 살짝 띄우기
-                Instantiate(effect, effectPos, Quaternion.identity);
+                GameObject instance = Instantiate(effect, effectPos, Quaternion.identity);
+                activeUpgradeEffects.Add(instance); // 리스트에 저장
             }
         }
+    }
+    public void CleanupUpgradeEffects()
+    {
+        foreach (var fx in activeUpgradeEffects)
+        {
+            if (fx != null)
+                Destroy(fx);
+        }
+        activeUpgradeEffects.Clear();
     }
 
     /// <summary>

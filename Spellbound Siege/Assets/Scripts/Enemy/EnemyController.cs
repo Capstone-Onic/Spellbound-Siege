@@ -10,7 +10,7 @@ public class EnemyController : MonoBehaviour
     // ===== [일반 설정] =====
     public float speed = 3f;                            // 이동 속도
     public float maxHealth = 100f;                      // 최대 체력
-    private float health;                               // 현재 체력
+    public float health;                               // 현재 체력
     public float speedMultiplier = 1f;                  // 이동 속도 배수 (슬로우 등 상태이상 대응)
     public GameObject deathEffectPrefab;                // 사망 시 이펙트 프리팹
 
