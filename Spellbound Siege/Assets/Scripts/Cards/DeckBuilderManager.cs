@@ -51,7 +51,7 @@ public class DeckBuilderManager : MonoBehaviour
     {
         // 선택한 덱을 정적 변수로 보관
         DeckData.selectedDeck = new List<Card>(selectedDeck);
-        SceneManager.LoadScene("Map1"); // 게임 씬 이름
+        SceneManager.LoadScene("GameScene"); // 게임 씬 이름
     }
 
     public void PopulateAllCards()
