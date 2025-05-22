@@ -11,8 +11,7 @@ namespace Spellbound
         public Sprite cardImage;
         public List<CardType> cardType;
         public int cost;
-        public int damageMin;
-        public int damageMax;
+        public int damage;
         public List<DamageType> damageType;
 
         [Header("범위 설정")]
@@ -20,7 +19,7 @@ namespace Spellbound
         public float effectRadius = 1.5f;
         
         [Header("지속 효과")]
-        public float effectDuration = 3f;
+        public float effectDuration = 3f; // 이펙트 지속시간
 
         [Header("상태 효과 지속시간")]
         public float statusEffectDuration = 3f;
@@ -34,6 +33,10 @@ namespace Spellbound
 
         [Header("이펙트 유형")]
         public EffectDeliveryType deliveryType = EffectDeliveryType.Falling;
+
+        [Header("이펙트 사운드")]
+        public AudioClip fallSound;    // 낙하 시 재생
+        public AudioClip impactSound;  // 착지 시 재생
 
         public enum CardType
 

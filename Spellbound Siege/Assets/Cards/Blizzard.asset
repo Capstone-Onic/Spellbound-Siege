@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dfb00fc8631c4b4bb221917379c8afa, type: 3}
+  m_Name: Blizzard
+  m_EditorClassIdentifier: 
+  cardName: "\uB208\uBCF4\uB77C"
+  cardImage: {fileID: 21300000, guid: 8fcdf653dc109c348b6e5dde104eeadc, type: 3}
+  cardType: 02000000
+  cost: 5
+  damage: 30
+  damageType: 02000000
+  effectRadius: 999
+  effectDuration: 5
+  statusEffectDuration: 5
+  description: "3\uCD08\uAC04 \uC9C0\uC18D\uB418\uBA70 \uBAA8\uB4E0 \uC801\uC5D0\uAC8C
+    30\uC758 \uD53C\uD574\uB97C \uC785\uD788\uACE0 5\uCD08\uAC04 \uC774\uB3D9\uC18D\uB3C4\uB97C
+    50% \uAC10\uC18C\uC2DC\uD0B5\uB2C8\uB2E4."
+  fallEffectPrefab: {fileID: 0}
+  impactEffectPrefab: {fileID: 5597116909655468507, guid: 3086a120a2998224a89e610368793329, type: 3}
+  deliveryType: 1
+  fallSound: {fileID: 0}
+  impactSound: {fileID: 8300000, guid: 3f5ee1a112fcdaa409675452029801f7, type: 3}

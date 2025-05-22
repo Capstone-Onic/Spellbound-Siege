@@ -16,14 +16,14 @@ MonoBehaviour:
   cardImage: {fileID: 21300000, guid: 7ed2f6c2499f5f04db94190dc65793d0, type: 3}
   cardType: 03000000
   cost: 1
-  damageMin: 1
-  damageMax: 2
   damageType: 03000000
   effectRadius: 1
   effectDuration: 1
   statusEffectDuration: 1
-  description: "\uBC94\uC704 \uB0B4\uC758 \uC801\uC5D0\uAC8C 13\uC758 \uB370\uBBF8\uC9C0\uB97C
+  description: "\uBC94\uC704 \uB0B4\uC758 \uC801\uC5D0\uAC8C 13\uC758 \uD53C\uD574\uB97C
     \uC785\uD788\uACE0 1\uCD08\uAC04 \uAE30\uC808\uC2DC\uD0B5\uB2C8\uB2E4."
   fallEffectPrefab: {fileID: 2042056875780692701, guid: dd675e3cfb33ad4428044007ddffdadd, type: 3}
   impactEffectPrefab: {fileID: 7281556293096593061, guid: 4a66c48aaad0c9f4bb813cfbe109eeb6, type: 3}
   deliveryType: 0
+  fallSound: {fileID: 8300000, guid: fac1a01bef4cba9409407db5ab2b65cc, type: 3}
+  impactSound: {fileID: 8300000, guid: 0cfd8ee85f721364c9c158e6bbc7814c, type: 3}

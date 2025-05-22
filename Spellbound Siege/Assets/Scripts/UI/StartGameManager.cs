@@ -1,6 +1,8 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Spellbound;
 
 public class StartGameManager : MonoBehaviour
 {
@@ -29,6 +31,12 @@ public class StartGameManager : MonoBehaviour
         // Start 버튼 클릭 리스너 등록
         if (startButtonComponent != null)
             startButtonComponent.onClick.AddListener(OnStartButtonClicked);
+
+        if (DeckData.selectedDeck.Count > 0)
+        {
+            cardDrawManager.deck = new List<Card>(DeckData.selectedDeck);
+            cardDrawManager.ResetDeck();
+        }
     }
 
     // Start 버튼을 클릭했을 때 호출됩니다.

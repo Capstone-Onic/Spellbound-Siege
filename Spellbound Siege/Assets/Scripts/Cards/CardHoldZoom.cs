@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CardHoldZoom : MonoBehaviour, IPointerDownHandler
 {
@@ -41,9 +42,12 @@ public class CardHoldZoom : MonoBehaviour, IPointerDownHandler
 
     void Update()
     {
+        // 게임 씬이 아닐 경우 기능 차단
+        if (SceneManager.GetActiveScene().name != "GameScene") return;
+
         if (isHolding && !isZoomed && !dragHandler.IsDragging)
         {
-            // 추가 조건: 마나가 충분하지 않으면 확대하지 않도록 차단
+            // 마나가 충분하지 않으면 확대하지 않도록 차단
             if (cardDisplay != null && ManaManager.Instance != null &&
                 ManaManager.Instance.currentMana < cardDisplay.cardData.cost)
                 return;
