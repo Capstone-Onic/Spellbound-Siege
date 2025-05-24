@@ -97,7 +97,6 @@ public static class CardEffectProcessor
         Vector3 spawnPos;
         Quaternion spawnRot;
 
-        // 타입별 prefab, clip, 위치 결정
         switch (cardData.deliveryType)
         {
             case Card.EffectDeliveryType.Falling:
@@ -106,12 +105,30 @@ public static class CardEffectProcessor
                     Debug.LogWarning($"[CardEffectProcessor] 낙하형 카드에 필요한 프리팹이 없습니다: {cardData.cardName}");
                     return;
                 }
+
                 prefabToSpawn = cardData.fallEffectPrefab;
                 clipToPlay = cardData.fallSound;
-                // 시작 위치를 높게 설정
                 spawnPos = position + Vector3.up * 3f;
                 spawnRot = prefabToSpawn.transform.rotation;
-                break;
+
+                GameObject fallingGO = Object.Instantiate(prefabToSpawn, spawnPos, spawnRot);
+
+                // 낙하 초기화 호출
+                var controller = fallingGO.GetComponent<FallingEffectController>();
+                if (controller != null)
+                {
+                    controller.Initialize(position, cardData, cardData.impactEffectPrefab);
+                }
+                else
+                {
+                    Debug.LogWarning($"[CardEffectProcessor] {fallingGO.name}에 FallingEffectController가 없습니다.");
+                }
+
+                // 낙하 사운드 재생
+                var fallAudio = fallingGO.AddComponent<TimedAudioPlayer>();
+                fallAudio.PlayClip(clipToPlay, cardData);
+
+                return; // GroundGrow와 중복 실행 방지
 
             case Card.EffectDeliveryType.GroundGrow:
                 if (cardData.impactEffectPrefab == null)
@@ -119,28 +136,37 @@ public static class CardEffectProcessor
                     Debug.LogWarning($"[CardEffectProcessor] GroundGrow 카드에 폭발 이펙트 프리팹이 없습니다: {cardData.cardName}");
                     return;
                 }
+
                 prefabToSpawn = cardData.impactEffectPrefab;
                 clipToPlay = cardData.impactSound;
                 spawnPos = position + Vector3.up * 0.1f;
                 spawnRot = prefabToSpawn.transform.rotation;
+
+                GameObject groundGO = Object.Instantiate(prefabToSpawn, spawnPos, spawnRot);
+
+                var ps = groundGO.GetComponent<ParticleSystem>() ?? groundGO.GetComponentInChildren<ParticleSystem>();
+                if (ps != null)
+                {
+                    var main = ps.main;
+                    main.stopAction = ParticleSystemStopAction.Destroy;
+                    ps.Play();
+                }
+                else
+                {
+                    Debug.LogWarning($"[CardEffectProcessor] {groundGO.name}에 ParticleSystem이 없습니다.");
+                }
+
+                var growAudio = groundGO.AddComponent<TimedAudioPlayer>();
+                growAudio.PlayClip(clipToPlay, cardData);
+
+                // 피해/상태 효과는 GroundGrow 즉시 적용
+                ApplyDamageAndStatus(cardData, position);
                 break;
 
             default:
+                Debug.LogWarning($"[CardEffectProcessor] 알 수 없는 deliveryType입니다: {cardData.deliveryType}");
                 return;
         }
-
-        // 이펙트 오브젝트 생성
-        GameObject effectGO = Object.Instantiate(prefabToSpawn, spawnPos, spawnRot);
-
-        // 파티클 시스템이 끝나면 GameObject를 Destroy하도록 설정
-        var ps = effectGO.GetComponent<ParticleSystem>();
-        var main = ps.main;
-        main.stopAction = ParticleSystemStopAction.Destroy;
-        ps.Play();
-
-        // 같은 오브젝트에 TimedAudioPlayer 추가해서 사운드 재생
-        var tap = effectGO.AddComponent<TimedAudioPlayer>();
-        tap.PlayClip(clipToPlay, cardData);
     }
 
     // 데미지 및 상태효과 적용

@@ -23,6 +23,8 @@ public class RoundManager : MonoBehaviour
     public EnemySpawner spawnerB;
     public StartGameManager startGameManager;
 
+    public UnlockCardManager unlockCardManager;
+
     public UnityEvent<int> onRoundStarted;
     public UnityEvent<int> onRoundEnded;
 
@@ -107,6 +109,12 @@ public class RoundManager : MonoBehaviour
             if (startGameManager != null)
             {
                 startGameManager.EnterIntermissionPhase();
+            }
+
+            // 라운드 종료 후 보상창 표시
+            if (unlockCardManager != null)
+            {
+                StartCoroutine(ShowRewardAfterDelay(0.5f)); // 약간의 연출 텀
             }
         }
     }
@@ -193,5 +201,11 @@ public class RoundManager : MonoBehaviour
     private void UpdateLifeUI()
     {
         // 필요 시 숫자 UI와 함께 사용할 수 있도록 확장 가능
+    }
+
+    private IEnumerator ShowRewardAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        unlockCardManager.ShowUnlockOptions();
     }
 }

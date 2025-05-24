@@ -139,6 +139,9 @@ public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             rangeIndicatorInstance = null;
         }
 
+        // 확대 조건 초기화
+        GetComponent<CardHoldZoom>()?.CancelHold();
+
         StartCoroutine(ReturnToHand());
     }
 
