@@ -16,6 +16,7 @@ MonoBehaviour:
   cardImage: {fileID: 21300000, guid: 7ed2f6c2499f5f04db94190dc65793d0, type: 3}
   cardType: 03000000
   cost: 1
+  damage: 0
   damageType: 03000000
   effectRadius: 1
   effectDuration: 1
@@ -27,3 +28,4 @@ MonoBehaviour:
   deliveryType: 0
   fallSound: {fileID: 8300000, guid: fac1a01bef4cba9409407db5ab2b65cc, type: 3}
   impactSound: {fileID: 8300000, guid: 0cfd8ee85f721364c9c158e6bbc7814c, type: 3}
+  isUnlockedByDefault: 0

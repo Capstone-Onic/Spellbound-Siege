@@ -137,4 +137,10 @@ public class CardHoldZoom : MonoBehaviour, IPointerDownHandler
             currentEffectInstance = null;
         }
     }
+
+    public void CancelHold()
+    {
+        isHolding = false;
+        holdTimer = 0f;
+    }
 }

@@ -136,8 +136,6 @@ MonoBehaviour:
   sourceCard: {fileID: 11400000, guid: ca41561c21fb5be4ab6860e704aba35a, type: 2}
   duration: 3
   tickInterval: 0.2
-  iceSlowEffectPrefab: {fileID: 2206013673924455306, guid: f012029b4687f904d9f38a989f5fe949, type: 3}
-  fireBurnEffectPrefab: {fileID: 0}
 --- !u!1 &5229142742921336720
 GameObject:
   m_ObjectHideFlags: 0
