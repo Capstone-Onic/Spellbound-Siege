@@ -29,3 +29,4 @@ MonoBehaviour:
   deliveryType: 1
   fallSound: {fileID: 0}
   impactSound: {fileID: 8300000, guid: 3f5ee1a112fcdaa409675452029801f7, type: 3}
+  isUnlockedByDefault: 0

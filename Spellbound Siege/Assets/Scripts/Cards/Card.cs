@@ -38,6 +38,9 @@ namespace Spellbound
         public AudioClip fallSound;    // 낙하 시 재생
         public AudioClip impactSound;  // 착지 시 재생
 
+        [Header("잠금 상태")]
+        public bool isUnlockedByDefault = false; //false 상태면 잠금
+
         public enum CardType
 
         {

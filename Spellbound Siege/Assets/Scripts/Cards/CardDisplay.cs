@@ -53,8 +53,21 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     void Start()
     {
         if (cardData != null)
-        {
             UpdateCardDisplay();
+
+        // GameScene이 아니면 확대/클릭 방해 요소 해제
+        if (SceneManager.GetActiveScene().name != "GameScene")
+        {
+            var cg = GetComponent<CanvasGroup>();
+            if (cg != null)
+            {
+                cg.blocksRaycasts = true;
+                cg.interactable = true;
+            }
+
+            // 선택 마크나 Glow 같은 효과 비활성화해도 좋음
+            if (glowBorder != null)
+                glowBorder.SetActive(false);
         }
     }
 
@@ -110,6 +123,8 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (SceneManager.GetActiveScene().name != "GameScene") return;
+
         CardDragHandler dragHandler = GetComponent<CardDragHandler>();
         CardHoldZoom holdZoom = GetComponent<CardHoldZoom>();
 
@@ -130,6 +145,8 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (SceneManager.GetActiveScene().name != "GameScene") return;
+
         if (glowBorder != null)
             glowBorder.SetActive(false);
 

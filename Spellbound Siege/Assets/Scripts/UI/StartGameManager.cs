@@ -17,6 +17,9 @@ public class StartGameManager : MonoBehaviour
     public CardDrawManager cardDrawManager;        // 카드 드로우 매니저
     public RoundManager roundManager;              // 라운드 매니저
 
+    public GameObject deckSettingButton; // 덱 설정 버튼 (UI에서 꺼줄 용도)
+    public DeckBuilderManager deckBuilderManager; // 덱 설정 패널 관리자 (인스펙터에서 연결)
+
     void Start()
     {
         // 씬 시작 시 기본 상태 설정
@@ -42,6 +45,16 @@ public class StartGameManager : MonoBehaviour
     // Start 버튼을 클릭했을 때 호출됩니다.
     public void OnStartButtonClicked()
     {
+        gameStarted = true;
+        isPlacementPhase = false;
+
+        // UI 처리
+        if (deckSettingButton != null)
+            deckSettingButton.SetActive(false);
+
+        if (deckBuilderManager != null)
+            deckBuilderManager.HideDeckSettingPanel();
+
         // 게임 시작 플래그 설정 (최초 1회만)
         if (!gameStarted)
         {
