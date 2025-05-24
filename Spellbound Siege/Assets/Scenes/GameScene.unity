@@ -395,7 +395,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -100, y: 208}
-  m_SizeDelta: {x: 200, y: 120}
+  m_SizeDelta: {x: 270, y: 200}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &13956508
 MonoBehaviour:
@@ -454,15 +454,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.7877358, b: 0.7877358, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b8aaa707027cc4f79af3439c5dbc9652, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 19818630ec3e18340be92ead1ecad39f, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -5048,13 +5048,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3155cd8a0e8c48647b46875421d5918b, type: 3}
+  m_Script: {fileID: 11500000, guid: 7ca24de0d6ecdbb4fb97e08994151f5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  rotationSpeed: 5
+  zoomDuration: 0.5
+  zoomDistance: 3
+  zoomHeightOffset: 2
 --- !u!1001 &330663475
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20162,10 +20163,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitPrefabs:
-  - {fileID: 8672086970723662595, guid: b8a243e105eed584188a6a1fc354aeee, type: 3}
   - {fileID: 6865542150085527857, guid: ee9551f77d778ea428da63558dd19088, type: 3}
-  - {fileID: 8208689043259521395, guid: 56d5ba22791d9a349a356d0c59ef5ef4, type: 3}
   - {fileID: 4314215495802523974, guid: 8d413cac6727d7d41bdbbb58cc7f691d, type: 3}
+  - {fileID: 8672086970723662595, guid: b8a243e105eed584188a6a1fc354aeee, type: 3}
+  - {fileID: 8208689043259521395, guid: 56d5ba22791d9a349a356d0c59ef5ef4, type: 3}
   unitButtonPrefab: {fileID: 1706515654391172343, guid: 86d9669af3b045545a2a9ea31bb16d03, type: 3}
   buttonContainer: {fileID: 990718605}
 --- !u!114 &1231949792
@@ -32672,7 +32673,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8301887, g: 0.4268423, b: 0.4268423, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -32692,7 +32693,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Start
+  m_Text: 
 --- !u!222 &1985913424
 CanvasRenderer:
   m_ObjectHideFlags: 0

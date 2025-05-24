@@ -144,6 +144,8 @@ public class GridTile : MonoBehaviour
     }
     private void TryPlaceOrRemoveUnit()
     {
+        if (CameraZoomController.Instance.IsZoomed())
+            return;
         if (UIManager.Instance != null && UIManager.Instance.IsUIOpen)
         {
             Debug.Log("[배치 차단] UI가 열려있음");

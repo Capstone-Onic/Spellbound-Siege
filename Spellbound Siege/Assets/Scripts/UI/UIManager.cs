@@ -20,21 +20,16 @@ public class UIManager : MonoBehaviour
         currentUnitUI = newUI;
     }
 
-    public void CloseUI()
+    public void CloseUI(bool resetCamera = false)
     {
         if (currentUnitUI != null)
-        {
             Destroy(currentUnitUI);
-            currentUnitUI = null;
-        }
 
+        currentUnitUI = null;
         IsUIOpen = false;
-
-        // 카메라도 원래 위치로 복귀
-        CameraFocus camFocus = Camera.main.GetComponent<CameraFocus>();
-        if (camFocus != null)
-            camFocus.ResetFocus();
-
         ClickableUnit.currentlyFocusedUnit = null;
+
+        if (resetCamera)
+            CameraZoomController.Instance?.ResetCamera();
     }
 }
