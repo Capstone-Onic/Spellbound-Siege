@@ -4689,6 +4689,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   rotationSpeed: 5
+  originalPosition: {x: 0, y: 0, z: 0}
+  originalRotation: {x: 0, y: 0, z: 0, w: 0}
+  cam: {fileID: 0}
 --- !u!1001 &330663475
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14213,18 +14216,11 @@ MonoBehaviour:
     enemyCountA: 7
     enemyPrefabB: {fileID: 4535944762957367978, guid: 9df468a018c6df34d8476a17fa58abea, type: 3}
     enemyCountB: 7
-  - enemyPrefabA: {fileID: 1706697100392022547, guid: 0e083ce51392a014bbaef7e4522ef903, type: 3}
-    enemyCountA: 8
-    enemyPrefabB: {fileID: 1706697100392022547, guid: 0e083ce51392a014bbaef7e4522ef903, type: 3}
-    enemyCountB: 8
-  - enemyPrefabA: {fileID: 6547498573638406973, guid: 2eb879e5808e9cf4bb5228b32eb59c8c, type: 3}
-    enemyCountA: 1
-    enemyPrefabB: {fileID: 6547498573638406973, guid: 2eb879e5808e9cf4bb5228b32eb59c8c, type: 3}
-    enemyCountB: 0
   spawnInterval: 1.5
   spawnerA: {fileID: 2143137926}
   spawnerB: {fileID: 1717672100}
   startGameManager: {fileID: 890341287}
+  unlockCardManager: {fileID: 350318877}
   onRoundStarted:
     m_PersistentCalls:
       m_Calls: []
