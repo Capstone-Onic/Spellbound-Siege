@@ -42,6 +42,11 @@ public class StartGameManager : MonoBehaviour
     // Start 버튼을 클릭했을 때 호출됩니다.
     public void OnStartButtonClicked()
     {
+        if (CameraZoomController.Instance != null && CameraZoomController.Instance.IsZoomed())
+        {
+            Debug.Log("[StartButton] 줌인 상태에서는 시작할 수 없습니다.");
+            return;
+        }
         // 게임 시작 플래그 설정 (최초 1회만)
         if (!gameStarted)
         {

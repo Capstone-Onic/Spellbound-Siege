@@ -20,10 +20,10 @@ public class UnitSelectionUI : MonoBehaviour
 
     void Start()
     {
-        GenerateRandomUnitButtons();
+        GenerateOrderedUnitButtons();
     }
 
-    void GenerateRandomUnitButtons()
+    void GenerateOrderedUnitButtons()
     {
         selectedUnits.Clear();
 
@@ -34,11 +34,10 @@ public class UnitSelectionUI : MonoBehaviour
         }
 
         int maxCount = Mathf.Min(5, unitPrefabs.Length);
-        List<GameObject> shuffled = unitPrefabs.OrderBy(x => Random.value).ToList();
 
         for (int i = 0; i < maxCount; i++)
         {
-            GameObject prefab = shuffled[i];
+            GameObject prefab = unitPrefabs[i];
             selectedUnits.Add(prefab);
 
             BaseUnit unit = prefab.GetComponent<BaseUnit>();
@@ -48,35 +47,29 @@ public class UnitSelectionUI : MonoBehaviour
                 continue;
             }
 
-            // 버튼 생성 및 부착
             GameObject button = Instantiate(unitButtonPrefab, buttonContainer);
             RectTransform rt = button.GetComponent<RectTransform>();
             rt.anchoredPosition = Vector2.zero;
             rt.localScale = Vector3.one;
 
-            // UI 요소 세팅
             button.transform.Find("Icon").GetComponent<Image>().sprite = unit.unitIcon;
             button.transform.Find("NameText").GetComponent<TextMeshProUGUI>().text = unit.unitName;
             button.transform.Find("CostText").GetComponent<TextMeshProUGUI>().text = $"{unit.goldCost}";
 
-            // 강조 컴포넌트
             ButtonHighlighter highlighter = button.GetComponent<ButtonHighlighter>();
             highlighter.SetHighlighted(false);
 
-            // 클릭 이벤트 등록
             button.GetComponent<Button>().onClick.AddListener(() =>
             {
-                // 기존 강조 해제
                 if (currentSelected != null)
                     currentSelected.SetHighlighted(false);
 
-                // 새 강조 적용
                 currentSelected = highlighter;
                 currentSelected.SetHighlighted(true);
 
-                // 유닛 선택
                 UnitManager.instance.SetSelectedUnit(prefab);
             });
         }
     }
+
 }
