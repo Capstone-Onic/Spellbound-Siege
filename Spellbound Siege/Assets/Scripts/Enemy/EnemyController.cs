@@ -8,44 +8,46 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
     // ===== [일반 설정] =====
-    public float speed = 3f;                            // 이동 속도
-    public float maxHealth = 100f;                      // 최대 체력
-    public float health;                               // 현재 체력
-    public float speedMultiplier = 1f;                  // 이동 속도 배수 (슬로우 등 상태이상 대응)
-    public GameObject deathEffectPrefab;                // 사망 시 이펙트 프리팹
+    public float speed = 3f;
+    public float maxHealth = 100f;
+    public float health;
+    public float speedMultiplier = 1f;
+    public GameObject deathEffectPrefab;
 
-    private List<Transform> waypoints;                  // 이동 경로
-    private int waypointIndex = 0;                      // 현재 도달한 웨이포인트 인덱스
+    private List<Transform> waypoints;
+    private int waypointIndex = 0;
 
-    // ===== [적 타입 설정] =====
-    public enum EnemyType { Normal, Elite, Boss }       // 적 유닛 타입
-    public EnemyType enemyType = EnemyType.Normal;      // 현재 적 타입
-    public int rewardGold = 10;                         // 처치 시 보상 골드
+    public enum EnemyType { Normal, Elite, Boss }
+    public EnemyType enemyType = EnemyType.Normal;
+    public int rewardGold = 10;
 
     [Header("Health Bar")]
-    public GameObject healthBarPrefab;                  // 체력바 프리팹
-    private SimpleHealthBar healthBar;                  // 체력바 인스턴스
+    public GameObject healthBarPrefab;
+    private SimpleHealthBar healthBar;
 
-    private Animator animator;                          // 애니메이터
-    private bool isDead = false;                        // 사망 여부
-    public bool IsDead => isDead;                       // 외부 접근용 읽기 전용 속성
+    private Animator animator;
+    private bool isDead = false;
+    public bool IsDead => isDead;
 
     // ===== [보스 특수 능력 설정] =====
     [Header("Boss Special Ability")]
-    public float invincibleDuration = 1f;               // 무적 지속 시간
-    public GameObject invincibleEffectPrefab;           // 무적 이펙트 프리팹
-    public float stunRadius = 3f;                       // 기절 범위
-    public float stunDuration = 2f;                     // 기절 지속 시간
-    public GameObject stunEffectPrefab;                 // 기절 이펙트 프리팹
+    public float invincibleDuration = 1f;
+    public GameObject invincibleEffectPrefab;
+    public float stunRadius = 3f;
+    public float stunDuration = 2f;
+    public GameObject stunEffectPrefab;
 
-    private bool isInvincible = false;                  // 무적 여부
+    private bool isInvincible = false;
+
+    // ===== [데미지 팝업 설정 추가] =====
+    [Header("Damage Popup")]
+    public GameObject damagePopupPrefab; // 인스펙터에서 연결
 
     // ========== [시작 시 초기화] ==========
     private void Start()
     {
         animator = GetComponent<Animator>();
 
-        // 적 타입에 따른 보상 설정 및 보스 특수 루틴 시작
         switch (enemyType)
         {
             case EnemyType.Normal: rewardGold = 10; break;
@@ -57,7 +59,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    // ========== [보스 특수 루틴: 5초마다 무작위 발동] ==========
+    // ========== [보스 특수 루틴: 무작위 발동] ==========
     private IEnumerator BossSpecialRoutine()
     {
         while (!isDead)
@@ -71,7 +73,6 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    // ========== [무적 효과 실행] ==========
     private IEnumerator ActivateInvincibility()
     {
         isInvincible = true;
@@ -88,25 +89,21 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator ActivateStun()
     {
-        // 점프 애니메이션 실행
         if (animator != null)
         {
             animator.SetTrigger("Jump");
         }
 
-        // 4회 반복 (0.65초 간격)
         for (int i = 0; i < 4; i++)
         {
             yield return new WaitForSeconds(0.65f);
 
-            // 이펙트 생성
             if (stunEffectPrefab != null)
             {
                 GameObject fx = Instantiate(stunEffectPrefab, transform.position, Quaternion.identity);
                 Destroy(fx, 1f);
             }
 
-            // 매번 이펙트가 발생할 때마다 주변 유닛 기절 처리
             Collider[] hits = Physics.OverlapSphere(transform.position, stunRadius);
             foreach (var hit in hits)
             {
@@ -121,14 +118,12 @@ public class EnemyController : MonoBehaviour
             }
         }
 
-        // 애니메이션 복귀
         yield return new WaitForSeconds(0.5f);
         if (animator != null)
         {
             animator.SetBool("isWalking", true);
         }
     }
-
 
     // ========== [유닛 초기화] ==========
     public void Initialize(List<Transform> waypoints)
@@ -215,9 +210,30 @@ public class EnemyController : MonoBehaviour
             healthBar.SetHealth(health, maxHealth);
         }
 
+        // ✅ 데미지 숫자 팝업 생성
+        ShowDamagePopup(amount);
+
         if (health <= 0)
         {
             OnDeath(true);
+        }
+    }
+
+    // ✅ 데미지 팝업 UI 표시 함수
+    private void ShowDamagePopup(float amount)
+    {
+        if (damagePopupPrefab == null) return;
+
+        Vector3 popupPos = transform.position + new Vector3(0, 2f, 0.5f); // 머리 위
+        GameObject popup = Instantiate(damagePopupPrefab, popupPos, Quaternion.identity);
+
+
+        popup.transform.Rotate(70, 0, 0);
+
+        DamagePopup popupScript = popup.GetComponent<DamagePopup>();
+        if (popupScript != null)
+        {
+            popupScript.Setup(amount);
         }
     }
 
