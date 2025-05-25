@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Spellbound;
+using System.Collections.Generic;
 
 public class CardSelectionItem : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class CardSelectionItem : MonoBehaviour
     private Button button;
     private bool isSelected = false;
     public bool isLocked => selectedMark.activeSelf;
+    private bool suppressLockedMark = false; // 보상용 카드인지 구분
 
     private void Awake()
     {
@@ -25,14 +27,20 @@ public class CardSelectionItem : MonoBehaviour
         Debug.Log($"[카드선택] 버튼 이벤트 연결됨: {cardData?.cardName}");
     }
 
-    public void SetCard(Card card)
+    public void SetCard(Card card, List<Card> selectedDeck, bool suppressLock = false)
     {
+        suppressLockedMark = suppressLock;
+
         cardData = card;
         var cardDisplay = GetComponentInChildren<CardDisplay>();
         cardDisplay?.SetCard(card);
 
         if (selectedMark == null)
+        {
             selectedMark = cardDisplay?.transform.Find("SelectedMark")?.gameObject;
+            if (selectedMark == null)
+                Debug.LogWarning($"[선택마크 없음] {card.cardName} 카드의 SelectedMark를 찾지 못했습니다.");
+        }
 
         if (lockedMark == null)
             lockedMark = cardDisplay?.transform.Find("LockedMark")?.gameObject;
@@ -43,7 +51,8 @@ public class CardSelectionItem : MonoBehaviour
         // 잠금 상태에 따라 표시 설정
         if (lockedMark != null)
         {
-            lockedMark.SetActive(!isUnlocked);
+            // suppressLock이 true일 경우 강제로 숨김
+            lockedMark.SetActive(suppressLockedMark ? false : !isUnlocked);
             Debug.Log($"[잠금표시] {cardData.cardName} → 표시됨 여부: {!isUnlocked}");
         }
         else
@@ -51,7 +60,10 @@ public class CardSelectionItem : MonoBehaviour
             Debug.LogWarning($"[오류] {cardData.cardName}의 LockedMark를 찾을 수 없음!");
         }
 
-        isSelected = isUnlocked && DeckBuilderManager.Instance.selectedDeck.Contains(card);
+        bool isInDeck = selectedDeck.Contains(card);
+        Debug.Log($"[카드비교] {card.cardName} → Deck에 포함되어 있나? {isInDeck}");
+
+        isSelected = selectedDeck.Contains(card);
         UpdateSelectionUI();
     }
 
@@ -85,7 +97,15 @@ public class CardSelectionItem : MonoBehaviour
 
     private void UpdateSelectionUI()
     {
+        Debug.Log($"[선택상태] {cardData.cardName} → 선택됨: {isSelected}");
         if (selectedMark != null)
+        {
             selectedMark.SetActive(isSelected);
+            Debug.Log($"[선택마크] {cardData.cardName} → 활성화됨: {isSelected}");
+        }
+        else
+        {
+            Debug.LogWarning($"[선택마크] {cardData.cardName} → selectedMark가 null입니다!");
+        }
     }
 }

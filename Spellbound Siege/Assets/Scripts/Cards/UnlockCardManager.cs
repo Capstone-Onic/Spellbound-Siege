@@ -11,25 +11,30 @@ public class UnlockCardManager : MonoBehaviour
     public GameObject cardSelectPanel;
     public GameObject deckSettingButton; // 덱 설정 버튼
     public DeckBuilderManager deckBuilderManager; // 인스펙터 연결
-
-    public GameObject selectFrame; // 선택 강조 프레임
+    public Button confirmButton; // 선택 버튼 연결
 
     private List<Card> unlockCandidates = new();
     private Card selectedCard;
+    private List<Card> selectedDeck => DeckBuilderManager.Instance.selectedDeck;
+
 
     public void ShowUnlockOptions()
     {
         unlockPanel.SetActive(true);
         ClearContainer();
-        selectFrame.SetActive(false); // 초기에는 숨김
 
-        // 잠금 카드 수집
-        var allSelectors = FindObjectsOfType<CardSelectionItem>();
+        // 잠긴 카드 계산
         List<Card> lockedCards = new();
-        foreach (var selector in allSelectors)
+        foreach (var card in deckBuilderManager.allAvailableCards)
         {
-            if (selector.isLocked)
-                lockedCards.Add(selector.cardData);
+            if (!DeckData.selectedDeck.Contains(card))
+                lockedCards.Add(card);
+        }
+
+        if (lockedCards.Count == 0)
+        {
+            Debug.LogWarning("[UnlockCardManager] 해금 가능한 카드가 없습니다.");
+            return;
         }
 
         // 무작위로 최대 2장 선택
@@ -38,11 +43,7 @@ public class UnlockCardManager : MonoBehaviour
         {
             int first = Random.Range(0, lockedCards.Count);
             int second;
-            do
-            {
-                second = Random.Range(0, lockedCards.Count);
-            } while (second == first);
-
+            do { second = Random.Range(0, lockedCards.Count); } while (second == first);
             unlockCandidates.Add(lockedCards[first]);
             unlockCandidates.Add(lockedCards[second]);
         }
@@ -51,16 +52,52 @@ public class UnlockCardManager : MonoBehaviour
             unlockCandidates = new List<Card>(lockedCards);
         }
 
-        // 카드 UI 생성
-        foreach (var card in unlockCandidates)
+        // 보상 카드 UI 생성
+        float spacing = 250f; // 카드 간격
+        int count = unlockCandidates.Count;
+        float totalWidth = (count - 1) * spacing;
+        float startX = -totalWidth / 2f;
+
+        for (int i = 0; i < count; i++)
         {
+            Card card = unlockCandidates[i];
             GameObject obj = Instantiate(cardSlotPrefab, cardContainer);
+
+            // 보상용 카드: 기능 제거
+            Destroy(obj.GetComponent<CardDragHandler>());
+            Destroy(obj.GetComponent<CardHoldZoom>());
+
+            CanvasGroup cg = obj.GetComponent<CanvasGroup>();
+            if (cg != null)
+            {
+                cg.blocksRaycasts = false;
+                cg.interactable = false;
+            }
+
+            // 카드 데이터 설정
             CardSelectionItem selector = obj.GetComponent<CardSelectionItem>();
-            selector.SetCard(card);
+            selector.SetCard(card, selectedDeck, true); // 보상 카드에서는 LockedMark 숨기도록
             selector.selectedMark.SetActive(false);
 
+            // 보상 UI에서는 잠금 마크 숨기기
+            Transform lockedMark = obj.transform.Find("LockedMark");
+            if (lockedMark != null)
+                lockedMark.gameObject.SetActive(false);
+
+            // 클릭 이벤트
             Button btn = obj.GetComponent<Button>();
             btn.onClick.AddListener(() => SelectCard(card, obj));
+
+            // 중심 정렬 위치 지정
+            RectTransform rt = obj.GetComponent<RectTransform>();
+            rt.anchoredPosition = new Vector2(startX + i * spacing, 0);
+        }
+
+        if (confirmButton != null)
+        {
+            confirmButton.onClick.RemoveAllListeners(); // 기존 이벤트 제거
+            confirmButton.onClick.AddListener(ConfirmUnlock); // 새로 등록
+            confirmButton.interactable = true; // 클릭 가능하도록
         }
     }
 
@@ -77,34 +114,27 @@ public class UnlockCardManager : MonoBehaviour
 
         // 현재 선택된 카드만 선택 마크 표시
         obj.GetComponentInChildren<CardSelectionItem>().selectedMark.SetActive(true);
-
-        // SelectFrame을 선택된 카드 위로 이동
-        RectTransform targetRT = obj.GetComponent<RectTransform>();
-        RectTransform frameRT = selectFrame.GetComponent<RectTransform>();
-
-        frameRT.SetParent(cardContainer); // 같은 부모 기준
-        frameRT.anchorMin = targetRT.anchorMin;
-        frameRT.anchorMax = targetRT.anchorMax;
-        frameRT.pivot = targetRT.pivot;
-        frameRT.anchoredPosition = targetRT.anchoredPosition;
-        frameRT.sizeDelta = targetRT.sizeDelta;
-        frameRT.SetSiblingIndex(targetRT.GetSiblingIndex() + 1); // 위에 오도록
-        selectFrame.SetActive(true);
     }
 
     public void ConfirmUnlock()
     {
         if (selectedCard != null)
         {
-            DeckData.selectedDeck.Add(selectedCard);
-            Debug.Log($"[해금 완료] {selectedCard.cardName}");
+            if (!DeckData.selectedDeck.Contains(selectedCard))
+            {
+                DeckData.selectedDeck.Add(selectedCard);
+                Debug.Log($"[해금 완료] {selectedCard.cardName}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[보상 선택] 선택된 카드가 없습니다.");
         }
 
-        cardSelectPanel.SetActive(false);
+        cardSelectPanel.SetActive(false); // 보상 창 닫기
 
-        // 라운드 보상 이후 덱 설정 가능하게
         if (deckSettingButton != null)
-            deckSettingButton.SetActive(true);
+            deckSettingButton.SetActive(true); // 덱 설정 다시 허용
     }
 
     private void ClearContainer()
