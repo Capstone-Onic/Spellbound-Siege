@@ -11,8 +11,8 @@ public class DeckBuilderManager : MonoBehaviour
     public static DeckBuilderManager Instance { get; private set; }
 
     [Header("전체 카드 목록 및 기본 카드 설정")]
-    public List<Card> allAvailableCards;          // ScriptableObject로 만들어진 카드 전체 목록
-    public List<Card> defaultUnlockedCards;       // 기본 해금 카드 (에디터에서 설정)
+    public List<Card> allAvailableCards;
+    public List<Card> defaultUnlockedCards;
 
     [Header("UI 연결")]
     public GameObject cardSlotPrefab;
@@ -24,7 +24,7 @@ public class DeckBuilderManager : MonoBehaviour
 
     [Header("덱 설정")]
     public int maxDeckSize = 8;
-    public List<Card> selectedDeck = new(); // 사용자가 선택한 카드들
+    public List<Card> selectedDeck = new();
     private int currentPage = 0;
     private int cardsPerPage = 4;
 
@@ -38,20 +38,35 @@ public class DeckBuilderManager : MonoBehaviour
 
     void Start()
     {
-        AutoUnlockAndSelectDefaultCards(); // 기본 해금 카드 설정
-        PopulateAllCards();                // 카드 UI 생성
+        selectedDeck = new List<Card>();
+
+        // DeckData.selectedDeck과 동일한 참조 카드만 선택
+        foreach (Card deckCard in DeckData.selectedDeck)
+        {
+            Card matched = allAvailableCards.Find(c => c.cardName == deckCard.cardName);
+            if (matched != null && !selectedDeck.Contains(matched))
+                selectedDeck.Add(matched);
+        }
+
+        AutoUnlockAndSelectDefaultCards();
+
+        foreach (Card card in selectedDeck)
+        {
+            if (!card.isUnlockedByDefault)
+                card.isUnlockedByDefault = true;
+        }
+
+        PopulateAllCards();
     }
 
     private void AutoUnlockAndSelectDefaultCards()
     {
-        selectedDeck.Clear();
-
         foreach (Card card in defaultUnlockedCards)
         {
             if (!card.isUnlockedByDefault)
                 card.isUnlockedByDefault = true;
 
-            if (!selectedDeck.Contains(card) && selectedDeck.Count < maxDeckSize)
+            if (!selectedDeck.Exists(c => c.cardName == card.cardName) && selectedDeck.Count < maxDeckSize)
             {
                 selectedDeck.Add(card);
                 Debug.Log($"[기본카드] {card.cardName} 해금 및 덱 자동 포함");
@@ -98,7 +113,7 @@ public class DeckBuilderManager : MonoBehaviour
 
         int displayCount = Mathf.Min(4, sortedCards.Count);
 
-        float cardWidth = 150f; // 기본값 (실패 대비)
+        float cardWidth = 150f;
 
         for (int i = 0; i < displayCount; i++)
         {
@@ -106,11 +121,9 @@ public class DeckBuilderManager : MonoBehaviour
             GameObject cardObj = Instantiate(cardSlotPrefab, cardRowContainer);
 
             RectTransform rt = cardObj.GetComponent<RectTransform>();
-
-            // 첫 번째 카드로부터 가로 길이 측정
             if (i == 0 && rt != null)
             {
-                LayoutRebuilder.ForceRebuildLayoutImmediate(rt); // 만약 사이즈가 아직 적용되지 않은 경우
+                LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
                 cardWidth = rt.rect.width;
                 Debug.Log($"[측정됨] 카드 너비: {cardWidth}");
             }
@@ -124,7 +137,7 @@ public class DeckBuilderManager : MonoBehaviour
             }
 
             CardSelectionItem selector = cardObj.GetComponent<CardSelectionItem>();
-            selector.SetCard(card);
+            selector.SetCard(card, selectedDeck);
 
             Transform lockedMark = cardObj.transform.Find("LockedMark");
             if (lockedMark != null)
@@ -140,7 +153,7 @@ public class DeckBuilderManager : MonoBehaviour
     public void ShowDeckSettingPanel()
     {
         if (deckSettingPanel != null)
-            deckSettingPanel.SetActive(true); // 먼저 보이게
+            deckSettingPanel.SetActive(true);
 
         if (deckSettingButton != null)
             deckSettingButton.SetActive(false);
@@ -149,15 +162,13 @@ public class DeckBuilderManager : MonoBehaviour
             mainMenuPanel.SetActive(false);
 
         currentPage = 0;
-
-        // 프레임 끝에 정렬 처리 (UI 레이아웃 적용 이후)
         StartCoroutine(DelayedDisplayPage());
     }
 
     private IEnumerator DelayedDisplayPage()
     {
-        yield return null; // UI가 완전히 활성화된 다음 프레임까지 대기
-        DisplayCurrentPage(); // 카드 위치 재정렬
+        yield return null;
+        DisplayCurrentPage();
     }
 
     public void HideDeckSettingPanel()
@@ -165,11 +176,11 @@ public class DeckBuilderManager : MonoBehaviour
         if (deckSettingPanel != null)
             deckSettingPanel.SetActive(false);
 
-        if (deckSettingButton != null)
-            deckSettingButton.SetActive(true);
-
         if (mainMenuPanel != null)
             mainMenuPanel.SetActive(true);
+
+        if (deckSettingButton != null)
+            deckSettingButton.SetActive(true);
     }
 
     public void DisplayCurrentPage()
@@ -197,7 +208,7 @@ public class DeckBuilderManager : MonoBehaviour
 
             if (rt != null)
             {
-                int slotIndex = i - startIndex; // 페이지 내에서 0~3 인덱스
+                int slotIndex = i - startIndex;
                 float slotCenter = (slotIndex + 0.5f) * slotWidth;
                 float x = slotCenter - containerWidth / 2f;
 
@@ -205,7 +216,7 @@ public class DeckBuilderManager : MonoBehaviour
             }
 
             CardSelectionItem selector = cardObj.GetComponent<CardSelectionItem>();
-            selector.SetCard(card);
+            selector.SetCard(card, selectedDeck);
 
             Transform lockedMark = cardObj.transform.Find("LockedMark");
             if (lockedMark != null)

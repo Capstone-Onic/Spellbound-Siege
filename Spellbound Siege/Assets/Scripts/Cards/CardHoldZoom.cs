@@ -45,6 +45,8 @@ public class CardHoldZoom : MonoBehaviour, IPointerDownHandler
         // 게임 씬이 아닐 경우 기능 차단
         if (SceneManager.GetActiveScene().name != "GameScene") return;
 
+        if (IsCardInDeckOrRewardUI()) return;
+
         if (isHolding && !isZoomed && !dragHandler.IsDragging)
         {
             // 마나가 충분하지 않으면 확대하지 않도록 차단
@@ -142,5 +144,14 @@ public class CardHoldZoom : MonoBehaviour, IPointerDownHandler
     {
         isHolding = false;
         holdTimer = 0f;
+    }
+
+    private bool IsCardInDeckOrRewardUI()
+    {
+        var deckPanel = GameObject.Find("DeckSettingPanel");
+        var rewardPanel = GameObject.Find("CardSelectPanel");
+
+        return (deckPanel != null && transform.IsChildOf(deckPanel.transform)) ||
+               (rewardPanel != null && transform.IsChildOf(rewardPanel.transform));
     }
 }
