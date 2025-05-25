@@ -104,7 +104,7 @@ public class DeckBuilderManager : MonoBehaviour
             Debug.Log($" - {card.cardName} ({card.GetInstanceID()})");
         }
 
-        SceneManager.LoadScene("GameScene");
+        SceneManager.LoadScene("kjmGameScene");
     }
 
     public void PopulateAllCards()
