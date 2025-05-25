@@ -45,6 +45,8 @@ public class StartGameManager : MonoBehaviour
     // Start 버튼을 클릭했을 때 호출됩니다.
     public void OnStartButtonClicked()
     {
+        if (CameraZoomController.Instance.IsZoomed())
+            return;
         gameStarted = true;
         Debug.Log("[StartGameManager] 라운드 시작");
         isPlacementPhase = false;
@@ -55,8 +57,6 @@ public class StartGameManager : MonoBehaviour
 
         if (deckBuilderManager != null)
             deckBuilderManager.HideDeckSettingPanel();
-
-        // 게임 시작 플래그 설정 (최초 1회만)
             
         BGMManager.Instance?.PlayBattleMusic(); // 전투 BGM 재생
         // (필요한 초기 시작 처리 추가 가능)
