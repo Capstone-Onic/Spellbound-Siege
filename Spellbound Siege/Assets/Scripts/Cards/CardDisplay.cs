@@ -125,6 +125,8 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         if (SceneManager.GetActiveScene().name != "GameScene") return;
 
+        if (IsCardInDeckOrRewardUI()) return;
+
         CardDragHandler dragHandler = GetComponent<CardDragHandler>();
         CardHoldZoom holdZoom = GetComponent<CardHoldZoom>();
 
@@ -162,14 +164,27 @@ public class CardDisplay : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         if (SceneManager.GetActiveScene().name != "GameScene") return;
 
         Debug.Log($"[사용됨] {cardData.cardName}");
+
         CardDrawManager manager = FindObjectOfType<CardDrawManager>();
         if (manager != null)
         {
             manager.RemoveCardFromHand(gameObject);
+
+            // 카드 사용 기록 추가
+            manager.AddUsedCard(cardData);
         }
         else
         {
             Destroy(gameObject);
         }
+    }
+
+    private bool IsCardInDeckOrRewardUI()
+    {
+        var deckPanel = GameObject.Find("DeckSettingPanel");
+        var rewardPanel = GameObject.Find("CardSelectPanel");
+
+        return (deckPanel != null && transform.IsChildOf(deckPanel.transform)) ||
+               (rewardPanel != null && transform.IsChildOf(rewardPanel.transform));
     }
 }

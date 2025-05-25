@@ -735,8 +735,8 @@ MonoBehaviour:
   allAvailableCards:
   - {fileID: 11400000, guid: cbebcf93e7dd0b9458e18b66a7e6d235, type: 2}
   - {fileID: 11400000, guid: df242e96ba7eb4649874e449ca64ef2b, type: 2}
-  - {fileID: 11400000, guid: ca41561c21fb5be4ab6860e704aba35a, type: 2}
   - {fileID: 11400000, guid: 0c7bb7736c1f16d4495ebf3fc5da1e33, type: 2}
+  - {fileID: 11400000, guid: ca41561c21fb5be4ab6860e704aba35a, type: 2}
   - {fileID: 11400000, guid: dd9d53e1e869a984abe216342b7b59ab, type: 2}
   - {fileID: 11400000, guid: 742343d4b7778e149864b94999da41d4, type: 2}
   defaultUnlockedCards: []

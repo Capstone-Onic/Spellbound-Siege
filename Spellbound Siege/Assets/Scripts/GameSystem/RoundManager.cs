@@ -109,6 +109,9 @@ public class RoundManager : MonoBehaviour
             if (startGameManager != null)
             {
                 startGameManager.EnterIntermissionPhase();
+
+                if (startGameManager.manaUI != null)
+                    startGameManager.manaUI.SetActive(false); // 라운드 종료 시 마나UI 숨김
             }
 
             // 라운드 종료 후 보상창 표시

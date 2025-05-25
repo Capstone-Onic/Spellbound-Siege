@@ -6,93 +6,99 @@ using Spellbound;
 
 public class StartGameManager : MonoBehaviour
 {
-    public static bool gameStarted = false;        // 게임이 시작되었는지 여부 (static)
-    public static bool isPlacementPhase = true;   // 배치 단계인지 여부
+    public static bool gameStarted = false;
+    public static bool isPlacementPhase = true;
 
-    public GameObject unitSelectionPanel;          // 유닛 선택 UI 패널
-    public GameObject startButton;                 // Start 버튼 오브젝트
-    public GameObject cardUI;                      // 카드 UI 전체 오브젝트
-    public GameObject enemySpawner;                // EnemySpawner 오브젝트
-    public Button startButtonComponent;            // Start 버튼 컴포넌트 (UI Button)
-    public CardDrawManager cardDrawManager;        // 카드 드로우 매니저
-    public RoundManager roundManager;              // 라운드 매니저
+    public GameObject unitSelectionPanel;
+    public GameObject startButton;
+    public GameObject cardUI;
+    public GameObject enemySpawner;
+    public Button startButtonComponent;
+    public CardDrawManager cardDrawManager;
+    public RoundManager roundManager;
 
-    public GameObject deckSettingButton; // 덱 설정 버튼 (UI에서 꺼줄 용도)
-    public DeckBuilderManager deckBuilderManager; // 덱 설정 패널 관리자 (인스펙터에서 연결)
+    public GameObject deckSettingButton;
+    public DeckBuilderManager deckBuilderManager;
+    public GameObject manaUI;
 
     void Start()
     {
-        // 씬 시작 시 기본 상태 설정
         gameStarted = false;
         BGMManager.Instance?.PlayIntermissionMusic();
+
+        if (manaUI != null)
+            manaUI.SetActive(false);
 
         if (cardUI != null) cardUI.SetActive(false);
         if (startButton != null) startButton.SetActive(true);
         if (unitSelectionPanel != null) unitSelectionPanel.SetActive(true);
         if (enemySpawner != null) enemySpawner.SetActive(false);
 
-        // Start 버튼 클릭 리스너 등록
         if (startButtonComponent != null)
             startButtonComponent.onClick.AddListener(OnStartButtonClicked);
 
-        if (DeckData.selectedDeck.Count > 0)
+        if (DeckData.selectedDeck.Count > 0 && cardDrawManager != null)
         {
             cardDrawManager.deck = new List<Card>(DeckData.selectedDeck);
             cardDrawManager.ResetDeck();
         }
     }
 
-    // Start 버튼을 클릭했을 때 호출됩니다.
     public void OnStartButtonClicked()
     {
+        Debug.Log("[StartGameManager] OnStartButtonClicked 호출됨");
+
         gameStarted = true;
-        Debug.Log("[StartGameManager] 라운드 시작");
         isPlacementPhase = false;
 
-        // UI 처리
+        if (deckBuilderManager != null)
+            DeckData.selectedDeck = new List<Card>(deckBuilderManager.selectedDeck);
+
+        if (cardDrawManager != null)
+        {
+            cardDrawManager.deck = new List<Card>(DeckData.selectedDeck);
+            cardDrawManager.ResetDeck();
+            cardDrawManager.DrawCard(5);
+            StartCoroutine(cardDrawManager.AutoDraw());
+        }
+
         if (deckSettingButton != null)
+        {
             deckSettingButton.SetActive(false);
+            Debug.Log("덱 설정 버튼 숨김");
+        }
+
+        if (manaUI != null)
+        {
+            manaUI.SetActive(true);
+            Debug.Log("마나 UI 표시");
+        }
 
         if (deckBuilderManager != null)
             deckBuilderManager.HideDeckSettingPanel();
 
-        // 게임 시작 플래그 설정 (최초 1회만)
-            
-        BGMManager.Instance?.PlayBattleMusic(); // 전투 BGM 재생
-        // (필요한 초기 시작 처리 추가 가능)
-      
-
-        // 배치 단계 종료 → 본격 플레이 모드 진입
-        isPlacementPhase = false;
+        BGMManager.Instance?.PlayBattleMusic();
 
         if (UIManager.Instance != null)
-        {
             UIManager.Instance.CloseUI();
-        }
 
-        if (cardUI != null) cardUI.SetActive(true);
-        if (unitSelectionPanel != null) unitSelectionPanel.SetActive(false);
-        if (startButton != null) startButton.SetActive(false);
+        if (cardUI != null)
+            cardUI.SetActive(true);
 
-        ManaManager.Instance?.StartRegen(); // 마나 회복 시작
+        if (unitSelectionPanel != null)
+            unitSelectionPanel.SetActive(false);
 
-        // ─── 카드 드로우 초기화 및 실행 ─────────────────────────
-        // 1) 덱 초기화 및 셔플
-        cardDrawManager.ResetDeck();
-        // 2) 초기 손패 5장 드로우 (원하는 장수로 변경 가능)
-        cardDrawManager.DrawCard(5);
-        // 3) 자동 드로우 코루틴 시작 (예: 5초마다 1장)
-        StartCoroutine(cardDrawManager.AutoDraw());
+        if (startButton != null)
+            startButton.SetActive(false);
 
-        // ─── 필요 시 적 스포너 활성화 ────────────────────────────
+        ManaManager.Instance?.StartRegen();
+
         if (enemySpawner != null)
             enemySpawner.SetActive(true);
 
-        // ─── 다음 라운드 시작 ────────────────────────────────────
         roundManager.StartNextRound();
     }
 
-    // 인터미션(배치) 단계로 돌아갈 때 호출합니다.
     public void EnterIntermissionPhase()
     {
         isPlacementPhase = true;
@@ -101,6 +107,9 @@ public class StartGameManager : MonoBehaviour
         if (cardUI != null) cardUI.SetActive(false);
         if (unitSelectionPanel != null) unitSelectionPanel.SetActive(true);
         if (startButton != null) startButton.SetActive(true);
+
+        if (manaUI != null)
+            manaUI.SetActive(false);
 
         Debug.Log("[StartGameManager] 인터미션 단계 진입");
     }
