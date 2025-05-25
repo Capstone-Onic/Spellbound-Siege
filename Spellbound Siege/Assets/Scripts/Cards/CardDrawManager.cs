@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Spellbound;
 using UnityEngine.UI;
+using Spellbound;
 
 public class CardDrawManager : MonoBehaviour
 {
@@ -46,7 +46,7 @@ public class CardDrawManager : MonoBehaviour
         {
             if (drawPile.Count == 0)
             {
-                if (usedCards.Count == DeckData.selectedDeck.Count && usedCards.Count > 0)
+                if (usedCards.Count >= deck.Count && usedCards.Count > 0)
                 {
                     drawPile = new List<Card>(usedCards);
                     usedCards.Clear();
@@ -70,6 +70,18 @@ public class CardDrawManager : MonoBehaviour
 
             Card drawnCard = drawPile[0];
             drawPile.RemoveAt(0);
+
+            if (handCards.Exists(obj =>
+            {
+                var display = obj?.GetComponent<CardDisplay>();
+                return display != null && display.cardData.cardName == drawnCard.cardName;
+            }))
+            {
+                Debug.Log($"[DrawCard] 손패에 이미 {drawnCard.cardName} 있음 → 드로우 생략");
+                continue;
+            }
+
+            AddUsedCard(drawnCard);
             StartCoroutine(CreateCardUI(drawnCard));
         }
     }
@@ -90,20 +102,8 @@ public class CardDrawManager : MonoBehaviour
         if (cg == null)
             cg = cardObject.AddComponent<CanvasGroup>();
 
-        bool anyCardZoomed = false;
-        foreach (var zoom in FindObjectsOfType<CardHoldZoom>())
-        {
-            if (zoom.IsZooming)
-            {
-                anyCardZoomed = true;
-                break;
-            }
-        }
-        if (anyCardZoomed)
-        {
-            cg.blocksRaycasts = false;
-            cg.interactable = false;
-        }
+        cg.blocksRaycasts = true;
+        cg.interactable = true;
 
         Vector2 startPos = deckTransform.anchoredPosition;
         rt.anchoredPosition = startPos;

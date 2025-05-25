@@ -5,6 +5,7 @@ using Spellbound;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
+using System.Linq;
 
 public class DeckBuilderManager : MonoBehaviour
 {
@@ -38,15 +39,11 @@ public class DeckBuilderManager : MonoBehaviour
 
     void Start()
     {
-        selectedDeck = new List<Card>();
-
-        // DeckData.selectedDeck과 동일한 참조 카드만 선택
-        foreach (Card deckCard in DeckData.selectedDeck)
-        {
-            Card matched = allAvailableCards.Find(c => c.cardName == deckCard.cardName);
-            if (matched != null && !selectedDeck.Contains(matched))
-                selectedDeck.Add(matched);
-        }
+        selectedDeck = DeckData.selectedDeck
+            .GroupBy(d => d.cardName)
+            .Select(g => allAvailableCards.Find(c => c.cardName == g.Key))
+            .Where(c => c != null)
+            .ToList();
 
         AutoUnlockAndSelectDefaultCards();
 
@@ -66,7 +63,7 @@ public class DeckBuilderManager : MonoBehaviour
             if (!card.isUnlockedByDefault)
                 card.isUnlockedByDefault = true;
 
-            if (!selectedDeck.Exists(c => c.cardName == card.cardName) && selectedDeck.Count < maxDeckSize)
+            if (!selectedDeck.Any(c => c.cardName == card.cardName) && selectedDeck.Count < maxDeckSize)
             {
                 selectedDeck.Add(card);
                 Debug.Log($"[기본카드] {card.cardName} 해금 및 덱 자동 포함");
@@ -77,7 +74,7 @@ public class DeckBuilderManager : MonoBehaviour
     public void AddCardToDeck(Card card)
     {
         if (selectedDeck.Count >= maxDeckSize) return;
-        if (!selectedDeck.Contains(card))
+        if (!selectedDeck.Any(c => c.cardName == card.cardName))
         {
             selectedDeck.Add(card);
             Debug.Log($"{card.cardName} 카드가 덱에 추가됨");
@@ -86,16 +83,27 @@ public class DeckBuilderManager : MonoBehaviour
 
     public void RemoveCardFromDeck(Card card)
     {
-        if (selectedDeck.Contains(card))
+        Card found = selectedDeck.Find(c => c.cardName == card.cardName);
+        if (found != null)
         {
-            selectedDeck.Remove(card);
+            selectedDeck.Remove(found);
             Debug.Log($"{card.cardName} 카드가 덱에서 제거됨");
         }
     }
 
     public void StartGame()
     {
-        DeckData.selectedDeck = new List<Card>(selectedDeck);
+        DeckData.selectedDeck = selectedDeck
+            .GroupBy(c => c.cardName)
+            .Select(g => g.First())
+            .ToList();
+
+        Debug.Log("[StartGame] 최종 덱:");
+        foreach (var card in DeckData.selectedDeck)
+        {
+            Debug.Log($" - {card.cardName} ({card.GetInstanceID()})");
+        }
+
         SceneManager.LoadScene("GameScene");
     }
 
@@ -171,7 +179,7 @@ public class DeckBuilderManager : MonoBehaviour
         DisplayCurrentPage();
     }
 
-    public void HideDeckSettingPanel()
+    public void HideDeckSettingPanel(bool showDeckButton = true)
     {
         if (deckSettingPanel != null)
             deckSettingPanel.SetActive(false);
@@ -180,7 +188,7 @@ public class DeckBuilderManager : MonoBehaviour
             mainMenuPanel.SetActive(true);
 
         if (deckSettingButton != null)
-            deckSettingButton.SetActive(true);
+            deckSettingButton.SetActive(showDeckButton);
     }
 
     public void DisplayCurrentPage()

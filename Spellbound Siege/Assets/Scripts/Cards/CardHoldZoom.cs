@@ -20,15 +20,16 @@ public class CardHoldZoom : MonoBehaviour, IPointerDownHandler
     private RectTransform zoomedCardRect;
     private Vector3 originalScale;
 
+    public static bool allowZoomInteraction = true;
+
     [Header("Zoom Visual Effect")]
-    public GameObject screenEdgeEffectPrefab; // 테두리 이펙트 프리팹
+    public GameObject screenEdgeEffectPrefab;
     private GameObject currentEffectInstance;
 
     void Awake()
     {
         cardDisplay = GetComponent<CardDisplay>();
 
-        // 전체 Canvas 찾기
         GameObject rootCanvasGO = GameObject.Find("Canvas");
         if (rootCanvasGO != null)
             parentCanvas = rootCanvasGO.GetComponent<Canvas>();
@@ -42,14 +43,10 @@ public class CardHoldZoom : MonoBehaviour, IPointerDownHandler
 
     void Update()
     {
-        // 게임 씬이 아닐 경우 기능 차단
-        if (SceneManager.GetActiveScene().name != "GameScene") return;
-
-        if (IsCardInDeckOrRewardUI()) return;
+        if (!allowZoomInteraction) return;
 
         if (isHolding && !isZoomed && !dragHandler.IsDragging)
         {
-            // 마나가 충분하지 않으면 확대하지 않도록 차단
             if (cardDisplay != null && ManaManager.Instance != null &&
                 ManaManager.Instance.currentMana < cardDisplay.cardData.cost)
                 return;
@@ -82,11 +79,9 @@ public class CardHoldZoom : MonoBehaviour, IPointerDownHandler
 
         if (zoomedCardInstance != null) Destroy(zoomedCardInstance);
 
-        // 카드 복제 생성
         zoomedCardInstance = Instantiate(gameObject, parentCanvas.transform);
         zoomedCardInstance.transform.SetAsLastSibling();
 
-        // RectTransform 설정
         zoomedCardRect = zoomedCardInstance.GetComponent<RectTransform>();
         zoomedCardRect.anchorMin = new Vector2(0.5f, 0.5f);
         zoomedCardRect.anchorMax = new Vector2(0.5f, 0.5f);
@@ -94,7 +89,6 @@ public class CardHoldZoom : MonoBehaviour, IPointerDownHandler
         zoomedCardRect.anchoredPosition = Vector2.zero;
         zoomedCardInstance.transform.localScale = originalScale;
 
-        // 마우스 이벤트 차단
         CanvasGroup cg = zoomedCardInstance.GetComponent<CanvasGroup>();
         if (cg != null)
         {
@@ -102,10 +96,8 @@ public class CardHoldZoom : MonoBehaviour, IPointerDownHandler
             cg.interactable = false;
         }
 
-        // 확대 애니메이션
         LeanTween.scale(zoomedCardInstance, originalScale * 2f, 0.25f).setEaseOutExpo();
 
-        // 테두리 이펙트 생성
         if (screenEdgeEffectPrefab != null && currentEffectInstance == null)
         {
             currentEffectInstance = Instantiate(screenEdgeEffectPrefab, parentCanvas.transform);
@@ -146,12 +138,8 @@ public class CardHoldZoom : MonoBehaviour, IPointerDownHandler
         holdTimer = 0f;
     }
 
-    private bool IsCardInDeckOrRewardUI()
+    public static void EnableCardInteractionGlobally(bool enabled)
     {
-        var deckPanel = GameObject.Find("DeckSettingPanel");
-        var rewardPanel = GameObject.Find("CardSelectPanel");
-
-        return (deckPanel != null && transform.IsChildOf(deckPanel.transform)) ||
-               (rewardPanel != null && transform.IsChildOf(rewardPanel.transform));
+        allowZoomInteraction = enabled;
     }
 }

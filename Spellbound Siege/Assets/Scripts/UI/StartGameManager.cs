@@ -52,7 +52,13 @@ public class StartGameManager : MonoBehaviour
         isPlacementPhase = false;
 
         if (deckBuilderManager != null)
+        {
             DeckData.selectedDeck = new List<Card>(deckBuilderManager.selectedDeck);
+
+            Debug.Log($"[DeckData] 선택된 덱 카드 수: {DeckData.selectedDeck.Count}");
+            foreach (var c in DeckData.selectedDeck)
+                Debug.Log($" - {c.cardName} / {c.GetInstanceID()}");
+        }
 
         if (cardDrawManager != null)
         {
@@ -75,7 +81,7 @@ public class StartGameManager : MonoBehaviour
         }
 
         if (deckBuilderManager != null)
-            deckBuilderManager.HideDeckSettingPanel();
+            deckBuilderManager.HideDeckSettingPanel(false);
 
         BGMManager.Instance?.PlayBattleMusic();
 

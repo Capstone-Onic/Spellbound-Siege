@@ -3630,8 +3630,8 @@ RectTransform:
   m_GameObject: {fileID: 265783469}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 832717191}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5111,7 +5111,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dd9d53e1e869a984abe216342b7b59ab, type: 2}
   - {fileID: 11400000, guid: 742343d4b7778e149864b94999da41d4, type: 2}
   defaultUnlockedCards: []
-  cardSlotPrefab: {fileID: 473572109364012341, guid: 2dc8dc4007b96034ab3e5e7a22f225aa, type: 3}
+  cardSlotPrefab: {fileID: 473572109364012341, guid: a476d73fc0c87f94eb17eef6ba598b36, type: 3}
   deckSettingPanel: {fileID: 1356472931}
   deckSettingButton: {fileID: 1036187547}
   mainMenuPanel: {fileID: 0}
@@ -5133,7 +5133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unlockPanel: {fileID: 1707826375}
   cardContainer: {fileID: 1085332667}
-  cardSlotPrefab: {fileID: 473572109364012341, guid: 2dc8dc4007b96034ab3e5e7a22f225aa, type: 3}
+  rewardCardSlotPrefab: {fileID: 473572109364012341, guid: a476d73fc0c87f94eb17eef6ba598b36, type: 3}
   cardSelectPanel: {fileID: 1707826375}
   deckSettingButton: {fileID: 1036187547}
   deckBuilderManager: {fileID: 350318876}
@@ -20948,7 +20948,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1050, y: 650}
+  m_SizeDelta: {x: 1300, y: 850}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!4 &1356579585 stripped
 Transform:
@@ -24225,6 +24225,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1304011756791592705, guid: ddbb8aeea4cb6254bad7cc14e7fd1f4e, type: 3}
+      propertyPath: cardPrefab
+      value: 
+      objectReference: {fileID: 7706301986657779851, guid: f445dafbfc990d64ea8d7b397912141e, type: 3}
     - target: {fileID: 1362042957962504050, guid: ddbb8aeea4cb6254bad7cc14e7fd1f4e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -24659,7 +24663,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8527152075691785574, guid: ddbb8aeea4cb6254bad7cc14e7fd1f4e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8965367839410890919, guid: ddbb8aeea4cb6254bad7cc14e7fd1f4e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 8965367839410890919, guid: ddbb8aeea4cb6254bad7cc14e7fd1f4e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 8992686786854961299, guid: ddbb8aeea4cb6254bad7cc14e7fd1f4e, type: 3}
       propertyPath: m_AnchorMax.x
@@ -26714,7 +26726,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -30640,14 +30652,14 @@ MonoBehaviour:
       - m_Target: {fileID: 350318876}
         m_TargetAssemblyTypeName: DeckBuilderManager, Assembly-CSharp
         m_MethodName: HideDeckSettingPanel
-        m_Mode: 1
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &1902457560
 MonoBehaviour:
@@ -35368,6 +35380,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 902820216579111247, guid: 2dc8dc4007b96034ab3e5e7a22f225aa, type: 3}
+      propertyPath: rangeIndicatorPrefab
+      value: 
+      objectReference: {fileID: 6001965815573015611, guid: 299b4cd7bdc62b9478c94516f1b7f650, type: 3}
+    - target: {fileID: 2251194317200700819, guid: 2dc8dc4007b96034ab3e5e7a22f225aa, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4096195770610634226, guid: 2dc8dc4007b96034ab3e5e7a22f225aa, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -35448,9 +35468,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5446642384329241635, guid: 2dc8dc4007b96034ab3e5e7a22f225aa, type: 3}
+      propertyPath: screenEdgeEffectPrefab
+      value: 
+      objectReference: {fileID: 8962368663310730568, guid: 64230e79d7098a346945775cdc13b94e, type: 3}
     - target: {fileID: 6420933315042002160, guid: 2dc8dc4007b96034ab3e5e7a22f225aa, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7039805493467743534, guid: 2dc8dc4007b96034ab3e5e7a22f225aa, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7039805493467743534, guid: 2dc8dc4007b96034ab3e5e7a22f225aa, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7039805493467743534, guid: 2dc8dc4007b96034ab3e5e7a22f225aa, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7039805493467743534, guid: 2dc8dc4007b96034ab3e5e7a22f225aa, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6420933315042002160, guid: 2dc8dc4007b96034ab3e5e7a22f225aa, type: 3}
