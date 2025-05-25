@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 9177582509320099973}
   - component: {fileID: 8498794724377976586}
   m_Layer: 5
-  m_Name: CardSlotUI
+  m_Name: RewardCardPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -157,6 +157,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4096195770610634226}
     m_Modifications:
+    - target: {fileID: 854798129479091007, guid: f445dafbfc990d64ea8d7b397912141e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1292754036258427130, guid: f445dafbfc990d64ea8d7b397912141e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -242,17 +246,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4311349308375441911, guid: f445dafbfc990d64ea8d7b397912141e, type: 3}
-      propertyPath: screenEdgeEffectPrefab
-      value: 
-      objectReference: {fileID: 8962368663310730568, guid: 64230e79d7098a346945775cdc13b94e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7706301986657779851, guid: f445dafbfc990d64ea8d7b397912141e, type: 3}
       propertyPath: m_Name
       value: CardPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 8954587635750687364, guid: f445dafbfc990d64ea8d7b397912141e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8990828670237207707, guid: f445dafbfc990d64ea8d7b397912141e, type: 3}
-      propertyPath: rangeIndicatorPrefab
-      value: 
-      objectReference: {fileID: 6001965815573015611, guid: 299b4cd7bdc62b9478c94516f1b7f650, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
