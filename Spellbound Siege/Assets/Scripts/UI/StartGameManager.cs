@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -46,7 +46,7 @@ public class StartGameManager : MonoBehaviour
 
     public void OnStartButtonClicked()
     {
-        Debug.Log("[StartGameManager] OnStartButtonClicked È£ÃâµÊ");
+        Debug.Log("[StartGameManager] OnStartButtonClicked È£ï¿½ï¿½ï¿½");
 
         gameStarted = true;
         isPlacementPhase = false;
@@ -65,13 +65,13 @@ public class StartGameManager : MonoBehaviour
         if (deckSettingButton != null)
         {
             deckSettingButton.SetActive(false);
-            Debug.Log("µ¦ ¼³Á¤ ¹öÆ° ¼û±è");
+            Debug.Log("ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½");
         }
 
         if (manaUI != null)
         {
             manaUI.SetActive(true);
-            Debug.Log("¸¶³ª UI Ç¥½Ã");
+            Debug.Log("ï¿½ï¿½ï¿½ï¿½ UI Ç¥ï¿½ï¿½");
         }
 
         if (deckBuilderManager != null)
@@ -111,6 +111,6 @@ public class StartGameManager : MonoBehaviour
         if (manaUI != null)
             manaUI.SetActive(false);
 
-        Debug.Log("[StartGameManager] ÀÎÅÍ¹Ì¼Ç ´Ü°è ÁøÀÔ");
+        Debug.Log("[StartGameManager] ï¿½ï¿½ï¿½Í¹Ì¼ï¿½ ï¿½Ü°ï¿½ ï¿½ï¿½ï¿½ï¿½");
     }
 }

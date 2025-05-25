@@ -1715,6 +1715,7 @@ MonoBehaviour:
   - {fileID: 2972046998180838409}
   - {fileID: 8877582750398913685}
   upgradeLevel: 0
+  attackSound: {fileID: 8300000, guid: 43ecbc6e4b5cc044e8593d88f31fe456, type: 3}
 --- !u!135 &5492303710873532740
 SphereCollider:
   m_ObjectHideFlags: 0

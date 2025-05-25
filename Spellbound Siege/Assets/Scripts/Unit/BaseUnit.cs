@@ -51,7 +51,20 @@ public class BaseUnit : MonoBehaviour, IStunnable
 
     private List<GameObject> activeUpgradeEffects = new();
     public int upgradeLevel = 0;
+    //===========[사운드]================
+    [Header("Audio")]
+    public AudioClip attackSound;  // 유닛 공격 시 재생될 소리
+    private AudioSource audioSource;
 
+    void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            Debug.LogWarning("[BaseUnit] AudioSource가 없어 생성합니다.");
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+    }
     void Start()
     {
         transform.rotation = Quaternion.Euler(0f, 180f, 0f);
@@ -158,6 +171,8 @@ public class BaseUnit : MonoBehaviour, IStunnable
     {
         if (projectilePrefab == null) return;
 
+        PlayAttackSound();
+        
         GameObject proj = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
         Projectile projectile = proj.GetComponent<Projectile>();
         projectile.Initialize(target.transform.position, damage, areaDamage);
@@ -226,6 +241,7 @@ public class BaseUnit : MonoBehaviour, IStunnable
     private IEnumerator DruidEffectCoroutine(GameObject field, Vector3 position)
     {
         float elapsed = 0f;
+        PlayAttackSound();
         while (elapsed < druidDuration)
         {
             Collider[] hits = Physics.OverlapSphere(position, druidEffectRadius);
@@ -247,13 +263,17 @@ public class BaseUnit : MonoBehaviour, IStunnable
 
     private IEnumerator KnightAttackCoroutine()
     {
-        yield return new WaitForSeconds(1f);
+        Animator animator = GetComponent<Animator>();
+        if (animator != null)
+            animator.speed = 1.5f;
+        yield return new WaitForSeconds(0.6f);
 
         if (projectilePrefab != null)
         {
             Vector3 spawnPos = transform.position + transform.forward * 1f;
             GameObject slash = Instantiate(projectilePrefab, spawnPos, Quaternion.LookRotation(transform.forward));
-            StartCoroutine(SlashArcEffect(slash, 2f, 120f, 0.3f));
+            PlayAttackSound();
+            StartCoroutine(SlashArcEffect(slash, 2f, 120f, 0.15f));
             Destroy(slash, 0.5f);
         }
 
@@ -320,5 +340,32 @@ public class BaseUnit : MonoBehaviour, IStunnable
     {
         float costPerUpgrade = goldCost * 0.5f;
         return Mathf.RoundToInt(costPerUpgrade * (upgradeLevel + 1));
+    }
+    private void PlayAttackSound()
+    {
+        if (attackSound == null)
+        {
+            Debug.LogWarning("[AttackSound] AudioClip이 설정되지 않았습니다.");
+            return;
+        }
+
+        if (audioSource == null)
+        {
+            Debug.LogWarning("[AttackSound] AudioSource가 없습니다.");
+            return;
+        }
+        if (unitType == UnitType.druid)
+        {
+            audioSource.volume = 0.2f; // 0.0 ~ 1.0 사이
+        }
+        else if(unitType == UnitType.archer)
+        {
+            audioSource.volume = 1.5f;
+        }
+        else
+        {
+            audioSource.volume = 1.0f; // 기본 볼륨
+        }
+        audioSource.PlayOneShot(attackSound);
     }
 }
