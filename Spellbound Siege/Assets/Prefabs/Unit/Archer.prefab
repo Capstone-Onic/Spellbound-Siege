@@ -995,8 +995,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitType: 3
-  attackCooldown: 2.2
-  damage: 40
+  attackCooldown: 2
+  damage: 20
   projectilePrefab: {fileID: 6927400756019520099, guid: e90c722fea4f08b478585c092c4fc2e7, type: 3}
   stunIndicatorPrefab: {fileID: 4944089641033070485, guid: f94b1a458b3b5e6499885ff1ada10e94, type: 3}
   unitName: "\uAD81\uC218"
@@ -1314,7 +1314,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 2
+  m_Radius: 4
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6518696944948660805
 MonoBehaviour:

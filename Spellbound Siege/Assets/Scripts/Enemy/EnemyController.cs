@@ -50,8 +50,6 @@ public class EnemyController : MonoBehaviour
 
         switch (enemyType)
         {
-            case EnemyType.Normal: rewardGold = 10; break;
-            case EnemyType.Elite: rewardGold = 25; break;
             case EnemyType.Boss:
                 rewardGold = 100;
                 StartCoroutine(BossSpecialRoutine());

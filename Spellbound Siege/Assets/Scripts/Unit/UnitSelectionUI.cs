@@ -68,6 +68,7 @@ public class UnitSelectionUI : MonoBehaviour
                 currentSelected.SetHighlighted(true);
 
                 UnitManager.instance.SetSelectedUnit(prefab);
+                SFXManager.Instance?.PlaySelect();
             });
         }
     }

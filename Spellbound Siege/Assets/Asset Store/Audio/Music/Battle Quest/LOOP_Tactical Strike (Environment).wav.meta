@@ -1,15 +1,8 @@
 fileFormatVersion: 2
 guid: 9c08a8ff8172145e4a6b8c35d755eed6
-AssetOrigin:
-  serializedVersion: 1
-  productId: 275569
-  packageName: Battle Quest Music Pack
-  packageVersion: 1.0
-  assetPath: Assets/Audio/Music/Battle Quest/LOOP_Tactical Strike (Environment).wav
-  uploadId: 640214
 AudioImporter:
   externalObjects: {}
-  serializedVersion: 8
+  serializedVersion: 7
   defaultSettings:
     serializedVersion: 2
     loadType: 0
@@ -28,3 +21,10 @@ AudioImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 275569
+  packageName: Battle Quest Music Pack
+  packageVersion: 1.0
+  assetPath: Assets/Asset Store/Audio/Music/Battle Quest/LOOP_Tactical Strike (Environment).wav
+  uploadId: 640214

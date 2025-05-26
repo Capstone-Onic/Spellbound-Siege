@@ -8,6 +8,9 @@ public class SFXManager : MonoBehaviour
     public AudioClip upgradeClip;
     public AudioClip sellClip;
     public AudioClip lifeLostClip;
+    public AudioClip selectClip;
+    public AudioClip installClip;
+    public AudioClip gameoverClip;
 
     private void Awake()
     {
@@ -29,6 +32,18 @@ public class SFXManager : MonoBehaviour
     public void PlayLifeLost()
     {
         PlayClip(lifeLostClip);
+    }
+    public void PlaySelect()
+    {
+        PlayClip(selectClip);
+    }
+    public void PlayInstall()
+    {
+        PlayClip(installClip);
+    }
+    public void PlayGameOver()
+    {
+        PlayClip(gameoverClip);
     }
 
     private void PlayClip(AudioClip clip)

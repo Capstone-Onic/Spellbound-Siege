@@ -10,6 +10,9 @@ using System.Linq;
 public class DeckBuilderManager : MonoBehaviour
 {
     public static DeckBuilderManager Instance { get; private set; }
+    public AudioClip clickSound;
+    public AudioClip selectSound;
+    private AudioSource audioSource;
 
     [Header("전체 카드 목록 및 기본 카드 설정")]
     public List<Card> allAvailableCards;
@@ -35,6 +38,8 @@ public class DeckBuilderManager : MonoBehaviour
             Instance = this;
         else
             Destroy(gameObject);
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
     }
 
     void Start()
@@ -77,6 +82,7 @@ public class DeckBuilderManager : MonoBehaviour
         if (!selectedDeck.Any(c => c.cardName == card.cardName))
         {
             selectedDeck.Add(card);
+            PlaySelectSound();
             Debug.Log($"{card.cardName} 카드가 덱에 추가됨");
         }
     }
@@ -87,6 +93,7 @@ public class DeckBuilderManager : MonoBehaviour
         if (found != null)
         {
             selectedDeck.Remove(found);
+            PlaySelectSound();
             Debug.Log($"{card.cardName} 카드가 덱에서 제거됨");
         }
     }
@@ -103,6 +110,7 @@ public class DeckBuilderManager : MonoBehaviour
         {
             Debug.Log($" - {card.cardName} ({card.GetInstanceID()})");
         }
+        PlayClickSound();
 
         SceneManager.LoadScene("GameScene");
     }
@@ -170,6 +178,7 @@ public class DeckBuilderManager : MonoBehaviour
             mainMenuPanel.SetActive(false);
 
         currentPage = 0;
+        PlayClickSound();
         StartCoroutine(DelayedDisplayPage());
     }
 
@@ -244,6 +253,7 @@ public class DeckBuilderManager : MonoBehaviour
     {
         if ((currentPage + 1) * cardsPerPage < allAvailableCards.Count)
         {
+            PlayClickSound();
             currentPage++;
             DisplayCurrentPage();
         }
@@ -253,8 +263,23 @@ public class DeckBuilderManager : MonoBehaviour
     {
         if (currentPage > 0)
         {
+            PlayClickSound();
             currentPage--;
             DisplayCurrentPage();
+        }
+    }
+    private void PlayClickSound()
+    {
+        if (clickSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(clickSound);
+        }
+    }
+    private void PlaySelectSound()
+    {
+        if (clickSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(selectSound);
         }
     }
 }

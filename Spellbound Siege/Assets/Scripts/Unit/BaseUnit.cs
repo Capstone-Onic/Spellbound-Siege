@@ -67,6 +67,7 @@ public class BaseUnit : MonoBehaviour, IStunnable
     }
     void Start()
     {
+        SFXManager.Instance?.PlayInstall();
         transform.rotation = Quaternion.Euler(0f, 180f, 0f);
         Vector3 fixedPosition = transform.position;
         fixedPosition.y = 0.05f;
@@ -188,8 +189,11 @@ public class BaseUnit : MonoBehaviour, IStunnable
 
         upgradeLevel++;
 
-        if (upgradeLevel <= 2) damage *= 1.5f;
-
+        if (upgradeLevel <= 2)
+        {
+            damage *= 1.5f;
+            attackCooldown -= 0.7f;
+        }
         Debug.Log($"유닛이 {upgradeLevel}단계로 강화되었습니다. 공격력: {damage}");
 
         UpdateWeaponModel(upgradeLevel);
@@ -325,7 +329,7 @@ public class BaseUnit : MonoBehaviour, IStunnable
     public int GetSellValue()
     {
         float baseRatio = 0.6f;
-        float upgradeBonus = 0.2f; // 강화 1회당 20%씩 증가
+        float upgradeBonus = 0.5f; // 강화 1회당 20%씩 증가
 
         float ratio = baseRatio + (upgradeLevel * upgradeBonus);
         float rawPrice = goldCost * ratio;
@@ -338,7 +342,7 @@ public class BaseUnit : MonoBehaviour, IStunnable
     /// </summary>
     public int GetUpgradeCost()
     {
-        float costPerUpgrade = goldCost * 0.5f;
+        float costPerUpgrade = goldCost * 2f;
         return Mathf.RoundToInt(costPerUpgrade * (upgradeLevel + 1));
     }
     private void PlayAttackSound()
