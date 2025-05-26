@@ -27,6 +27,7 @@ public class RoundManager : MonoBehaviour
 
     public UnityEvent<int> onRoundStarted;
     public UnityEvent<int> onRoundEnded;
+    public GameObject gameOverUI;
 
     [Header("UI")]
     public TMP_Text roundText;
@@ -169,7 +170,10 @@ public class RoundManager : MonoBehaviour
     {
         Debug.Log("[RoundManager] Game Over triggered!");
         Time.timeScale = 0;
-        // Game Over UI 열기 등 추가 가능
+        SFXManager.Instance?.PlayGameOver();
+
+        if (gameOverUI != null)
+            gameOverUI.SetActive(true);
     }
 
     private void ResetLifeUI()

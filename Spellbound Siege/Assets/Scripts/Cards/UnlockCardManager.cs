@@ -99,6 +99,7 @@ public class UnlockCardManager : MonoBehaviour
     {
         if (selectedCard != null)
         {
+            selectedCard.isUnlockedByDefault = true;
             if (!DeckData.selectedDeck.Contains(selectedCard))
             {
                 DeckData.selectedDeck.Add(selectedCard);

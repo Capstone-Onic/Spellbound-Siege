@@ -1748,8 +1748,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitType: 0
-  attackCooldown: 3.1
-  damage: 50
+  attackCooldown: 2.3
+  damage: 25
   projectilePrefab: {fileID: 4699416279442992812, guid: 6ffcdf54bac53fd458b339003fef476d, type: 3}
   stunIndicatorPrefab: {fileID: 4944089641033070485, guid: f94b1a458b3b5e6499885ff1ada10e94, type: 3}
   unitName: "\uAE30\uC0AC"
