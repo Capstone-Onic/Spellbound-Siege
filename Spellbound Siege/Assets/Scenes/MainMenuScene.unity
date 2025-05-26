@@ -741,7 +741,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dd9d53e1e869a984abe216342b7b59ab, type: 2}
   - {fileID: 11400000, guid: 742343d4b7778e149864b94999da41d4, type: 2}
   defaultUnlockedCards: []
-  cardSlotPrefab: {fileID: 473572109364012341, guid: 2dc8dc4007b96034ab3e5e7a22f225aa, type: 3}
+  cardSlotPrefab: {fileID: 473572109364012341, guid: a476d73fc0c87f94eb17eef6ba598b36, type: 3}
   deckSettingPanel: {fileID: 2061288381}
   deckSettingButton: {fileID: 0}
   mainMenuPanel: {fileID: 1253144587}
@@ -2095,7 +2095,7 @@ MonoBehaviour:
       - m_Target: {fileID: 476154077}
         m_TargetAssemblyTypeName: DeckBuilderManager, Assembly-CSharp
         m_MethodName: HideDeckSettingPanel
-        m_Mode: 1
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

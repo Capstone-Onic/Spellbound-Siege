@@ -108,7 +108,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 2
-  maxHealth: 150
+  maxHealth: 300
   health: 0
   speedMultiplier: 1
   deathEffectPrefab: {fileID: 2271809943457990670, guid: 7cb5fb532ba58804f9722a60011a36d3, type: 3}

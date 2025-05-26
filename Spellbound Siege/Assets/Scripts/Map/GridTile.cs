@@ -151,6 +151,16 @@ public class GridTile : MonoBehaviour
             Debug.Log("[배치 차단] UI가 열려있음");
             return;
         }
+        if (DeckBuilderManager.Instance != null && DeckBuilderManager.Instance.deckSettingPanel.activeSelf)
+        {
+            Debug.Log("[배치 차단] 덱 설정 패널이 열려있음");
+            return;
+        }
+        if (FindFirstObjectByType<UnlockCardManager>()?.cardSelectPanel.activeSelf == true)
+        {
+            Debug.Log("[배치 차단] 보상 패널이 열려있음");
+            return;
+        }
         Debug.Log($"[GridTile] 유닛 설치 시도 → isOccupied={isOccupied}, currentUnit={(currentUnit == null ? "null" : currentUnit.name)}");
         // 유닛이 있으면 제거하지 않고 판매는 유닛 자체에서 처리
         if (isOccupied && currentUnit != null)

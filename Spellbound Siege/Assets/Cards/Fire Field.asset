@@ -16,7 +16,7 @@ MonoBehaviour:
   cardImage: {fileID: 21300000, guid: 70c946ef35a6f414e8a73ba4df5e6da9, type: 3}
   cardType: 00000000
   cost: 2
-  damage: 6
+  damage: 8
   damageType: 00000000
   effectRadius: 2
   effectDuration: 2
