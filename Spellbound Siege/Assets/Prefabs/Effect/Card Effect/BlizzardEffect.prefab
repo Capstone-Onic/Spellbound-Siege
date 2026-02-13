@@ -4867,6 +4867,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a144b341dad88140aec8f0721123da5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sourceCard: {fileID: 0}
+  sourceCard: {fileID: 11400000, guid: cbebcf93e7dd0b9458e18b66a7e6d235, type: 2}
   duration: 3
   tickInterval: 0.2
